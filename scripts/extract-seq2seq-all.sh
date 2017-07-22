@@ -69,9 +69,3 @@ grep "  rule" ${WORKDIR}/scenario.tsv > ${WORKDIR}/scenario-compound.tsv
 grep -v "  rule" ${WORKDIR}/scenario.tsv > ${WORKDIR}/scenario-prim.tsv
 grep "  rule" ${WORKDIR}/cheatsheet.tsv > ${WORKDIR}/cheatsheet-compound.tsv
 grep -v "  rule" ${WORKDIR}/cheatsheet.tsv > ${WORKDIR}/cheatsheet-prim.tsv
-
-# generate auxiliary files
-python3 ${SEMPREDIR}/deep/scripts/gen_grammar.py "${DATABASE_PW}" > ${WORKDIR}/thingpedia.txt
-cat ${WORKDIR}/*.tsv | cut -f1 | tr " " "\n" | sort -u > ${WORKDIR}/input_words.txt
-python3 ${SEMPREDIR}/deep/scripts/trim_embeddings.py ${WORKDIR}/input_words.txt < ${GLOVE} > ${WORKDIR}/embeddings.txt
-cp ${SEMPREDIR}/deep/default.conf ${WORKDIR}/default.conf
