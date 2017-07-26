@@ -333,11 +333,20 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
       String token = languageInfo.tokens.get(i);
       String next = languageInfo.tokens.get(i + 1);
 
-      if ("washington".equals(token) && "post".equals(next)) {
+      if (("washington".equals(token) && "post".equals(next)) ||
+          ("chicago".equals(token) && "cubs".equals(next)) ||
+          ("toronto".equals(token) && "fc".equals(next))) {
         languageInfo.nerTags.set(i, "ORGANIZATION");
         languageInfo.nerValues.set(i, null);
 
         languageInfo.nerTags.set(i + 1, "ORGANIZATION");
+        languageInfo.nerValues.set(i + 1, null);
+      }
+
+      // apple post is not a f... newspaper
+      // stupid corenlp
+      if ("apple".equals(token) && "post".equals(next)) {
+        languageInfo.nerTags.set(i + 1, "O");
         languageInfo.nerValues.set(i + 1, null);
       }
     }
