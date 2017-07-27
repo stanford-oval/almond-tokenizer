@@ -30,7 +30,7 @@ public class SpellCheckerAnnotator implements Annotator {
         "weatherapi", "webos", "wsj", "xkcd", "facebook", "youtube", "'m", "'ll", "'ve", "'re", "lakers", "bing",
         "repo", "yandex", "aapl", "haz", "moar", "lol", "juventus", "fitbit", "kcal", "ncaafb", "unclosed",
         "twilio", "mms", "bing", "xkcds", "kbs", "btc", "momma", "gps", "wtf", "apod", "diy", "smss",
-        "preselect", "vid", "vids", "ubering", "urls");
+        "preselect", "vid", "vids", "ubering", "urls", "tesla", "msft", "goog", "aapl");
   }
 
   public static Options opts = new Options();
