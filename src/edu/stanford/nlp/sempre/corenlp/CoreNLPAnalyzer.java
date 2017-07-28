@@ -136,6 +136,9 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     else
       props.put("annotators", "tokenize," + annotators);
 
+    // disable ssplit (even though we need it to run the rest of the annotators)
+    props.put("ssplit.isOneSentence", "true");
+
     // disable all the builtin numeric classifiers, we have our own
     props.put("ner.applyNumericClassifiers", "false");
     props.put("ner.useSUTime", "false");
@@ -147,6 +150,9 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     // enable spell checking with our custom annotator
     props.put("customAnnotatorClass.spellcheck", SpellCheckerAnnotator.class.getCanonicalName());
     props.put("spellcheck.dictPath", languageTag);
+
+    // ask for binary tree parses
+    props.put("parse.binaryTrees", "true");
 
     pipeline = new StanfordCoreNLP(props);
 

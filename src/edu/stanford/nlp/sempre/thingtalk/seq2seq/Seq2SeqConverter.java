@@ -10,27 +10,22 @@ import edu.stanford.nlp.sempre.*;
 import edu.stanford.nlp.sempre.thingtalk.ArgFilterHelpers;
 import edu.stanford.nlp.sempre.thingtalk.LocationValue;
 import edu.stanford.nlp.sempre.thingtalk.TypedStringValue;
-import fig.basic.Pair;
 
 class Seq2SeqConverter {
-  public static void writeSequences(Pair<List<String>, List<String>> sequences, Writer writer) throws IOException {
-    List<String> input = sequences.getFirst();
-    List<String> output = sequences.getSecond();
+  public static void writeSequences(List<List<String>> sequences, Writer writer) throws IOException {
+    boolean firstSequence = true;
+    for (List<String> sequence : sequences) {
+      if (!firstSequence)
+        writer.append('\t');
+      firstSequence = false;
 
-    boolean first = true;
-    for (String t : input) {
-      if (!first)
-        writer.append(' ');
-      first = false;
-      writer.append(t);
-    }
-    writer.append('\t');
-    first = true;
-    for (String t : output) {
-      if (!first)
-        writer.append(' ');
-      first = false;
-      writer.append(t);
+      boolean first = true;
+      for (String t : sequence) {
+        if (!first)
+          writer.append(' ');
+        first = false;
+        writer.append(t);
+      }
     }
     writer.append('\n');
   }
@@ -45,7 +40,7 @@ class Seq2SeqConverter {
     tokenizer = new Seq2SeqTokenizer(languageTag, true);
   }
 
-  public Pair<List<String>, List<String>> run(Example ex) {
+  public List<List<String>> run(Example ex) {
     this.ex = ex;
     outputTokens.clear();
 
@@ -65,7 +60,8 @@ class Seq2SeqConverter {
       }
     }
 
-    return new Pair<>(Collections.unmodifiableList(tokenizerResult.tokens), Collections.unmodifiableList(outputTokens));
+    return Arrays.asList(Collections.unmodifiableList(tokenizerResult.tokens),
+        Collections.unmodifiableList(outputTokens), Collections.unmodifiableList(tokenizerResult.constituencyParse));
   }
 
   private void writeOutput() {

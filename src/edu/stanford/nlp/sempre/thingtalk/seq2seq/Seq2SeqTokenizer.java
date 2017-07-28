@@ -2,10 +2,18 @@ package edu.stanford.nlp.sempre.thingtalk.seq2seq;
 
 import java.util.*;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.ParserAnnotator;
 import edu.stanford.nlp.sempre.*;
 import edu.stanford.nlp.sempre.thingtalk.*;
+import edu.stanford.nlp.trees.Tree;
+import edu.stanford.nlp.trees.TreeCoreAnnotations;
+import edu.stanford.nlp.util.CoreMap;
 import fig.basic.Pair;
 
 public class Seq2SeqTokenizer {
@@ -58,109 +66,114 @@ public class Seq2SeqTokenizer {
   public static class Result {
     public final List<String> tokens = new ArrayList<>();
     public final Map<Value, List<Integer>> entities = new HashMap<>();
+    public final List<String> constituencyParse = new ArrayList<>();
   }
 
   private final boolean applyHeuristics;
   private final LocationLexicon locationLexicon;
   private final EntityLexicon entityLexicon;
+  private final ParserAnnotator constituencyParser;
 
   public Seq2SeqTokenizer(String languageTag, boolean applyHeuristics) {
     this.applyHeuristics = applyHeuristics;
 
     locationLexicon = LocationLexicon.getForLanguage(languageTag);
     entityLexicon = EntityLexicon.getForLanguage(languageTag);
+    
+    Properties parseProperties = new Properties();
+    parseProperties.put("parse.model", "edu/stanford/nlp/models/lexparser/englishPCFG.caseless.ser.gz");
+    parseProperties.put("parse.binaryTrees", "true");
+    parseProperties.put("parse.buildgraphs", "false");
+    constituencyParser = new ParserAnnotator("parse", parseProperties);
   }
 
-  public Result process(Example ex) {
-    Map<String, Integer> nextInt = new HashMap<>();
+  private void adjustNerTags(LanguageInfo utteranceInfo) {
+    // adjust the NER tag where the model fails
 
-    StringBuilder fullEntity = new StringBuilder();
-    LanguageInfo utteranceInfo = ex.languageInfo;
-    Result result = new Result();
+    for (int i = 0; i < utteranceInfo.tokens.size(); i++) {
+      String token, tag;
 
-    if (applyHeuristics) {
-      // adjust the NER tag where the model fails
+      tag = utteranceInfo.nerTags.get(i);
+      if ("O".equals(tag))
+        tag = null;
+      token = utteranceInfo.tokens.get(i);
 
-      for (int i = 0; i < utteranceInfo.tokens.size(); i++) {
-        String token, tag;
-
-        tag = utteranceInfo.nerTags.get(i);
-        if ("O".equals(tag))
-          tag = null;
-        token = utteranceInfo.tokens.get(i);
-
-        if (token.equals("san") && i < utteranceInfo.tokens.size() - 2
-            && utteranceInfo.tokens.get(i + 1).equals("jose")
-            && utteranceInfo.tokens.get(i + 2).startsWith("earthquake")) {
-          tag = "ORGANIZATION";
-          utteranceInfo.nerTags.set(i + 1, tag);
-          utteranceInfo.nerTags.set(i + 2, tag);
-        }
-        if (token.equals("nevada") && i < utteranceInfo.tokens.size() - 2
-            && utteranceInfo.tokens.get(i + 1).equals("wolf")
-            && utteranceInfo.tokens.get(i + 2).startsWith("pack")) {
-          tag = "ORGANIZATION";
-          utteranceInfo.nerTags.set(i + 1, tag);
-          utteranceInfo.nerTags.set(i + 2, tag);
-        }
-        if (token.equals("miami") && i < utteranceInfo.tokens.size() - 1
-            && utteranceInfo.tokens.get(i + 1).equals("heat")) {
-          tag = "ORGANIZATION";
-          utteranceInfo.nerTags.set(i + 1, tag);
-        }
-
-        // unsurprisingly, "wolf pack", "red hat" and "california bears" are fairly generic
-        // words on their own, and corenlp does not tag them
-        if (token.equals("wolf") && i < utteranceInfo.tokens.size() - 1
-            && utteranceInfo.tokens.get(i + 1).startsWith("pack")) {
-          tag = "ORGANIZATION";
-          utteranceInfo.nerTags.set(i + 1, tag);
-        }
-        if (token.equals("red") && i < utteranceInfo.tokens.size() - 1
-            && utteranceInfo.tokens.get(i + 1).equals("hat")) {
-          tag = "ORGANIZATION";
-          utteranceInfo.nerTags.set(i + 1, tag);
-        }
-        if (token.equals("california") && i < utteranceInfo.tokens.size() - 1
-            && utteranceInfo.tokens.get(i + 1).equals("bears")) {
-          tag = "ORGANIZATION";
-          utteranceInfo.nerTags.set(i + 1, tag);
-        }
-
-        switch (token) {
-        //case "google":
-        case "warriors":
-        case "stanford":
-        case "apple":
-        case "giants":
-        case "cavaliers":
-        case "sta":
-        case "stan":
-        case "msft":
-        case "goog":
-        case "cubs":
-        case "aapl":
-
-          // in our dataset, Barcelona refers to the team
-        case "barcellona":
-        case "barcelona":
-          tag = "ORGANIZATION";
-          break;
-
-        case "italian":
-        case "french":
-        case "spanish":
-        case "chinese":
-        case "english":
-        case "german":
-          tag = "LANGUAGE";
-          break;
-        }
-
-        if (tag != null && !utteranceInfo.nerTags.get(i).equals("QUOTED_STRING"))
-          utteranceInfo.nerTags.set(i, tag);
+      if (token.equals("san") && i < utteranceInfo.tokens.size() - 2
+          && utteranceInfo.tokens.get(i + 1).equals("jose")
+          && utteranceInfo.tokens.get(i + 2).startsWith("earthquake")) {
+        tag = "ORGANIZATION";
+        utteranceInfo.nerTags.set(i + 1, tag);
+        utteranceInfo.nerTags.set(i + 2, tag);
       }
+      if (token.equals("nevada") && i < utteranceInfo.tokens.size() - 2
+          && utteranceInfo.tokens.get(i + 1).equals("wolf")
+          && utteranceInfo.tokens.get(i + 2).startsWith("pack")) {
+        tag = "ORGANIZATION";
+        utteranceInfo.nerTags.set(i + 1, tag);
+        utteranceInfo.nerTags.set(i + 2, tag);
+      }
+      if (token.equals("miami") && i < utteranceInfo.tokens.size() - 1
+          && utteranceInfo.tokens.get(i + 1).equals("heat")) {
+        tag = "ORGANIZATION";
+        utteranceInfo.nerTags.set(i + 1, tag);
+      }
+
+      // unsurprisingly, "wolf pack", "red hat" and "california bears" are fairly generic
+      // words on their own, and corenlp does not tag them
+      if (token.equals("wolf") && i < utteranceInfo.tokens.size() - 1
+          && utteranceInfo.tokens.get(i + 1).startsWith("pack")) {
+        tag = "ORGANIZATION";
+        utteranceInfo.nerTags.set(i + 1, tag);
+      }
+      if (token.equals("red") && i < utteranceInfo.tokens.size() - 1
+          && utteranceInfo.tokens.get(i + 1).equals("hat")) {
+        tag = "ORGANIZATION";
+        utteranceInfo.nerTags.set(i + 1, tag);
+      }
+      if (token.equals("california") && i < utteranceInfo.tokens.size() - 1
+          && utteranceInfo.tokens.get(i + 1).equals("bears")) {
+        tag = "ORGANIZATION";
+        utteranceInfo.nerTags.set(i + 1, tag);
+      }
+
+      switch (token) {
+      //case "google":
+      case "warriors":
+      case "stanford":
+      case "apple":
+      case "giants":
+      case "cavaliers":
+      case "sta":
+      case "stan":
+      case "msft":
+      case "goog":
+      case "cubs":
+      case "aapl":
+
+        // in our dataset, Barcelona refers to the team
+      case "barcellona":
+      case "barcelona":
+        tag = "ORGANIZATION";
+        break;
+
+      case "italian":
+      case "french":
+      case "spanish":
+      case "chinese":
+      case "english":
+      case "german":
+        tag = "LANGUAGE";
+        break;
+      }
+
+      if (tag != null && !utteranceInfo.nerTags.get(i).equals("QUOTED_STRING"))
+        utteranceInfo.nerTags.set(i, tag);
     }
+  }
+
+  private void computeTokens(Example ex, LanguageInfo utteranceInfo, Result result) {
+    Map<String, Integer> nextInt = new HashMap<>();
+    StringBuilder fullEntity = new StringBuilder();
 
     for (int i = 0; i < utteranceInfo.tokens.size(); i++) {
       String token, tag, current;
@@ -200,8 +213,62 @@ public class Seq2SeqTokenizer {
       }
       result.tokens.add(current);
     }
+  }
+
+  public Result process(Example ex) {
+
+    LanguageInfo utteranceInfo = ex.languageInfo;
+    Result result = new Result();
+
+    if (applyHeuristics) {
+      adjustNerTags(utteranceInfo);
+    }
+
+    computeTokens(ex, utteranceInfo, result);
+    computeConstituencyParse(result);
 
     return result;
+  }
+
+  private void computeConstituencyParse(Result result) {
+    String sentencestring = Joiner.on(' ').join(result.tokens);
+    Annotation document = new Annotation(sentencestring);
+
+    List<CoreLabel> tokens = new ArrayList<>();
+    for (int i = 0; i < result.tokens.size(); i++) {
+      String token = result.tokens.get(i);
+      CoreLabel coreToken = new CoreLabel();
+      coreToken.setWord(token);
+      coreToken.setValue(token);
+      coreToken.setIndex(i);
+      coreToken.setNER(Character.isUpperCase(token.charAt(0)) ? token : "O");
+      tokens.add(coreToken);
+    }
+
+    CoreMap sentence = new Annotation(sentencestring);
+    document.set(CoreAnnotations.TokensAnnotation.class, tokens);
+    sentence.set(CoreAnnotations.TokensAnnotation.class, tokens);
+    sentence.set(CoreAnnotations.SentenceIndexAnnotation.class, 0);
+    document.set(CoreAnnotations.SentencesAnnotation.class, Collections.singletonList(sentence));
+
+    constituencyParser.annotate(document);
+
+    Tree tree = sentence.get(TreeCoreAnnotations.BinarizedTreeAnnotation.class);
+    linearizeTree(tree, result.constituencyParse);
+  }
+
+  private static void linearizeTree(Tree tree, List<String> linear) {
+    if (tree.isLeaf()) {
+      linear.add(tree.value());
+    } else if (tree.numChildren() == 1) {
+      linearizeTree(tree.getChild(0), linear);
+    } else {
+      assert tree.numChildren() == 2;
+      linear.add("(");
+      linearizeTree(tree.getChild(0), linear);
+      linearizeTree(tree.getChild(1), linear);
+      linear.add(")");
+    }
   }
 
   private LocationValue findLocation(String entity) {
