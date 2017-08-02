@@ -149,6 +149,7 @@ public class Seq2SeqTokenizer {
       case "goog":
       case "cubs":
       case "aapl":
+      case "lakers":
 
         // in our dataset, Barcelona refers to the team
       case "barcellona":
@@ -197,14 +198,18 @@ public class Seq2SeqTokenizer {
         if (value != null && "GENERIC_ENTITY_tt:device".equals(value.getFirst()))
           value = null;
         if (value != null) {
-          tag = value.getFirst();
-          int id = nextInt.compute(tag, (oldKey, oldValue) -> {
-            if (oldValue == null)
-              oldValue = -1;
-            return oldValue + 1;
-          });
-          result.entities.computeIfAbsent(new Value(tag, value.getSecond()), (key) -> new LinkedList<>()).add(id);
-          current = tag + "_" + id;
+          if (applyHeuristics && value.getSecond().equals(2.0) && token.equals("two")) {
+            current = token;
+          } else {
+            tag = value.getFirst();
+            int id = nextInt.compute(tag, (oldKey, oldValue) -> {
+              if (oldValue == null)
+                oldValue = -1;
+              return oldValue + 1;
+            });
+            result.entities.computeIfAbsent(new Value(tag, value.getSecond()), (key) -> new LinkedList<>()).add(id);
+            current = tag + "_" + id;
+          }
         } else {
           current = token;
         }
@@ -282,9 +287,13 @@ public class Seq2SeqTokenizer {
     case "usa":
     case "united states":
     case "america":
+    case "england":
 
       // how sabrina could be a location is beyond me
     case "sabrina":
+
+      // or tumblr for what matters
+    case "tumblr":
       return null;
     }
 
@@ -316,6 +325,9 @@ public class Seq2SeqTokenizer {
       if (entity.equals("cubs"))
         return new Pair<>("GENERIC_ENTITY_sportradar:mlb_team",
             new TypedStringValue("Entity(sportradar:mlb_team)", "chc", "Chicago Cubs"));
+      if (entity.equals("lakers"))
+        return new Pair<>("GENERIC_ENTITY_sportradar:nba_team",
+            new TypedStringValue("Entity(sportradar:nba_team)", "lal", "Los Angeles Lakers"));
       if (entity.equals("wolf pack") || entity.equals("nevada wolf pack"))
         return new Pair<>("GENERIC_ENTITY_sportradar:ncaafb_team",
             new TypedStringValue("Entity(sportradar:ncaafb_team)", "nev", "Nevada Wolf Pack"));

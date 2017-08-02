@@ -339,6 +339,11 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
       String token = languageInfo.tokens.get(i);
       String next = languageInfo.tokens.get(i + 1);
 
+      if (!("O".equals(languageInfo.nerTags.get(i)) ||
+          "ORGANIZATION".equals(languageInfo.nerTags.get(i)) ||
+          "LOCATION".equals(languageInfo.nerTags.get(i))))
+        continue;
+
       if (("washington".equals(token) && "post".equals(next)) ||
           ("chicago".equals(token) && "cubs".equals(next)) ||
           ("toronto".equals(token) && "fc".equals(next))) {
@@ -354,6 +359,12 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
       if ("apple".equals(token) && "post".equals(next)) {
         languageInfo.nerTags.set(i + 1, "O");
         languageInfo.nerValues.set(i + 1, null);
+      }
+
+      // topic is not an organization
+      if ("topic".equals(token)) {
+        languageInfo.nerTags.set(i, "O");
+        languageInfo.nerValues.set(i, null);
       }
     }
 
