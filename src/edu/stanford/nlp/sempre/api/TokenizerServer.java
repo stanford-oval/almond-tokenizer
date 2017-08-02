@@ -4,7 +4,9 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -48,13 +50,22 @@ public class TokenizerServer implements Runnable {
 
   public static class Output {
     @JsonProperty
-    int req;
+    final int req;
 
     @JsonProperty
-    final List<String> tokens = new ArrayList<>();
+    final List<String> tokens;
 
     @JsonProperty
     final Map<String, Map<String, Object>> values = new HashMap<>();
+
+    @JsonProperty
+    final List<String> constituencyParse;
+
+    Output(int req, Seq2SeqTokenizer.Result tokenizerResult) {
+      this.req = req;
+      this.tokens = tokenizerResult.tokens;
+      this.constituencyParse = tokenizerResult.constituencyParse;
+    }
   }
 
   private synchronized void writeOutput(Writer outputStream, Output output) {
@@ -73,15 +84,11 @@ public class TokenizerServer implements Runnable {
     LanguageAnalyzer analyzer = analyzers.get(input.languageTag);
     Seq2SeqTokenizer tokenizer = tokenizers.get(input.languageTag);
 
-    Output output = new Output();
-    output.req = input.req;
-
     Example ex = new Example.Builder().setUtterance(input.utterance).createExample();
     ex.preprocess(analyzer);
 
     Seq2SeqTokenizer.Result result = tokenizer.process(ex);
-
-    output.tokens.addAll(result.tokens);
+    Output output = new Output(input.req, result);
 
     for (Map.Entry<Seq2SeqTokenizer.Value, List<Integer>> entry : result.entities.entrySet()) {
       Seq2SeqTokenizer.Value entity = entry.getKey();
