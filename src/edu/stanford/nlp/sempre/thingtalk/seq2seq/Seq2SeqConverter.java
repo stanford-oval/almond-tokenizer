@@ -12,7 +12,9 @@ import edu.stanford.nlp.sempre.thingtalk.LocationValue;
 import edu.stanford.nlp.sempre.thingtalk.TypedStringValue;
 
 class Seq2SeqConverter {
-  public static void writeSequences(List<List<String>> sequences, Writer writer) throws IOException {
+  public static void writeSequences(int id, List<List<String>> sequences, Writer writer) throws IOException {
+    writer.append(Integer.toString(id));
+    writer.append('\t');
     boolean firstSequence = true;
     for (List<String> sequence : sequences) {
       if (!firstSequence)
@@ -91,14 +93,35 @@ class Seq2SeqConverter {
   }
 
   private void writeSpecial(Map<?, ?> special) {
+    outputTokens.add("bookkeeping");
     outputTokens.add("special");
     String id = (String) special.get("id");
     outputTokens.add(id);
   }
 
   private void writeTopInvocation(String invocationType, Map<?, ?> map) {
-    outputTokens.add(invocationType);
+    outputTokens.add("rule");
+    switch (invocationType) {
+    case "trigger":
+      break;
+    case "query":
+      outputTokens.add("tt:$builtin.now");
+      break;
+    case "action":
+      outputTokens.add("tt:$builtin.now");
+      outputTokens.add("tt:$builtin.noop");
+      break;
+    }
     writeInvocation(invocationType, map);
+    switch (invocationType) {
+    case "trigger":
+      outputTokens.add("tt:$builtin.noop");
+      outputTokens.add("tt:$builtin.notify");
+      break;
+    case "query":
+      outputTokens.add("tt:$builtin.notify");
+      break;
+    }
   }
 
   private void writeInvocation(String invocationType, Map<?, ?> invocation) {
@@ -112,7 +135,7 @@ class Seq2SeqConverter {
     for (Object o : arguments) {
       Map<?, ?> arg = (Map<?, ?>) o;
       Map<?, ?> argName = (Map<?, ?>) arg.get("name");
-      outputTokens.add(argName.get("id").toString());
+      outputTokens.add(argName.get("id").toString().replace("tt:param.", "tt-param:"));
       outputTokens.add(arg.get("operator").toString());
       writeArgument(arg);
     }
@@ -123,16 +146,23 @@ class Seq2SeqConverter {
     if (rule.containsKey("trigger")) {
       //outputTokens.add("if");
       writeInvocation("trigger", (Map<?, ?>) rule.get("trigger"));
+    } else {
+      outputTokens.add("tt:$builtin.now");
     }
     if (rule.containsKey("query")) {
       writeInvocation("query", (Map<?, ?>) rule.get("query"));
+    } else {
+      outputTokens.add("tt:$builtin.noop");
     }
     if (rule.containsKey("action")) {
       writeInvocation("action", (Map<?, ?>) rule.get("action"));
+    } else {
+      outputTokens.add("tt:$builtin.notify");
     }
   }
 
   private void writeCommand(Map<?, ?> command) {
+    outputTokens.add("bookkeeping");
     outputTokens.add("command");
     outputTokens.add((String) command.get("type"));
 
@@ -151,6 +181,7 @@ class Seq2SeqConverter {
   }
 
   private void writeAnswer(Map<?, ?> answer) {
+    outputTokens.add("bookkeeping");
     outputTokens.add("answer");
     writeArgument(answer);
   }
@@ -262,7 +293,7 @@ class Seq2SeqConverter {
       break;
 
     case "VarRef":
-      outputTokens.add(value.get("id").toString());
+      outputTokens.add(value.get("id").toString().replace("tt:param.", "tt-param:"));
       break;
 
     case "String":

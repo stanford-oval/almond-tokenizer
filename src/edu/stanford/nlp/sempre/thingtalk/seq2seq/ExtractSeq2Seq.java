@@ -60,7 +60,7 @@ public class ExtractSeq2Seq implements Runnable {
 
           ex.preprocess();
 
-          Seq2SeqConverter.writeSequences(converter.run(ex), writer);
+          Seq2SeqConverter.writeSequences(id, converter.run(ex), writer);
         }
       }
     } catch (SQLException | IOException e) {

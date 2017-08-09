@@ -55,16 +55,6 @@ do_one "$SCENARIO" scenario
 do_one "$CHEATSHEET" cheatsheet
 do_one "generated-cheatsheet" generated-cheatsheet
 
-# split dev and train
-N=$(cat ${WORKDIR}/paraphrasing-train+dev.tsv | wc -l)
-DEV_N=$((N/10))
-TRAIN_N=$((N-DEV_N))
-sort -R -t" " -k2 ${WORKDIR}/paraphrasing-train+dev.tsv > ${WORKDIR}/tmp
-head -n${TRAIN_N} ${WORKDIR}/tmp > ${WORKDIR}/paraphrasing-train.tsv
-tail -n${DEV_N} ${WORKDIR}/tmp > ${WORKDIR}/dev.tsv
-cat ${WORKDIR}/paraphrasing-train.tsv ${WORKDIR}/base-author.tsv ${WORKDIR}/generated.tsv ${WORKDIR}/generated-cheatsheet.tsv > ${WORKDIR}/train.tsv
-rm ${WORKDIR}/tmp
-
 # split scenario and cheatsheet prim and compound
 grep    "	rule" ${WORKDIR}/scenario.tsv > ${WORKDIR}/scenario-compound.tsv
 grep -v "	rule" ${WORKDIR}/scenario.tsv > ${WORKDIR}/scenario-prim.tsv
