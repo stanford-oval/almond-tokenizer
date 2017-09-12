@@ -48,12 +48,14 @@ public class SpellCheckerAnnotator implements Annotator {
     // missing brands or words that hunspell doesn't recognize
     // it's possible that hunspell would do these on its own
     HARDCODED_REPLACEMENTS.put("allmend", "almond");
+    HARDCODED_REPLACEMENTS.put("almont", "almond");
     HARDCODED_REPLACEMENTS.put("bling", "bing");
     HARDCODED_REPLACEMENTS.put("bingg", "bing");
     HARDCODED_REPLACEMENTS.put("bodytrance", "bodytrace");
     HARDCODED_REPLACEMENTS.put("bodytracescale", "bodytrace scale");
     HARDCODED_REPLACEMENTS.put("BodyTrack", "bodytrace");
     HARDCODED_REPLACEMENTS.put("gitbub", "github");
+    HARDCODED_REPLACEMENTS.put("gifi", "giphy");
     HARDCODED_REPLACEMENTS.put("hastag", "hashtag");
     HARDCODED_REPLACEMENTS.put("hastags", "hashtags");
     HARDCODED_REPLACEMENTS.put("headpad", "heatpad");
