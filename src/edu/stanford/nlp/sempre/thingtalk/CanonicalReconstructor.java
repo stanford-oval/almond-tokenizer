@@ -151,6 +151,7 @@ public class CanonicalReconstructor {
     String targetJson = ((StringValue) ex.targetValue).value;
     Map<String, Object> json = Json.readMapHard(targetJson);
 
+    try {
     if (json.containsKey("special")) {
       String special = getId(json.get("special"));
       if (special.startsWith("tt:root.special."))
@@ -179,6 +180,10 @@ public class CanonicalReconstructor {
       reconstructPrimRule((Map<?, ?>) json.get("setup"));
     } else {
       reconstructPrimRule(json);
+    }
+    } catch(Throwable e) {
+       System.err.println("Failed on " + ex.id);
+       throw e;
     }
 
     return Joiner.on(' ').join(buffer);

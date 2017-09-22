@@ -117,8 +117,6 @@ public class Aligner {
         res.model.get(tokens[0]).incrementCount(tokens[1], Double.parseDouble(tokens[2]));
       }
     } catch (RuntimeIOException e) {
-      if (!(e.getCause() instanceof FileNotFoundException))
-        throw e;
     }
     return res;
   }

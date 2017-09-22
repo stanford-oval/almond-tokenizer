@@ -6,6 +6,7 @@ import java.util.*;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 
+import edu.stanford.nlp.io.RuntimeIOException;
 import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.sempre.*;
 import edu.stanford.nlp.sempre.LanguageInfo.LanguageUtils;
@@ -490,6 +491,7 @@ public final class OvernightFeatureComputer implements FeatureComputer {
   private static Map<String, Set<String>> loadPhraseTable(File fromFile) {
     Map<String, Set<String>> res = new HashMap<>();
     int num = 0;
+    try {
     for (String line : IOUtils.readLines(fromFile)) {
       String[] tokens = line.split("\t");
       if (tokens.length != 3) throw new RuntimeException("Bad alignment line: " + line);
@@ -502,6 +504,7 @@ public final class OvernightFeatureComputer implements FeatureComputer {
         num++;
       }
     }
+    } catch(RuntimeIOException e) {}
     LogInfo.logs("Number of entries=%s", num);
     return res;
   }

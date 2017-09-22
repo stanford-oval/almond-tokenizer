@@ -31,7 +31,7 @@ public class SpellCheckerAnnotator implements Annotator {
         "repo", "yandex", "aapl", "haz", "moar", "lol", "juventus", "fitbit", "kcal", "ncaafb", "unclosed",
         "twilio", "mms", "bing", "xkcds", "kbs", "btc", "momma", "gps", "wtf", "apod", "diy", "smss",
         "preselect", "vid", "vids", "ubering", "urls", "tesla", "msft", "goog", "aapl", "phdcomic",
-        "unfollowed", "reddits", "subreddit", "repost");
+        "unfollowed", "reddits", "subreddit", "repost", "macchiato", "americano");
   }
 
   public static Options opts = new Options();
