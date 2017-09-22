@@ -45,10 +45,10 @@ ${SEMPREDIR}/scripts/run-extract-seq2seq.sh -ExtractSeq2Seq.types $1 -ExtractSeq
 }
 
 # extract the datasets
-do_one "$BASEAUTHOR_TRAIN" base-author
+#do_one "$BASEAUTHOR_TRAIN" base-author
 do_one "$PARA_TRAINDEV" paraphrasing-train+dev
-do_one "$PARA_TEST" paraphrasing-test
-do_one "$SCENARIO" scenario
-do_one "$CHEATSHEET" cheatsheet
-do_one "$GENERATED" generated
-do_one "generated-cheatsheet" generated-cheatsheet
+#do_one "$PARA_TEST" paraphrasing-test
+#do_one "$SCENARIO" scenario
+#do_one "$CHEATSHEET" cheatsheet
+#do_one "$GENERATED" generated
+#do_one "generated-cheatsheet" generated-cheatsheet

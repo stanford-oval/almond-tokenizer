@@ -366,6 +366,12 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
         languageInfo.nerTags.set(i, "O");
         languageInfo.nerValues.set(i, null);
       }
+
+      // merge locations separated by a comma (eg Palo Alto, California)
+      if (",".equals(token) && i >0 && "LOCATION".equals(languageInfo.nerTags.get(i-1))
+          && "LOCATION".equals(languageInfo.nerTags.get(i+1))) {
+        languageInfo.nerTags.set(i, "LOCATION");
+      }
     }
 
     // Run additional entity recognizers

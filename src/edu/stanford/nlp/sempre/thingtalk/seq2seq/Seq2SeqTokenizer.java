@@ -193,7 +193,6 @@ public class Seq2SeqTokenizer {
 
         Pair<String, Object> value = nerValueToThingTalkValue(ex, tag, utteranceInfo.nerValues.get(i),
             fullEntity.toString());
-        fullEntity.setLength(0);
         // ignore tt:device entities
         if (value != null && "GENERIC_ENTITY_tt:device".equals(value.getFirst()))
           value = null;
@@ -211,12 +210,15 @@ public class Seq2SeqTokenizer {
             current = tag + "_" + id;
           }
         } else {
-          current = token;
+          result.tokens.addAll(Arrays.asList(fullEntity.toString().split(" ")));
+          current = null;
         }
       } else {
         current = token;
       }
-      result.tokens.add(current);
+      fullEntity.setLength(0);
+      if (current != null)
+          result.tokens.add(current);
     }
   }
 
