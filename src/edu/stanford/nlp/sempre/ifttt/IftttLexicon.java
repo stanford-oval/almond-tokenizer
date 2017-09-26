@@ -56,10 +56,11 @@ public class IftttLexicon {
     private final List<String> argnames;
     private final List<String> argcanonicals;
     private final List<Type> argtypes;
+    private final List<Boolean> isInputArg;
     private final String search;
 
     public ChannelEntry(String rawPhrase, String kind, String name, String argnames, String argcanonicals,
-        String argtypes, String search)
+        String argtypes, String isInputArg, String search)
         throws JsonProcessingException {
       this.rawPhrase = rawPhrase;
       this.kind = kind;
@@ -72,6 +73,8 @@ public class IftttLexicon {
       this.argcanonicals = Json.readValueHard(argcanonicals, typeRef);
       this.argtypes = Json.readValueHard(argtypes, typeRef).stream().map((s) -> Type.fromString(s))
           .collect(Collectors.toList());
+      this.isInputArg = Json.readValueHard(isInputArg, typeRef).stream().map((s) -> Boolean.parseBoolean(s))
+          .collect(Collectors.toList());
     }
 
     @Override
@@ -81,7 +84,7 @@ public class IftttLexicon {
 
     @Override
     public Formula toFormula() {
-      return new ValueFormula<>(new ChannelNameValue(kind, name, argnames, argcanonicals, argtypes));
+      return new ValueFormula<>(new ChannelNameValue(kind, name, argnames, argcanonicals, argtypes, isInputArg));
     }
 
     @Override
@@ -225,7 +228,7 @@ public class IftttLexicon {
         try (ResultSet rs = stmt.executeQuery()) {
           while (rs.next())
             entries.add(new ChannelEntry(rs.getString(1), rs.getString(2), rs.getString(3),
-                "[]", "[]", "[]", key));
+                "[]", "[]", "[]", "[]", key));
         } catch (SQLException | JsonProcessingException e) {
           if (opts.verbose > 0)
             LogInfo.logs("Exception during lexicon lookup: %s", e.getMessage());

@@ -10,33 +10,39 @@ public class ChannelNameValue extends Value {
   public final String channelName;
   public final Map<String, Type> argtypes;
   public final Map<String, String> argcanonicals;
+  public final Map<String, Boolean> isInputArg;
 
   public ChannelNameValue(LispTree tree) {
     this.kind = tree.child(1).value;
     this.channelName = tree.child(2).value;
     this.argtypes = new HashMap<>();
     this.argcanonicals = new HashMap<>();
+    this.isInputArg = new HashMap<>();
 
     for (int i = 3; i < tree.children.size(); i++) {
       argtypes.put(tree.child(i).child(0).value, Type.fromString(tree.child(i).child(2).value));
       argcanonicals.put(tree.child(i).child(0).value, tree.child(i).child(1).value);
+      isInputArg.put(tree.child(i).child(0).value, Boolean.parseBoolean(tree.child(i).child(3).value));
     }
   }
 
   public ChannelNameValue(String kind, String channelName, List<String> argnames, List<String> argcanonicals,
-      List<Type> argtypes) {
+      List<Type> argtypes, List<Boolean> isInputArg) {
     this.kind = kind;
     this.channelName = channelName;
     this.argtypes = new HashMap<>();
     this.argcanonicals = new HashMap<>();
+    this.isInputArg = new HashMap<>();
 
     Iterator<String> nameit = argnames.iterator();
     Iterator<Type> typeit = argtypes.iterator();
     Iterator<String> canonicalit = argcanonicals.iterator();
-    while (typeit.hasNext() && nameit.hasNext() && canonicalit.hasNext()) {
+    Iterator<Boolean> isinputargit = isInputArg.iterator();
+    while (typeit.hasNext() && nameit.hasNext() && canonicalit.hasNext() && isinputargit.hasNext()) {
       String name = nameit.next();
       this.argtypes.put(name, typeit.next());
       this.argcanonicals.put(name, canonicalit.next());
+      this.isInputArg.put(name, isinputargit.next());
     }
   }
 
@@ -52,6 +58,10 @@ public class ChannelNameValue extends Value {
     return argcanonicals.get(name);
   }
 
+  public Boolean getIsInputArg(String name) {
+    return isInputArg.get(name);
+  }
+
   @Override
   public LispTree toLispTree() {
     LispTree tree = LispTree.proto.newList();
@@ -63,6 +73,7 @@ public class ChannelNameValue extends Value {
       child.addChild(e.getKey());
       child.addChild(argcanonicals.get(e.getKey()));
       child.addChild(e.getValue().toString());
+      child.addChild(isInputArg.get(e.getKey()).toString());
       tree.addChild(child);
     }
     return tree;

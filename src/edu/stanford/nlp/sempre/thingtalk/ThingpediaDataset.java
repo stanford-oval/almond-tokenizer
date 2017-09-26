@@ -37,7 +37,7 @@ public class ThingpediaDataset extends AbstractDataset {
 
   private final ThingpediaDatabase dataSource;
 
-  private static final String CANONICAL_QUERY = "select dscc.canonical,ds.kind,dsc.name,dsc.channel_type,dsc.argnames,dscc.argcanonicals,dsc.types from device_schema_channels dsc, device_schema ds, "
+  private static final String CANONICAL_QUERY = "select dscc.canonical,ds.kind,dsc.name,dsc.channel_type,dsc.argnames,dscc.argcanonicals,dsc.types,dsc.is_input from device_schema_channels dsc, device_schema ds, "
       + " device_schema_channel_canonicals dscc where dsc.schema_id = ds.id and dsc.version = ds.developer_version and ds.approved_version is not null and "
       + " dscc.schema_id = dsc.schema_id and dscc.version = dsc.version and dscc.name = dsc.name and language = ? "
       + " and canonical is not null and ds.kind_type <> 'global'";
@@ -73,16 +73,18 @@ public class ThingpediaDataset extends AbstractDataset {
           List<String> argcanonicals = Json.readValueHard(set.getString(6), typeRef);
           List<Type> argtypes = Json.readValueHard(set.getString(7), typeRef).stream().map((s) -> Type.fromString(s))
               .collect(Collectors.toList());
+          List<Boolean> isInputArg = Json.readValueHard(set.getString(8), typeRef).stream().map((s) -> Boolean.parseBoolean(s))
+              .collect(Collectors.toList());
           Value inner;
           switch (channelType) {
           case "action":
-            inner = ThingTalk.actParam(new ChannelNameValue(kind, name, argnames, argcanonicals, argtypes));
+            inner = ThingTalk.actParam(new ChannelNameValue(kind, name, argnames, argcanonicals, argtypes, isInputArg));
             break;
           case "trigger":
-            inner = ThingTalk.trigParam(new ChannelNameValue(kind, name, argnames, argcanonicals, argtypes));
+            inner = ThingTalk.trigParam(new ChannelNameValue(kind, name, argnames, argcanonicals, argtypes, isInputArg));
             break;
           case "query":
-            inner = ThingTalk.queryParam(new ChannelNameValue(kind, name, argnames, argcanonicals, argtypes));
+            inner = ThingTalk.queryParam(new ChannelNameValue(kind, name, argnames, argcanonicals, argtypes, isInputArg));
             break;
           default:
             throw new RuntimeException("Invalid channel type " + channelType);

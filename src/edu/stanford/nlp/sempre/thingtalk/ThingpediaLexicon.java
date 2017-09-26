@@ -38,11 +38,12 @@ public class ThingpediaLexicon {
     private final List<String> argnames;
     private final List<String> argcanonicals;
     private final List<Type> argtypes;
+    private final List<Boolean> isInputArg;
     private final String search;
     private final double weight;
 
     private Entry(String rawPhrase, String kind, String name, String argnames, String argcanonicals,
-        String argtypes, String search, double weight)
+        String argtypes, String isInputArg, String search, double weight)
         throws JsonProcessingException {
       this.rawPhrase = rawPhrase;
       this.kind = kind;
@@ -56,6 +57,8 @@ public class ThingpediaLexicon {
       this.argcanonicals = Json.readValueHard(argcanonicals, typeRef);
       this.argtypes = Json.readValueHard(argtypes, typeRef).stream().map((s) -> Type.fromString(s))
           .collect(Collectors.toList());
+      this.isInputArg = Json.readValueHard(isInputArg, typeRef).stream().map((s) -> Boolean.parseBoolean(s))
+          .collect(Collectors.toList());
     }
 
     public String getRawPhrase() {
@@ -63,7 +66,7 @@ public class ThingpediaLexicon {
     }
 
     public ChannelNameValue toValue() {
-      return new ChannelNameValue(kind, name, argnames, argcanonicals, argtypes);
+      return new ChannelNameValue(kind, name, argnames, argcanonicals, argtypes, isInputArg);
     }
 
     public Formula toFormula() {
@@ -161,7 +164,7 @@ public class ThingpediaLexicon {
       return entries.get(0);
     }
     
-    String query = "select dscc.canonical,ds.kind,dsc.name,dsc.argnames,dscc.argcanonicals,dsc.types from "
+    String query = "select dscc.canonical,ds.kind,dsc.name,dsc.argnames,dscc.argcanonicals,dsc.types,dsc.is_input from "
         + " device_schema_channels dsc, device_schema ds, device_schema_channel_canonicals dscc "
         + " where dsc.schema_id = ds.id and dsc.version = ds.developer_version and dscc.schema_id = dsc.schema_id "
         + " and dscc.version = dsc.version and dscc.name = dsc.name and dscc.language = ? and channel_type = ? and "
@@ -181,7 +184,7 @@ public class ThingpediaLexicon {
         if (!rs.next())
           throw new RuntimeException("Invalid channel " + kindAndName);
         Entry entry = new Entry(rs.getString(1), rs.getString(2), rs.getString(3),
-            rs.getString(4), rs.getString(5), rs.getString(6), null, 0);
+            rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), null, 0);
         long now = System.currentTimeMillis();
         cache.store(new LexiconKey(channel_type, kindName), Collections.singletonList(entry),
             now + CACHE_AGE);
@@ -209,7 +212,7 @@ public class ThingpediaLexicon {
     if (opts.verbose >= 3)
       LogInfo.logs("ThingpediaLexicon cacheMiss");
 
-    String query = "select dscc.canonical,ds.kind,dsc.name,dsc.argnames,dscc.argcanonicals,dsc.types,lex.token_weight from "
+    String query = "select dscc.canonical,ds.kind,dsc.name,dsc.argnames,dscc.argcanonicals,dsc.types,dsc.is_input,lex.token_weight from "
         + " device_schema_channels dsc, device_schema ds, device_schema_channel_canonicals dscc, lexicon2 lex "
         + " where dsc.schema_id = ds.id and dsc.version = ds.developer_version and dscc.schema_id = dsc.schema_id "
         + " and dscc.version = dsc.version and dscc.name = dsc.name and dscc.language = ? and channel_type = ? and "
@@ -233,7 +236,7 @@ public class ThingpediaLexicon {
       try (ResultSet rs = stmt.executeQuery()) {
         while (rs.next()) {
           Entry entry = new Entry(rs.getString(1), rs.getString(2), rs.getString(3),
-              rs.getString(4), rs.getString(5), rs.getString(6), key, rs.getDouble(7));
+              rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), key, rs.getDouble(8));
           if (maybeFilterSubset(entry))
             entries.add(entry);
         }

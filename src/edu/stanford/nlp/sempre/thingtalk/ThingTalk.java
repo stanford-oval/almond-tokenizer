@@ -195,7 +195,7 @@ public final class ThingTalk {
     ParamValue timeParam = new ParamValue(timeName, "Time", "is", time);
     TriggerValue timeTrigger = new TriggerValue(
         new ChannelNameValue("builtin", "at", Collections.singletonList("time"), Collections.singletonList("time"),
-            Collections.singletonList(Type.String)),
+            Collections.singletonList(Type.String), Collections.singletonList(true)),
         Collections.singletonList(timeParam));
 
     return new RuleValue(timeTrigger, query, action);
@@ -206,7 +206,7 @@ public final class ThingTalk {
     ParamValue timeParam = new ParamValue(timeName, "Measure", "is", time);
     TriggerValue timeTrigger = new TriggerValue(new ChannelNameValue("builtin", "timer",
         Collections.singletonList("interval"), Collections.singletonList("interval"),
-        Collections.singletonList(new Type.Measure("ms"))),
+        Collections.singletonList(new Type.Measure("ms")), Collections.singletonList(true)),
         Collections.singletonList(timeParam));
 
     return new RuleValue(timeTrigger, query, action);
