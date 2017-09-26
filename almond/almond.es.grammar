@@ -16,9 +16,11 @@
 (def @of de)
 (def @with con)
 (def @and y)
-(def @monitor_if (controla se))
+(def @ask pedir)
+(def @monitor_when (controla se))
 (def @every_day_at (todos los "días" a))
 (def @every cada)
+(def @when cuando)
 (def @if si)
 (def @then entonces)
 # FIXME

@@ -3,6 +3,7 @@ package edu.stanford.nlp.sempre.thingtalk;
 import edu.stanford.nlp.sempre.Value;
 import edu.stanford.nlp.sempre.Values;
 import fig.basic.LispTree;
+import fig.basic.LogInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,32 +13,43 @@ import java.util.Map;
  * @author Rakesh Ramesh
  */
 public final class SetupValue extends Value implements Cloneable{
+    public final TypedStringValue person; // cannot be null
+
+    // Only one of the following will be non-null
     public final RuleValue rule;
     public final TriggerValue trigger;
     public final QueryValue query;
     public final ActionValue action;
-    public final TypedStringValue person;
 
     public SetupValue(TypedStringValue person, RuleValue rule, TriggerValue trigger, QueryValue query, ActionValue action) {
         this.person = person;
+
         this.trigger = trigger;
         this.query = query;
         this.action = action;
         this.rule = rule;
+
+        if(this.person == null ||
+                (this.trigger == null && this.query == null && this.action == null && this.rule == null)) {
+            LogInfo.warning("Got invalid SetupValue");
+        }
     }
 
     public SetupValue(LispTree tree) {
         this.person = (TypedStringValue) Values.fromLispTree(tree.child(1));
+
         this.rule = (RuleValue) Values.fromLispTree(tree.child(2));
         this.trigger = (TriggerValue) Values.fromLispTree(tree.child(2));
         this.query = (QueryValue) Values.fromLispTree(tree.child(2));
         this.action = (ActionValue) Values.fromLispTree(tree.child(2));
+
+        if(this.person == null ||
+                (this.trigger == null && this.query == null && this.action == null && this.rule == null)) {
+            LogInfo.warning("Got invalid SetupValue");
+        }
     }
 
     private void addToLispTree(LispTree tree, Value val) {
-        if(val == null)
-            tree.addChild("null");
-        else
             tree.addChild(val.toLispTree());
     }
 
@@ -46,10 +58,10 @@ public final class SetupValue extends Value implements Cloneable{
         LispTree tree = LispTree.proto.newList();
         tree.addChild("setup");
         tree.addChild(this.person.toLispTree());
-        addToLispTree(tree, this.rule);
-        addToLispTree(tree, this.trigger);
-        addToLispTree(tree, this.query);
-        addToLispTree(tree, this.action);
+        if(this.rule != null) tree.addChild(this.rule.toLispTree());
+        if(this.trigger != null) tree.addChild(this.trigger.toLispTree());
+        if(this.query != null) tree.addChild(this.query.toLispTree());
+        if(this.action != null) tree.addChild(this.action.toLispTree());
         return tree;
     }
 
@@ -84,16 +96,19 @@ public final class SetupValue extends Value implements Cloneable{
                 return false;
         } else if(!rule.equals(other.rule))
             return false;
+
         if (action == null) {
             if (other.action != null)
                 return false;
         } else if (!action.equals(other.action))
             return false;
+
         if (query == null) {
             if (other.query != null)
                 return false;
         } else if (!query.equals(other.query))
             return false;
+
         if (trigger == null) {
             if (other.trigger != null)
                 return false;

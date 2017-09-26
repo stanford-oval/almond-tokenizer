@@ -9,7 +9,7 @@
 
 (def @timeRule edu.stanford.nlp.sempre.thingtalk.ThingTalk.timeRule)
 (def @timeSpanRule edu.stanford.nlp.sempre.thingtalk.ThingTalk.timeSpanRule)
-(def @ifttt edu.stanford.nlp.sempre.thingtalk.ThingTalk.ifttt)
+(def @wgd edu.stanford.nlp.sempre.thingtalk.ThingTalk.wgd)
 
 (def @setupForm edu.stanford.nlp.sempre.thingtalk.ThingTalk.setupForm)
 
@@ -57,6 +57,7 @@
 (rule $EntityValue ($TOKEN) (thingtalk.EntityLexiconFn @language_tag) (anchored 1))
 
 (rule $PersonValue (@of $UsernameValue) (SelectFn 0))
+(rule $RemotePersonValue (@ask $UsernameValue) (SelectFn 0))
 
 (rule $LocationValue ($PHRASE) (thingtalk.LocationLexiconFn @language_tag) (anchored 1))
 (rule $LocationValue (@here) (ConstantFn (location rel_current_location -1 -1) fb:type.any))
@@ -121,8 +122,8 @@ $PhoneNumberValue $EmailAddressValue $UsernameValue $UrlValue $HashtagValue))
 )
 (rule $Query ($Query $With) (thingtalk.AddEnumFn))
 
-(rule $MonitorIf @monitor_if (ConstantFn (string "")))
-(rule $Notify ($MonitorIf $Trigger) (SelectFn 1))
+(rule $MonitorWhen @monitor_when (ConstantFn (string "")))
+(rule $Notify ($MonitorWhen $Trigger) (SelectFn 1))
 
 (rule $TimeRulePrefix @every_day_at (ConstantFn (string "")))
 (rule $TimeTrigger ($TimeRulePrefix $TimeValue) (SelectFn 1))
@@ -132,14 +133,14 @@ $PhoneNumberValue $EmailAddressValue $UsernameValue $UrlValue $HashtagValue))
 (rule $TimeQueryRule  ($PeriodicTimeValue $Query)         (thingtalk.CallFn @timeSpanRule))
 (rule $TimeActionRule ($PeriodicTimeValue $Action)        (thingtalk.CallFn @timeSpanRule))
 
-(rule $TimeQueryActionRule ($TimeQueryRule @then $Action) (thingtalk.CallFn @ifttt))
+(rule $TimeQueryActionRule ($TimeQueryRule @then $Action) (thingtalk.CallFn @wgd))
 
 # use a shared category for the first part to reduce duplicate featurizations
-(rule $IfTriggerThen         (@if $Trigger @then)               (IdentityFn))
-(rule $IftttQueryRule        ($IfTriggerThen $Query)            (thingtalk.CallFn @ifttt))
-(rule $IftttActionRule       ($IfTriggerThen $Action)           (thingtalk.CallFn @ifttt))
-(rule $IftttQueryActionRule  ($IftttQueryRule @then $Action)    (thingtalk.CallFn @ifttt))
-(rule $IftttQueryActionChain ($Query @then $Action)             (thingtalk.CallFn @ifttt))
+(rule $WhenTriggerThen         (@when $Trigger @then)               (IdentityFn))
+(rule $WgdQueryRule        ($WhenTriggerThen $Query)            (thingtalk.CallFn @wgd))
+(rule $WgdActionRule       ($WhenTriggerThen $Action)           (thingtalk.CallFn @wgd))
+(rule $WgdQueryActionRule  ($WgdQueryRule @then $Action)    (thingtalk.CallFn @wgd))
+(rule $WgdQueryActionChain ($Query @then $Action)             (thingtalk.CallFn @wgd))
 
 # the following rules are very very tricky
 # they deal with "with foo that" passing of arguments from trigger to action
@@ -156,38 +157,38 @@ $PhoneNumberValue $EmailAddressValue $UsernameValue $UrlValue $HashtagValue))
 #(rule $TimeQueryActionRule   ($TimeQueryActionRule $With)   (thingtalk.AddEventFn action "$event.title" @event_title ))
 #(rule $TimeQueryActionRule   ($TimeQueryActionRule $With)   (thingtalk.AddEventFn action "$event.body" @event_body ))
 
-(rule $IftttQueryRule        ($IftttQueryRule $With)        (thingtalk.AddCompositionFn query))
-(rule $IftttQueryRule        ($IftttQueryRule $With)        (thingtalk.AddEventFn query "$event" @event ))
-#(rule $IftttQueryRule        ($IftttQueryRule $With)        (thingtalk.AddEventFn query "$event.title" @event_title ))
-#(rule $IftttQueryRule        ($IftttQueryRule $With)        (thingtalk.AddEventFn query "$event.body" @event_body ))
+(rule $WgdQueryRule        ($WgdQueryRule $With)        (thingtalk.AddCompositionFn query))
+(rule $WgdQueryRule        ($WgdQueryRule $With)        (thingtalk.AddEventFn query "$event" @event ))
+#(rule $WgdQueryRule        ($WgdQueryRule $With)        (thingtalk.AddEventFn query "$event.title" @event_title ))
+#(rule $WgdQueryRule        ($WgdQueryRule $With)        (thingtalk.AddEventFn query "$event.body" @event_body ))
 
-(rule $IftttActionRule       ($IftttActionRule $With)       (thingtalk.AddCompositionFn action))
-(rule $IftttActionRule       ($IftttActionRule $With)       (thingtalk.AddEventFn action "$event" @event ))
-#(rule $IftttActionRule       ($IftttActionRule $With)       (thingtalk.AddEventFn action "$event.title" @event_title ))
-#(rule $IftttActionRule       ($IftttActionRule $With)       (thingtalk.AddEventFn action "$event.body" @event_body ))
+(rule $WgdActionRule       ($WgdActionRule $With)       (thingtalk.AddCompositionFn action))
+(rule $WgdActionRule       ($WgdActionRule $With)       (thingtalk.AddEventFn action "$event" @event ))
+#(rule $WgdActionRule       ($WgdActionRule $With)       (thingtalk.AddEventFn action "$event.title" @event_title ))
+#(rule $WgdActionRule       ($WgdActionRule $With)       (thingtalk.AddEventFn action "$event.body" @event_body ))
 
-(rule $IftttQueryActionRule  ($IftttQueryActionRule $With)  (thingtalk.AddCompositionFn action))
-(rule $IftttQueryActionRule  ($IftttQueryActionRule $With)  (thingtalk.AddEventFn action "$event" @event ))
-#(rule $IftttQueryActionRule  ($IftttQueryActionRule $With)  (thingtalk.AddEventFn action "$event.title" @event_title ))
-#(rule $IftttQueryActionRule  ($IftttQueryActionRule $With)  (thingtalk.AddEventFn action "$event.body" @event_body ))
+(rule $WgdQueryActionRule  ($WgdQueryActionRule $With)  (thingtalk.AddCompositionFn action))
+(rule $WgdQueryActionRule  ($WgdQueryActionRule $With)  (thingtalk.AddEventFn action "$event" @event ))
+#(rule $WgdQueryActionRule  ($WgdQueryActionRule $With)  (thingtalk.AddEventFn action "$event.title" @event_title ))
+#(rule $WgdQueryActionRule  ($WgdQueryActionRule $With)  (thingtalk.AddEventFn action "$event.body" @event_body ))
 
-(rule $IftttQueryActionChain ($IftttQueryActionChain $With) (thingtalk.AddCompositionFn action))
-(rule $IftttQueryActionChain ($IftttQueryActionChain $With) (thingtalk.AddEventFn action "$event" @event ))
-#(rule $IftttQueryActionChain ($IftttQueryActionChain $With) (thingtalk.AddEventFn action "$event.title" @event_title ))
-#(rule $IftttQueryActionChain ($IftttQueryActionChain $With) (thingtalk.AddEventFn action "$event.body" @event_body ))
+(rule $WgdQueryActionChain ($WgdQueryActionChain $With) (thingtalk.AddCompositionFn action))
+(rule $WgdQueryActionChain ($WgdQueryActionChain $With) (thingtalk.AddEventFn action "$event" @event ))
+#(rule $WgdQueryActionChain ($WgdQueryActionChain $With) (thingtalk.AddEventFn action "$event.title" @event_title ))
+#(rule $WgdQueryActionChain ($WgdQueryActionChain $With) (thingtalk.AddEventFn action "$event.body" @event_body ))
 
 (def @primitive_types ($Action $Notify $Query))
-(def @compound_types ($TimeQueryRule $TimeActionRule $TimeQueryActionRule $IftttActionRule $IftttQueryRule
-                  $IftttQueryActionRule $IftttQueryActionChain))
+(def @compound_types ($TimeQueryRule $TimeActionRule $TimeQueryActionRule $WgdActionRule $WgdQueryRule
+                  $WgdQueryActionRule $WgdQueryActionChain))
 
 # Sending rules to a different person
-#(for @v @compound_types
-#    (rule $SetupRule (tell $UsernameValue @v) (lambda person (lambda rule (call @setupForm (var person) (var rule)))))
-#)
+(for @v @compound_types
+    (rule $SetupRule ($RemotePersonValue @v) (lambda person (lambda rule (call @setupForm (var person) (var rule)))))
+)
 
-#(for @v @primitive_types
-#    (rule $SetupRule (tell $UsernameValue @v) (lambda person (lambda prim (call @setupForm (var person) (var prim)))))
-#)
+(for @v @primitive_types
+    (rule $SetupRule ($RemotePersonValue @v) (lambda person (lambda prim (call @setupForm (var person) (var prim)))))
+)
 
 # Command handling
 (rule $Device ($EntityValue) (thingtalk.FilterDeviceEntityType) (anchored 1))
@@ -227,7 +228,7 @@ $PhoneNumberValue $EmailAddressValue $UsernameValue $UrlValue $HashtagValue))
 	(rule $ROOT (@v) (lambda cmd (call @jsonOut (var cmd))))
 )
 
-#(rule $ROOT ($SetupRule) (lambda cmd (call @jsonOut (var cmd))))
+(rule $ROOT ($SetupRule) (lambda cmd (call @jsonOut (var cmd))))
 
 (when includebookkeeping
   (rule $ROOT ($Special) (lambda spl (call @special (var spl))))

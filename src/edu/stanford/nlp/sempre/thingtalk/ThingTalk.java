@@ -212,22 +212,22 @@ public final class ThingTalk {
     return new RuleValue(timeTrigger, query, action);
   }
 
-  public static RuleValue ifttt(TriggerValue trigger, ActionValue action) {
+  public static RuleValue wgd(TriggerValue trigger, ActionValue action) {
     RuleValue ruleVal = new RuleValue(trigger, null, action);
     return ruleVal;
   }
 
-  public static RuleValue ifttt(TriggerValue trigger, QueryValue query) {
+  public static RuleValue wgd(TriggerValue trigger, QueryValue query) {
     RuleValue ruleVal = new RuleValue(trigger, query, null);
     return ruleVal;
   }
 
-  public static RuleValue ifttt(RuleValue rule, ActionValue action) {
+  public static RuleValue wgd(RuleValue rule, ActionValue action) {
     RuleValue ruleVal = new RuleValue(rule.trigger, rule.query, action);
     return ruleVal;
   }
 
-  public static RuleValue ifttt(QueryValue query, ActionValue action) {
+  public static RuleValue wgd(QueryValue query, ActionValue action) {
     RuleValue ruleVal = new RuleValue(null, query, action);
     return ruleVal;
   }
