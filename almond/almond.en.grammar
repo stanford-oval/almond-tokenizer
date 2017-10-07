@@ -8,10 +8,13 @@
 (def @at_work (at work))
 (def @at_home (at home))
 
-(def @containing containing)
+(def @contains contains)
 (def @having having)
 (def @greater_than (greater than))
 (def @less_than (less than))
+(def @equals equals)
+(def @starts_with (starts with))
+(def @ends_with (ends with))
 
 (def @of of)
 (def @with with)

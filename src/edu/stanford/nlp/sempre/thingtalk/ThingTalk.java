@@ -75,7 +75,7 @@ public final class ThingTalk {
   public static ParametricValue addParam(ParametricValue oldInvocation, ParamNameValue paramName, StringValue operator,
       Value value) {
     ParametricValue newInvocation = oldInvocation.clone();
-    newInvocation.add(paramForm(paramName, operator, value));
+    newInvocation.addParam(paramForm(paramName, operator, value));
     return newInvocation;
   }
 

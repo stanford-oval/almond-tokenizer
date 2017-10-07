@@ -8,10 +8,14 @@
 (def @at_work (al lavoro))
 (def @at_home (a casa))
 
-(def @containing contenente)
+# FIXME
+(def @contains contenente)
 (def @having avente)
 (def @greater_than (maggiore di))
 (def @less_than (minore di))
+(def @equals equals)
+(def @starts_with (starts with))
+(def @ends_with (ends with))
 
 (def @of di)
 (def @with con)

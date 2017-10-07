@@ -96,9 +96,9 @@ public class AddEventFn extends SemanticFn {
             new NameValue("tt:param." + eventVar));
 
         if (applyToAction)
-          clone.action.add(nextPv);
+          clone.action.addParam(nextPv);
         else
-          clone.query.add(nextPv);
+          clone.query.addParam(nextPv);
 
         Derivation deriv = new Derivation.Builder().withCallable(callable).formula(new ValueFormula<>(clone))
             .type(SemType.entityType)

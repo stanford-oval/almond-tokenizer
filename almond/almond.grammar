@@ -94,33 +94,53 @@ $PhoneNumberValue $EmailAddressValue $UsernameValue $UrlValue $HashtagValue))
 (rule $Action ($ActionName) (lambda act (call @actParam (var act))))
 (rule $Action ($ActionName $PersonValue) (lambda act (lambda person (call @actParam (var person) (var act)))))
 (for @v @all_values
-	(rule $Action ($Action @v) (thingtalk.AddValueFn action @with "" is))
+	(rule $Action ($Action @v) (thingtalk.AddParamValueFn @with))
 )
-(rule $Action ($Action $With) (thingtalk.AddEnumFn))
+(rule $Action ($Action $With) (thingtalk.AddParamEnumFn))
 
 (rule $TriggerName ($TOKEN) (thingtalk.ThingpediaLexiconFn @language_tag trigger))
 (rule $Trigger ($TriggerName) (lambda trig (call @trigParam (var trig))))
 (rule $Trigger ($TriggerName $PersonValue) (lambda trig (lambda person (call @trigParam (var person) (var trig)))))
 (for @v @all_values
-	(rule $Trigger ($Trigger @v) (thingtalk.AddValueFn trigger @with "" is))
-	(rule $Trigger ($Trigger @v) (thingtalk.AddValueFn trigger @with @containing contains))
-	(rule $Trigger ($Trigger @v) (thingtalk.AddValueFn trigger @with @greater_than >))
-	(rule $Trigger ($Trigger @v) (thingtalk.AddValueFn trigger @with @less_than <))
-	(rule $Trigger ($Trigger @v) (thingtalk.AddValueFn trigger @with @having has))
+	(rule $Trigger ($Trigger @v) (thingtalk.AddParamValueFn @with))
 )
-(rule $Trigger ($Trigger $With) (thingtalk.AddEnumFn))
+(rule $Trigger ($Trigger $With) (thingtalk.AddParamEnumFn))
+
+(for @logicOp (or and)
+    (for @v @all_values
+        (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @equals =))
+        (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @greater_than >))
+        (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @less_than <))
+
+        (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @contains contains))
+        (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @starts_with starts))
+        (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @ends_with ends))
+
+        (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @having has))
+    )
+)
 
 (rule $QueryName ($TOKEN) (thingtalk.ThingpediaLexiconFn @language_tag query))
 (rule $Query ($QueryName) (lambda query (call @queryParam (var query))))
 (rule $Query ($QueryName $PersonValue) (lambda query (lambda person (call @queryParam (var person) (var query)))))
 (for @v @all_values
-	(rule $Query ($Query @v) (thingtalk.AddValueFn query @with "" is))
-	(rule $Query ($Query @v) (thingtalk.AddValueFn query @with @containing contains))
-	(rule $Query ($Query @v) (thingtalk.AddValueFn query @with @greater_than >))
-	(rule $Query ($Query @v) (thingtalk.AddValueFn query @with @less_than <))
-	(rule $Query ($Query @v) (thingtalk.AddValueFn query @with @having has))
+	(rule $Query ($Query @v) (thingtalk.AddParamValueFn @with))
 )
-(rule $Query ($Query $With) (thingtalk.AddEnumFn))
+(rule $Query ($Query $With) (thingtalk.AddParamEnumFn))
+
+(for @logicOp (or and)
+    (for @v @all_values
+        (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @equals =))
+        (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @greater_than >))
+        (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @less_than <))
+
+        (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @contains contains))
+        (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @starts_with starts))
+        (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @ends_with ends))
+
+        (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @having has))
+    )
+)
 
 (rule $MonitorWhen @monitor_when (ConstantFn (string "")))
 (rule $Notify ($MonitorWhen $Trigger) (SelectFn 1))

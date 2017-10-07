@@ -135,9 +135,9 @@ public class AddCompositionFn extends SemanticFn {
             new NameValue("tt:param." + candidateTriggerArg));
 
         if (applyToAction)
-          clone.action.add(nextPv);
+          clone.action.addParam(nextPv);
         else
-          clone.query.add(nextPv);
+          clone.query.addParam(nextPv);
 
         Derivation deriv = new Derivation.Builder().withCallable(callable).formula(new ValueFormula<>(clone))
             .type(SemType.entityType)

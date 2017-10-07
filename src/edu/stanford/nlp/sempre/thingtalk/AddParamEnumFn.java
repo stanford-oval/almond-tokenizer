@@ -5,7 +5,7 @@ import java.util.Iterator;
 import edu.stanford.nlp.sempre.*;
 import fig.basic.LispTree;
 
-public class AddEnumFn extends SemanticFn {
+public class AddParamEnumFn extends SemanticFn {
   @Override
   public void init(LispTree tree) {
     super.init(tree);
@@ -68,7 +68,7 @@ public class AddEnumFn extends SemanticFn {
         ParamValue pv = new ParamValue(param, "Enum", "is", toAdd);
 
         ParametricValue newInvocation = invocation.clone();
-        newInvocation.add(pv);
+        newInvocation.addParam(pv);
 
         String canonical = left.canonicalUtterance + " " + right.canonicalUtterance + " "
             + invocation.name.getArgCanonical(currentArgname) + " "
