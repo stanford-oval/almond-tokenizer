@@ -9,8 +9,12 @@ import fig.basic.LispTree;
 
 public class AddPredicateFn extends SemanticFn {
     private boolean isAction;
+
     private String logicOp;
+    private String negationOp;
+
     private String ifToken;
+
     private String opToken;
     private String operator;
 
@@ -18,7 +22,15 @@ public class AddPredicateFn extends SemanticFn {
     public void init(LispTree tree) {
         super.init(tree);
         isAction = tree.child(1).value.equals("action");
-        logicOp = tree.child(2).value;
+
+        if(tree.child(2).isLeaf()) {
+            logicOp = tree.child(2).value;
+            negationOp = "";
+        } else {
+            logicOp = tree.child(2).child(0).value;
+            negationOp = tree.child(2).child(1).value;
+        }
+
         ifToken = tree.child(3).value;
 
         if (tree.child(4).isLeaf())
@@ -117,21 +129,20 @@ public class AddPredicateFn extends SemanticFn {
                         !ArgFilterHelpers.typeOkArray(haveType, param.type, toAdd))
                     continue;
 
-                ParamValue pv = new ParamValue(param, sempreType, operator, toAdd);
+                ParamValue pv = new ParamValue(param, sempreType, operator, toAdd, !negationOp.equals(""));
 
                 ParametricValue newInvocation = invocation.clone();
                 newInvocation.addPredicate(pv, logicOp.equals("and"));
 
-                String logicOpToken = logicOp + " ";
-                if(invocation.isEmptyPredicate())
-                    logicOpToken = "";
+                String logicOpToken = invocation.isEmptyPredicate() ? "" : (logicOp + " ");
+                String negationOpToken = negationOp.equals("") ? "" : (negationOp + " ");
 
                 String canonical = left.canonicalUtterance + " " + logicOpToken +
                         ifToken + " " + invocation.name.getArgCanonical(currentArgname) + " " +
-                        opToken + " " + right.canonicalUtterance;
+                        negationOpToken + opToken + " " + right.canonicalUtterance;
                 String nerCanonical = left.nerUtterance + " " + logicOpToken +
                         ifToken + " " + invocation.name.getArgCanonical(currentArgname) + " " +
-                        opToken + " " + right.nerUtterance;
+                        negationOpToken + opToken + " " + right.nerUtterance;
 
                 Derivation.Builder bld = new Derivation.Builder()
                         .withCallable(callable)

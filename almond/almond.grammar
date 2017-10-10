@@ -106,7 +106,7 @@ $PhoneNumberValue $EmailAddressValue $UsernameValue $UrlValue $HashtagValue))
 )
 (rule $Trigger ($Trigger $With) (thingtalk.AddParamEnumFn))
 
-(for @logicOp (or and)
+(for @logicOp (or and (or not) (and not))
     (for @v @all_values
         (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @equals =))
         (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @greater_than >))
@@ -128,7 +128,7 @@ $PhoneNumberValue $EmailAddressValue $UsernameValue $UrlValue $HashtagValue))
 )
 (rule $Query ($Query $With) (thingtalk.AddParamEnumFn))
 
-(for @logicOp (or and)
+(for @logicOp (or and (or not) (and not))
     (for @v @all_values
         (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @equals =))
         (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @greater_than >))
