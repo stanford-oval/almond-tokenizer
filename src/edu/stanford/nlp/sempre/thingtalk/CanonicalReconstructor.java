@@ -70,8 +70,10 @@ public class CanonicalReconstructor {
       } else {
         if (id.startsWith("tt:param."))
           id = id.substring("tt:param.".length());
-        assert scope.containsKey(id);
-        buffer.add(scope.get(id));
+        if (scope.containsKey(id))
+          buffer.add(scope.get(id));
+        else
+          buffer.add(clean(id));  
       }
       return;
     }
@@ -199,6 +201,9 @@ public class CanonicalReconstructor {
   private void invocationToCanonical(Map<?, ?> invocation, ThingpediaLexicon.Entry invocationMeta,
       Map<String, String> scope) {
     List<?> args = (List<?>) invocation.get("args");
+    List<?> predicate = (List<?>) invocation.get("predicate");
+    if (predicate == null)
+      predicate = Collections.emptyList();
     
     ChannelNameValue channel = invocationMeta.toValue();
     buffer.add(invocationMeta.getRawPhrase());
@@ -218,27 +223,68 @@ public class CanonicalReconstructor {
       String argcanonical = channel.getArgCanonical(argname);
       assert argcanonical != null;
       buffer.add(argcanonical);
-
-      switch ((String) arg.get("operator")) {
-      case "is":
-        break;
-      case "<":
-        buffer.add(getToken("less_than"));
-        break;
-      case ">":
-        buffer.add(getToken("greater_than"));
-        break;
-      case "contains":
-        buffer.add(getToken("containing"));
-        break;
-      case "has":
-        buffer.add(getToken("having"));
-        break;
-      default:
-        throw new RuntimeException("Invalid operator " + arg.get("operator"));
-      }
-
       argToCanonical(arg, scope);
+    }
+    
+    boolean firstAnd = true;
+
+    for (Object o : predicate) {
+      if (firstAnd)
+        buffer.add(getToken("if"));
+      else
+        buffer.add("and");
+      firstAnd = false;
+
+      List<?> orPredicate = (List<?>) o;
+
+      boolean firstOr = true;
+
+      for (Object o2 : orPredicate) {
+        Map<?, ?> filter = (Map<?, ?>) o2;
+
+        if (!firstOr)
+          buffer.add("or");
+        firstOr = false;
+
+        if (filter.get("negated") != null && (Boolean) filter.get("negated"))
+          buffer.add("not");
+
+        String argname = getId(filter.get("name"));
+        if (argname.startsWith("tt:param."))
+          argname = argname.substring("tt:param.".length());
+        String argcanonical = channel.getArgCanonical(argname);
+        assert argcanonical != null;
+        buffer.add(argcanonical);
+
+        switch ((String) filter.get("operator")) {
+        case "=":
+        case "is":
+          buffer.add(getToken("equals"));
+          break;
+        case "<":
+          buffer.add(getToken("less_than"));
+          break;
+        case ">":
+          buffer.add(getToken("greater_than"));
+          break;
+        case "contains":
+          buffer.add(getToken("contains"));
+          break;
+        case "has":
+          buffer.add(getToken("having"));
+          break;
+        case "starts":
+          buffer.add(getToken("starts_with"));
+          break;
+        case "ends":
+          buffer.add(getToken("ends_with"));
+          break;
+        default:
+          throw new RuntimeException("Invalid operator " + filter.get("operator"));
+        }
+
+        argToCanonical(filter, scope);
+      }
     }
 
     for (String argname : channel.getArgNames())
@@ -298,7 +344,7 @@ public class CanonicalReconstructor {
     } else if (query != null) {
       invocationToCanonical(query, queryMeta, scope);
     } else if (trigger != null) {
-      buffer.add(getToken("monitor_if"));
+      buffer.add(getToken("monitor_when"));
       invocationToCanonical(trigger, triggerMeta, scope);
     }
   }
