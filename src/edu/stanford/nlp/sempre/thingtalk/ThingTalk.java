@@ -194,7 +194,7 @@ public final class ThingTalk {
     ParamNameValue timeName = new ParamNameValue("time", Type.String);
     ParamValue timeParam = new ParamValue(timeName, "Time", "is", time);
     TriggerValue timeTrigger = new TriggerValue(
-        new ChannelNameValue("builtin", "at", Collections.singletonList("time"), Collections.singletonList("time"),
+        new ChannelNameValue("org.thingpedia.builtin.thingengine.builtin", "at", Collections.singletonList("time"), Collections.singletonList("time"),
             Collections.singletonList(Type.String), Collections.singletonList(true)),
         Collections.singletonList(timeParam));
 
