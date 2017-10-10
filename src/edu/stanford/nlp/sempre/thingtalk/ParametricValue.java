@@ -33,12 +33,12 @@ public abstract class ParametricValue extends Value implements Cloneable {
 
     LispTree predTree = tree.child(index+2);
     this.predicate = new ArrayList<>();
-    this.predicate.add(new ArrayList<>());
     for(int i=1; i < predTree.children.size(); i++) {
-      for(int j=0; j < predTree.child(i).children.size(); j++) {
-        this.predicate.get(i-1).add((ParamValue) Values.fromLispTree(predTree.child(i).child(j)));
-      }
       this.predicate.add(new ArrayList<>());
+      LispTree orPredTree = predTree.child(i);
+      for(int j=0; j < orPredTree.children.size(); j++) {
+        this.predicate.get(i-1).add((ParamValue) Values.fromLispTree(orPredTree.child(j)));
+      }
     }
   }
 
@@ -50,7 +50,6 @@ public abstract class ParametricValue extends Value implements Cloneable {
     this.params.addAll(params);
 
     this.predicate = new ArrayList<>();
-    this.predicate.add(new ArrayList<>());
   }
 
   public ParametricValue(TypedStringValue person, ChannelNameValue name) {
@@ -60,8 +59,6 @@ public abstract class ParametricValue extends Value implements Cloneable {
     this.params = new ArrayList<>();
 
     this.predicate = new ArrayList<>();
-    this.predicate.add(new ArrayList<>());
-
   }
 
   public ParametricValue(ChannelNameValue name) {
@@ -71,7 +68,6 @@ public abstract class ParametricValue extends Value implements Cloneable {
     this.params = new ArrayList<>();
 
     this.predicate = new ArrayList<>();
-    this.predicate.add(new ArrayList<>());
   }
 
   protected abstract String getLabel();
@@ -83,13 +79,11 @@ public abstract class ParametricValue extends Value implements Cloneable {
 
   public void addPredicate(ParamValue condition, boolean isNewConjunction) {
     assert (predicate != null) : condition;
-    assert (predicate.size() > 0) : condition;
     if(isNewConjunction) {
       predicate.add(new ArrayList<>());
     }
-//    if(predicate.size() == 0) {
-//      predicate.add(new ArrayList<>());
-//    }
+
+    assert (predicate.size() > 0) : condition;
     predicate.get(predicate.size()-1).add(condition);
   }
 
@@ -100,6 +94,10 @@ public abstract class ParametricValue extends Value implements Cloneable {
     }
 
     return false;
+  }
+
+  public boolean isEmptyPredicate() {
+    return (predicate.size() == 0);
   }
 
   @Override

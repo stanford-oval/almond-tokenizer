@@ -104,6 +104,9 @@ public class AddPredicateFn extends SemanticFn {
                 if (!operatorOk(param.type, operator))
                     continue;
 
+                if(logicOp.equals("or") && invocation.isEmptyPredicate())
+                    continue;
+
                 Derivation left = callable.child(0);
                 Derivation right = callable.child(1);
                 Value toAdd = right.value;
@@ -119,10 +122,14 @@ public class AddPredicateFn extends SemanticFn {
                 ParametricValue newInvocation = invocation.clone();
                 newInvocation.addPredicate(pv, logicOp.equals("and"));
 
-                String canonical = left.canonicalUtterance + " " + logicOp + " " +
+                String logicOpToken = logicOp + " ";
+                if(invocation.isEmptyPredicate())
+                    logicOpToken = "";
+
+                String canonical = left.canonicalUtterance + " " + logicOpToken +
                         ifToken + " " + invocation.name.getArgCanonical(currentArgname) + " " +
                         opToken + " " + right.canonicalUtterance;
-                String nerCanonical = left.nerUtterance + " " + logicOp + " " +
+                String nerCanonical = left.nerUtterance + " " + logicOpToken +
                         ifToken + " " + invocation.name.getArgCanonical(currentArgname) + " " +
                         opToken + " " + right.nerUtterance;
 
