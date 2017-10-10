@@ -136,8 +136,39 @@ class Seq2SeqConverter {
       Map<?, ?> arg = (Map<?, ?>) o;
       Map<?, ?> argName = (Map<?, ?>) arg.get("name");
       outputTokens.add(argName.get("id").toString().replace("tt:param.", "tt-param:"));
-      outputTokens.add(arg.get("operator").toString());
+      //outputTokens.add(arg.get("operator").toString());
       writeArgument(arg);
+    }
+    
+    List<?> predicate = (List<?>) invocation.get("predicate");
+    if (predicate == null)
+      predicate = Collections.emptyList();
+    
+    boolean firstAnd = true;
+
+    for (Object o : predicate) {
+      if (firstAnd)
+        outputTokens.add("if");
+      else
+        outputTokens.add("and");
+      firstAnd = false;
+
+      List<?> orPredicate = (List<?>) o;
+
+      boolean firstOr = true;
+
+      for (Object o2 : orPredicate) {
+        Map<?, ?> filter = (Map<?, ?>) o2;
+
+        if (!firstOr)
+          outputTokens.add("or");
+        firstOr = false;
+
+        Map<?, ?> argName = (Map<?, ?>) filter.get("name");
+        outputTokens.add(argName.get("id").toString().replace("tt:param.", "tt-param:"));
+        outputTokens.add(filter.get("operator").toString());
+        writeArgument(filter);
+      }
     }
   }
 
