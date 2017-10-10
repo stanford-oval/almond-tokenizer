@@ -155,26 +155,24 @@ public abstract class ParametricValue extends Value implements Cloneable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
     ParametricValue that = (ParametricValue) o;
-    // FIXME: Sloppy equals for the lists needs to be corrected with set notation & logical notation
-    if (!name.equals(that.name)
-            || !params.equals(that.params)
-            || (person != null && that.person != null && !person.equals(that.person))
-            || !predicate.equals(that.predicate)
-        )
-      return false;
-    return true;
+
+    if (person != null ? !person.equals(that.person) : that.person != null) return false;
+    if (!name.equals(that.name)) return false;
+    if (!params.equals(that.params)) return false;
+    return predicate.equals(that.predicate);
   }
 
   @Override
   public int hashCode() {
-    int hashCode = name.hashCode() ^ params.hashCode() ^ predicate.hashCode();
-    if(this.person != null) hashCode = hashCode ^ person.hashCode();
-    return hashCode;
+    int result = person != null ? person.hashCode() : 0;
+    result = 31 * result + name.hashCode();
+    result = 31 * result + params.hashCode();
+    result = 31 * result + predicate.hashCode();
+    return result;
   }
 
   @Override

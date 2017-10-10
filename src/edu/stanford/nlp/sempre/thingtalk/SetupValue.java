@@ -82,51 +82,25 @@ public final class SetupValue extends Value implements Cloneable{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        SetupValue other = (SetupValue) o;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        if(!person.equals(other.person))
-            return false;
+        SetupValue that = (SetupValue) o;
 
-        if(rule == null) {
-            if(other.rule != null)
-                return false;
-        } else if(!rule.equals(other.rule))
-            return false;
-
-        if (action == null) {
-            if (other.action != null)
-                return false;
-        } else if (!action.equals(other.action))
-            return false;
-
-        if (query == null) {
-            if (other.query != null)
-                return false;
-        } else if (!query.equals(other.query))
-            return false;
-
-        if (trigger == null) {
-            if (other.trigger != null)
-                return false;
-        } else if (!trigger.equals(other.trigger))
-            return false;
-
-        return true;
+        if (!person.equals(that.person)) return false;
+        if (rule != null ? !rule.equals(that.rule) : that.rule != null) return false;
+        if (trigger != null ? !trigger.equals(that.trigger) : that.trigger != null) return false;
+        if (query != null ? !query.equals(that.query) : that.query != null) return false;
+        return action != null ? action.equals(that.action) : that.action == null;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + person.hashCode();
-        result = prime * result + ((rule == null) ? 0 : rule.hashCode());
-        result = prime * result + ((action == null) ? 0 : action.hashCode());
-        result = prime * result + ((query == null) ? 0 : query.hashCode());
-        result = prime * result + ((trigger == null) ? 0 : trigger.hashCode());
+        int result = person.hashCode();
+        result = 31 * result + (rule != null ? rule.hashCode() : 0);
+        result = 31 * result + (trigger != null ? trigger.hashCode() : 0);
+        result = 31 * result + (query != null ? query.hashCode() : 0);
+        result = 31 * result + (action != null ? action.hashCode() : 0);
         return result;
     }
 

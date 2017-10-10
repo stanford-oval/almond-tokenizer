@@ -40,15 +40,21 @@ public class CommandValue extends Value {
         return json;
     }
 
-    @Override public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
         CommandValue that = (CommandValue) o;
-        if(this.type != that.type || !value.equals(that.value)) return false;
-        return true;
+
+        if (!type.equals(that.type)) return false;
+        return value.equals(that.value);
     }
 
-    @Override public int hashCode() {
-        return (type.hashCode() ^ value.hashCode());
+    @Override
+    public int hashCode() {
+        int result = type.hashCode();
+        result = 31 * result + value.hashCode();
+        return result;
     }
 }
