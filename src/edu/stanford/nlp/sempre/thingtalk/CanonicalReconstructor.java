@@ -273,10 +273,10 @@ public class CanonicalReconstructor {
         case "has":
           buffer.add(getToken("having"));
           break;
-        case "starts":
+        case "starts_with":
           buffer.add(getToken("starts_with"));
           break;
-        case "ends":
+        case "ends_with":
           buffer.add(getToken("ends_with"));
           break;
         default:

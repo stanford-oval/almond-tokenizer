@@ -113,8 +113,8 @@ $PhoneNumberValue $EmailAddressValue $UsernameValue $UrlValue $HashtagValue))
         (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @less_than <))
 
         (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @contains contains))
-        (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @starts_with starts))
-        (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @ends_with ends))
+        (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @starts_with starts_with))
+        (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @ends_with ends_with))
 
         (rule $Trigger ($Trigger @v) (thingtalk.AddPredicateFn trigger @logicOp @if @having has))
     )
@@ -135,8 +135,8 @@ $PhoneNumberValue $EmailAddressValue $UsernameValue $UrlValue $HashtagValue))
         (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @less_than <))
 
         (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @contains contains))
-        (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @starts_with starts))
-        (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @ends_with ends))
+        (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @starts_with starts_with))
+        (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @ends_with ends_with))
 
         (rule $Query ($Query @v) (thingtalk.AddPredicateFn query @logicOp @if @having has))
     )
