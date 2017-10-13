@@ -31,7 +31,7 @@ public class SpellCheckerAnnotator implements Annotator {
         "repo", "yandex", "aapl", "haz", "moar", "lol", "juventus", "fitbit", "kcal", "ncaafb", "unclosed",
         "twilio", "mms", "bing", "xkcds", "kbs", "btc", "momma", "gps", "wtf", "apod", "diy", "smss",
         "preselect", "vid", "vids", "ubering", "urls", "tesla", "msft", "goog", "aapl", "phdcomic",
-        "unfollowed", "reddits", "subreddit", "repost", "macchiato", "americano");
+        "unfollowed", "reddits", "subreddit", "repost", "macchiato", "americano", "bpm", "tumblrs", "repos");
   }
 
   public static Options opts = new Options();
@@ -54,13 +54,17 @@ public class SpellCheckerAnnotator implements Annotator {
     HARDCODED_REPLACEMENTS.put("bodytrance", "bodytrace");
     HARDCODED_REPLACEMENTS.put("bodytracescale", "bodytrace scale");
     HARDCODED_REPLACEMENTS.put("BodyTrack", "bodytrace");
+    HARDCODED_REPLACEMENTS.put("d.m", "dm");
+    HARDCODED_REPLACEMENTS.put("dropbow", "dropbox");
     HARDCODED_REPLACEMENTS.put("gitbub", "github");
+    HARDCODED_REPLACEMENTS.put("gifthub", "github");
     HARDCODED_REPLACEMENTS.put("gifi", "giphy");
     HARDCODED_REPLACEMENTS.put("hastag", "hashtag");
     HARDCODED_REPLACEMENTS.put("hastags", "hashtags");
     HARDCODED_REPLACEMENTS.put("headpad", "heatpad");
     HARDCODED_REPLACEMENTS.put("heapad", "heatpad");
     HARDCODED_REPLACEMENTS.put("Heatpade", "heatpad");
+    HARDCODED_REPLACEMENTS.put("hithub", "github");
     HARDCODED_REPLACEMENTS.put("ingmail", "in gmail");
     HARDCODED_REPLACEMENTS.put("imgfli", "imgflip");
     HARDCODED_REPLACEMENTS.put("imgfl", "imgflip");
@@ -89,7 +93,10 @@ public class SpellCheckerAnnotator implements Annotator {
     HARDCODED_REPLACEMENTS.put("tmblr", "tumblr");
     HARDCODED_REPLACEMENTS.put("tumbr", "tumblr");
     HARDCODED_REPLACEMENTS.put("tumlr", "tumblr");
+    HARDCODED_REPLACEMENTS.put("tublr", "tumblr");
+    HARDCODED_REPLACEMENTS.put("tumber", "tumblr");
     HARDCODED_REPLACEMENTS.put("twsj", "wsj");
+    HARDCODED_REPLACEMENTS.put("twtr", "twitter");
     HARDCODED_REPLACEMENTS.put("ubert", "uber");
     HARDCODED_REPLACEMENTS.put("usingonedrive", "using onedrive");
     HARDCODED_REPLACEMENTS.put("wenos", "webos");
@@ -108,6 +115,7 @@ public class SpellCheckerAnnotator implements Annotator {
     HARDCODED_REPLACEMENTS.put("astrid", "asteroid");
     HARDCODED_REPLACEMENTS.put("acount", "account");
     HARDCODED_REPLACEMENTS.put("alterts", "alerts");
+    HARDCODED_REPLACEMENTS.put("creat", "create");
     HARDCODED_REPLACEMENTS.put("chages", "changes");
     HARDCODED_REPLACEMENTS.put("calernder", "calendar");
     HARDCODED_REPLACEMENTS.put("dont", "do n't");
@@ -127,6 +135,8 @@ public class SpellCheckerAnnotator implements Annotator {
     HARDCODED_REPLACEMENTS.put("picures", "pictures");
     HARDCODED_REPLACEMENTS.put("picure", "picture");
     HARDCODED_REPLACEMENTS.put("secion", "section");
+    HARDCODED_REPLACEMENTS.put("sendmsg", "send message");
+    HARDCODED_REPLACEMENTS.put("smgs", "messages");
     HARDCODED_REPLACEMENTS.put("timestap", "time stamp");
     HARDCODED_REPLACEMENTS.put("therostatcolors", "themostat colors");
     HARDCODED_REPLACEMENTS.put("themostat", "thermostat");

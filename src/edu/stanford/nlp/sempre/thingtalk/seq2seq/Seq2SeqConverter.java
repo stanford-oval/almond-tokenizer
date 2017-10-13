@@ -202,7 +202,6 @@ class Seq2SeqConverter {
   }
 
   private void writeRule(Map<?, ?> rule) {
-    outputTokens.add("rule");
     if (rule.containsKey("trigger")) {
       //outputTokens.add("if");
       writeInvocation("trigger", (Map<?, ?>) rule.get("trigger"));

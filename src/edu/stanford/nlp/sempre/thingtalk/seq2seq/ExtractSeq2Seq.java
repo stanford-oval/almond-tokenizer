@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import edu.stanford.nlp.sempre.*;
 import edu.stanford.nlp.sempre.thingtalk.ThingpediaDatabase;
+import fig.basic.LogInfo;
 import fig.basic.Option;
 import fig.exec.Execution;
 
@@ -58,9 +59,14 @@ public class ExtractSeq2Seq implements Runnable {
               .setTargetValue(targetValue)
               .createExample();
 
-          ex.preprocess();
+          try {
+            ex.preprocess();
 
-          Seq2SeqConverter.writeSequences(id, converter.run(ex), writer);
+            Seq2SeqConverter.writeSequences(id, converter.run(ex), writer);
+          } catch (Exception e) {
+            LogInfo.logs("Failed to process example " + ex.id);
+            e.printStackTrace();
+          }
         }
       }
     } catch (SQLException | IOException e) {
