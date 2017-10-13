@@ -1061,6 +1061,8 @@ public class QuantifiableEntityNormalizer {
           E prev = list.get(j);
           if ("NUMBER".equals(prev.get(CoreAnnotations.NamedEntityTagAnnotation.class))) {
             prev.set(CoreAnnotations.NamedEntityTagAnnotation.class, "DURATION");
+          } else {
+            break;
           }
         }
       }

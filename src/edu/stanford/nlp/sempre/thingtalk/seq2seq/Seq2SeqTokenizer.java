@@ -135,6 +135,11 @@ public class Seq2SeqTokenizer {
         tag = "ORGANIZATION";
         utteranceInfo.nerTags.set(i + 1, tag);
       }
+      if (token.equals("golden") && i < utteranceInfo.tokens.size() - 1
+          && utteranceInfo.tokens.get(i + 1).equals("state")) {
+        tag = "ORGANIZATION";
+        utteranceInfo.nerTags.set(i + 1, tag);
+      }
 
       switch (token) {
       //case "google":
@@ -296,6 +301,9 @@ public class Seq2SeqTokenizer {
 
       // or tumblr for what matters
     case "tumblr":
+
+      // or wapo
+    case "wapo":
       return null;
     }
 
@@ -310,7 +318,7 @@ public class Seq2SeqTokenizer {
   // refuse to return anything for yahoo, because otherwise every yahoo finance sentence
   // would have a very confusing two entities
   private static final Set<String> NOT_ENTITIES = Sets.newHashSet("wsj world news", "yahoo", "capital weather gang",
-      "ac state");
+      "ac state", "ncaa mens");
 
   private Pair<String, Object> findEntity(Example ex, String entity, String hint) {
     // override the lexicon on this one

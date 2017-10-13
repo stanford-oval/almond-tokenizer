@@ -99,6 +99,7 @@ public class SpellCheckerAnnotator implements Annotator {
     HARDCODED_REPLACEMENTS.put("twtr", "twitter");
     HARDCODED_REPLACEMENTS.put("ubert", "uber");
     HARDCODED_REPLACEMENTS.put("usingonedrive", "using onedrive");
+    HARDCODED_REPLACEMENTS.put("umute", "unmute");
     HARDCODED_REPLACEMENTS.put("wenos", "webos");
     HARDCODED_REPLACEMENTS.put("weos", "webos");
     HARDCODED_REPLACEMENTS.put("webostv", "webos tv");
