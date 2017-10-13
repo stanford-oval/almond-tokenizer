@@ -77,19 +77,49 @@ class Seq2SeqConverter {
         writeAnswer((Map<?, ?>) json.get("answer"));
       else if (json.containsKey("command"))
         writeCommand((Map<?, ?>) json.get("command"));
-      else if (json.containsKey("rule"))
-        writeRule((Map<?, ?>) json.get("rule"));
-      else if (json.containsKey("trigger"))
-        writeTopInvocation("trigger", (Map<?, ?>) json.get("trigger"));
-      else if (json.containsKey("query"))
-        writeTopInvocation("query", (Map<?, ?>) json.get("query"));
-      else if (json.containsKey("action"))
-        writeTopInvocation("action", (Map<?, ?>) json.get("action"));
+      else if (json.containsKey("rule") || json.containsKey("trigger") || json.containsKey("query")
+          || json.containsKey("action"))
+        writeProgram(json);
+      else if (json.containsKey("access"))
+        writePolicy(json);
+      else if (json.containsKey("setup"))
+        writeRemoteProgram(json);
     } catch (JsonProcessingException e) {
       throw new RuntimeException("Example " + ex.id + " does not parse as JSON", e);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private void writeProgram(Map<?, ?> json) {
+    outputTokens.add("rule");
+    writeThingTalkish(json);
+  }
+
+  private void writeRemoteProgram(Map<?, ?> json) {
+    outputTokens.add("setup");
+    Map<?, ?> setup = (Map<?, ?>) json.get("setup");
+    writeValue("USERNAME", setup.get("person"));
+    writeThingTalkish(setup);
+  }
+
+  private void writePolicy(Map<?, ?> json) {
+    outputTokens.add("policy");
+    Map<?, ?> access = (Map<?, ?>) json.get("access");
+    if (access.containsKey("person"))
+      writeValue("USERNAME", access.get("person"));
+    writeThingTalkish(access);
+  }
+
+  private void writeThingTalkish(Map<?, ?> json) {
+    if (json.containsKey("rule"))
+      writeRule((Map<?, ?>) json.get("rule"));
+    else if (json.containsKey("trigger"))
+      writeTopInvocation("trigger", (Map<?, ?>) json.get("trigger"));
+    else if (json.containsKey("query"))
+      writeTopInvocation("query", (Map<?, ?>) json.get("query"));
+    else if (json.containsKey("action"))
+      writeTopInvocation("action", (Map<?, ?>) json.get("action"));
   }
 
   private void writeSpecial(Map<?, ?> special) {
@@ -100,7 +130,6 @@ class Seq2SeqConverter {
   }
 
   private void writeTopInvocation(String invocationType, Map<?, ?> map) {
-    outputTokens.add("rule");
     switch (invocationType) {
     case "trigger":
       break;
