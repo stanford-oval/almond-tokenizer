@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import com.google.common.collect.Sets;
 
+import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.ling.CoreAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -22,16 +23,10 @@ public class SpellCheckerAnnotator implements Annotator {
     public String dictionaryDirectory = "/usr/share/myspell";
 
     @Option
-    public Set<String> extraDictionary = Sets.newHashSet("bodytrace", "bmi", "dm", "dms",
-        "gifs", "giphy", "github", "gmail", "gmails", "hashtag", "hashtags", "heatpad", "hvac",
-        "icalendar", "ig", "imgflip", "images", "inbox", "insta", "linkedin", "mlb", "n't", "omlet",
-        "onedrive", "parklon", "phd", "phdcomics", "popup", "powerpost", "reblog", "reddit", "retweet",
-        "retweeted", "rss", "'s", "sms", "sportradar", "tumblr", "uber", "unfollow", "unmute", "wapo",
-        "weatherapi", "webos", "wsj", "xkcd", "facebook", "youtube", "'m", "'ll", "'ve", "'re", "lakers", "bing",
-        "repo", "yandex", "aapl", "haz", "moar", "lol", "juventus", "fitbit", "kcal", "ncaafb", "unclosed",
-        "twilio", "mms", "bing", "xkcds", "kbs", "btc", "momma", "gps", "wtf", "apod", "diy", "smss",
-        "preselect", "vid", "vids", "ubering", "urls", "tesla", "msft", "goog", "aapl", "phdcomic",
-        "unfollowed", "reddits", "subreddit", "repost", "macchiato", "americano", "bpm", "tumblrs", "repos");
+    public String extraDictionary = "./data/dictionary";
+
+    @Option
+    public String extraReplacements = "./data/replacements";
   }
 
   public static Options opts = new Options();
@@ -43,111 +38,24 @@ public class SpellCheckerAnnotator implements Annotator {
   private static final Set<String> PTB_PUNCTUATION = Sets.newHashSet("-lrb-", "-lsb-", "-rrb-", "-rsb-", "'", "`", "''",
       "``", ",", "-LRB-", "-RRB-", "%", ">", "<", "-LSB-", "-RSB-");
 
-  private static final Map<String, String> HARDCODED_REPLACEMENTS = new HashMap<>();
-  static {
-    // missing brands or words that hunspell doesn't recognize
-    // it's possible that hunspell would do these on its own
-    HARDCODED_REPLACEMENTS.put("allmend", "almond");
-    HARDCODED_REPLACEMENTS.put("almont", "almond");
-    HARDCODED_REPLACEMENTS.put("bling", "bing");
-    HARDCODED_REPLACEMENTS.put("bingg", "bing");
-    HARDCODED_REPLACEMENTS.put("bodytrance", "bodytrace");
-    HARDCODED_REPLACEMENTS.put("bodytracescale", "bodytrace scale");
-    HARDCODED_REPLACEMENTS.put("BodyTrack", "bodytrace");
-    HARDCODED_REPLACEMENTS.put("d.m", "dm");
-    HARDCODED_REPLACEMENTS.put("dropbow", "dropbox");
-    HARDCODED_REPLACEMENTS.put("gitbub", "github");
-    HARDCODED_REPLACEMENTS.put("gifthub", "github");
-    HARDCODED_REPLACEMENTS.put("gifi", "giphy");
-    HARDCODED_REPLACEMENTS.put("hastag", "hashtag");
-    HARDCODED_REPLACEMENTS.put("hastags", "hashtags");
-    HARDCODED_REPLACEMENTS.put("headpad", "heatpad");
-    HARDCODED_REPLACEMENTS.put("heapad", "heatpad");
-    HARDCODED_REPLACEMENTS.put("Heatpade", "heatpad");
-    HARDCODED_REPLACEMENTS.put("hithub", "github");
-    HARDCODED_REPLACEMENTS.put("ingmail", "in gmail");
-    HARDCODED_REPLACEMENTS.put("imgfli", "imgflip");
-    HARDCODED_REPLACEMENTS.put("imgfl", "imgflip");
-    HARDCODED_REPLACEMENTS.put("imgflp", "imgflip");
-    HARDCODED_REPLACEMENTS.put("instgram", "instagram");
-    HARDCODED_REPLACEMENTS.put("linkediin", "linkedin");
-    HARDCODED_REPLACEMENTS.put("linkenin", "linkedin");
-    HARDCODED_REPLACEMENTS.put("LinkdIn", "linkedin");
-    HARDCODED_REPLACEMENTS.put("linedin", "linkedin");
-    HARDCODED_REPLACEMENTS.put("mens", "men 's");
-    HARDCODED_REPLACEMENTS.put("mygmail", "my gmail");
-    HARDCODED_REPLACEMENTS.put("mgflip", "imgflip");
-    HARDCODED_REPLACEMENTS.put("mzlb", "mlb");
-    HARDCODED_REPLACEMENTS.put("nasas", "nasa 's");
-    HARDCODED_REPLACEMENTS.put("omle", "omlet");
-    HARDCODED_REPLACEMENTS.put("omelt", "omlet");
-    HARDCODED_REPLACEMENTS.put("parklod", "parklon");
-    HARDCODED_REPLACEMENTS.put("parkon", "parklon");
-    HARDCODED_REPLACEMENTS.put("paklon", "parklon");
-    HARDCODED_REPLACEMENTS.put("peklon", "parklon");
-    HARDCODED_REPLACEMENTS.put("parlon", "parklon");
-    HARDCODED_REPLACEMENTS.put("redditt", "reddit");
-    HARDCODED_REPLACEMENTS.put("sportrader", "sportradar");
-    HARDCODED_REPLACEMENTS.put("sportradarw", "sportradar");
-    HARDCODED_REPLACEMENTS.put("streetcjournsk", "street journal");
-    HARDCODED_REPLACEMENTS.put("tmblr", "tumblr");
-    HARDCODED_REPLACEMENTS.put("tumbr", "tumblr");
-    HARDCODED_REPLACEMENTS.put("tumlr", "tumblr");
-    HARDCODED_REPLACEMENTS.put("tublr", "tumblr");
-    HARDCODED_REPLACEMENTS.put("tumber", "tumblr");
-    HARDCODED_REPLACEMENTS.put("twsj", "wsj");
-    HARDCODED_REPLACEMENTS.put("twtr", "twitter");
-    HARDCODED_REPLACEMENTS.put("ubert", "uber");
-    HARDCODED_REPLACEMENTS.put("usingonedrive", "using onedrive");
-    HARDCODED_REPLACEMENTS.put("umute", "unmute");
-    HARDCODED_REPLACEMENTS.put("wenos", "webos");
-    HARDCODED_REPLACEMENTS.put("weos", "webos");
-    HARDCODED_REPLACEMENTS.put("webostv", "webos tv");
-    HARDCODED_REPLACEMENTS.put("wonklog", "wonk blog");
-    HARDCODED_REPLACEMENTS.put("xbcd", "xkcd");
-    HARDCODED_REPLACEMENTS.put("xdcd", "xkcd");
-    HARDCODED_REPLACEMENTS.put("xkdc", "xkcd");
-    HARDCODED_REPLACEMENTS.put("xldc", "xkcd");
-    HARDCODED_REPLACEMENTS.put("xjcd", "xkcd");
-    HARDCODED_REPLACEMENTS.put("zkcd", "xkcd");
-    HARDCODED_REPLACEMENTS.put("xbdc", "xkcd");
-
-    // for some reason hunspell thinks these have to do with bullfights
-    HARDCODED_REPLACEMENTS.put("astrid", "asteroid");
-    HARDCODED_REPLACEMENTS.put("acount", "account");
-    HARDCODED_REPLACEMENTS.put("alterts", "alerts");
-    HARDCODED_REPLACEMENTS.put("creat", "create");
-    HARDCODED_REPLACEMENTS.put("chages", "changes");
-    HARDCODED_REPLACEMENTS.put("calernder", "calendar");
-    HARDCODED_REPLACEMENTS.put("dont", "do n't");
-    HARDCODED_REPLACEMENTS.put("evey", "every");
-    HARDCODED_REPLACEMENTS.put("frontpage", "front page");
-    HARDCODED_REPLACEMENTS.put("lighbulb", "light bulb");
-    HARDCODED_REPLACEMENTS.put("lightbub", "light bulb");
-    HARDCODED_REPLACEMENTS.put("lightbul", "light bulb");
-    HARDCODED_REPLACEMENTS.put("lightbulbif", "light bulb if");
-    HARDCODED_REPLACEMENTS.put("lightbulp", "light bulb");
-    HARDCODED_REPLACEMENTS.put("lightbuld", "light bulb");
-    HARDCODED_REPLACEMENTS.put("ligihtbulb", "light bulb");
-    HARDCODED_REPLACEMENTS.put("mylightbulb", "my light bulb");
-    HARDCODED_REPLACEMENTS.put("mething", "meeting");
-    HARDCODED_REPLACEMENTS.put("muet", "mute");
-    HARDCODED_REPLACEMENTS.put("puspose", "purpose");
-    HARDCODED_REPLACEMENTS.put("picures", "pictures");
-    HARDCODED_REPLACEMENTS.put("picure", "picture");
-    HARDCODED_REPLACEMENTS.put("secion", "section");
-    HARDCODED_REPLACEMENTS.put("sendmsg", "send message");
-    HARDCODED_REPLACEMENTS.put("smgs", "messages");
-    HARDCODED_REPLACEMENTS.put("timestap", "time stamp");
-    HARDCODED_REPLACEMENTS.put("therostatcolors", "themostat colors");
-    HARDCODED_REPLACEMENTS.put("themostat", "thermostat");
-
-    // PTB tokenizer weirdness
-    HARDCODED_REPLACEMENTS.put("earth.at", "earth at");
-  }
+  private final Set<String> extraDictionary = new HashSet<>();
+  private final Map<String, String> replacements = new HashMap<>();
 
   public SpellCheckerAnnotator(String name, Properties props) {
     this(props == null ? "en_US" : (String) props.getOrDefault("spellcheck.dictPath", "en_US"));
+
+    for (String line : IOUtils.readLines(opts.extraDictionary)) {
+      extraDictionary.add(line.trim());
+    }
+    
+    for (String line : IOUtils.readLines(opts.extraReplacements)) {
+      line = line.trim();
+      if (line.startsWith("#"))
+        continue;
+      
+      String[] tokens = line.split("\t");
+      replacements.put(tokens[0], tokens[1]);
+    }
   }
 
   private SpellCheckerAnnotator(String languageTag) {
@@ -223,13 +131,13 @@ public class SpellCheckerAnnotator implements Annotator {
         continue;
       }
 
-      if (opts.extraDictionary.contains(word.toLowerCase()) || dictionary.spell(word)) {
+      if (extraDictionary.contains(word.toLowerCase()) || dictionary.spell(word)) {
         newTokens.add(token);
         continue;
       }
 
-      if (HARDCODED_REPLACEMENTS.containsKey(word.toLowerCase())) {
-        doReplace(token, newTokens, word, HARDCODED_REPLACEMENTS.get(word.toLowerCase()));
+      if (replacements.containsKey(word.toLowerCase())) {
+        doReplace(token, newTokens, word, replacements.get(word.toLowerCase()));
         continue;
       }
 

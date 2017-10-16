@@ -1,0 +1,99 @@
+# missing brands or words that hunspell doesn't recognize
+# it's possible that hunspell would do these on its own
+allmend	almond
+almont	almond
+bling	bing
+bingg	bing
+bodytrance	bodytrace
+bodytracescale	bodytrace scale
+BodyTrack	bodytrace
+d.m	dm
+dropbow	dropbox
+gitbub	github
+gifthub	github
+gifi	giphy
+hastag	hashtag
+hastags	hashtags
+headpad	heatpad
+heapad	heatpad
+Heatpade	heatpad
+hithub	github
+ingmail	in gmail
+imgfli	imgflip
+imgfl	imgflip
+imgflp	imgflip
+instgram	instagram
+linkediin	linkedin
+linkenin	linkedin
+LinkdIn	linkedin
+linedin	linkedin
+mens	men 's
+mygmail	my gmail
+mgflip	imgflip
+mzlb	mlb
+nasas	nasa 's
+omle	omlet
+omelt	omlet
+parklod	parklon
+parkon	parklon
+paklon	parklon
+peklon	parklon
+parlon	parklon
+redditt	reddit
+sportrader	sportradar
+sportradarw	sportradar
+streetcjournsk	street journal
+tmblr	tumblr
+tumbr	tumblr
+tumlr	tumblr
+tublr	tumblr
+tumber	tumblr
+twsj	wsj
+twtr	twitter
+ubert	uber
+usingonedrive	using onedrive
+umute	unmute
+wenos	webos
+weos	webos
+webostv	webos tv
+wonklog	wonk blog
+xbcd	xkcd
+xdcd	xkcd
+xkdc	xkcd
+xldc	xkcd
+xjcd	xkcd
+zkcd	xkcd
+xbdc	xkcd
+
+# for some reason hunspell thinks these have to do with bullfights
+astrid	asteroid
+acount	account
+alterts	alerts
+creat	create
+chages	changes
+calernder	calendar
+dont	do n't
+evey	every
+frontpage	front page
+lighbulb	light bulb
+lightbub	light bulb
+lightbul	light bulb
+lightbulbif	light bulb if
+lightbulp	light bulb
+lightbuld	light bulb
+ligihtbulb	light bulb
+mylightbulb	my light bulb
+mething	meeting
+muet	mute
+puspose	purpose
+picures	pictures
+picure	picture
+secion	section
+sendmsg	send message
+smgs	messages
+timestap	time stamp
+therostatcolors	themostat colors
+themostat	thermostat
+
+# PTB tokenizer weirdness
+earth.at	earth at
