@@ -42,7 +42,7 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     // after spellcheck so that new spaces and slash-splitting that spellcheck does
     // are reflected in the lemma tokens and POS tags
     @Option(gloss = "What CoreNLP annotators to run")
-    public List<String> annotators = Lists.newArrayList("quote2", "ssplit", "pos", "lemma",
+    public List<String> annotators = Lists.newArrayList("tokenize", "quote2", "ssplit", "pos", "lemma",
         "ner", "quote_ner", "spellcheck", "ssplit", "pos", "lemma");
 
     @Option(gloss = "Whether to use case-sensitive models")
@@ -131,10 +131,7 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     }
 
     String annotators = Joiner.on(',').join(opts.annotators);
-    if (languageTag.equals("zh"))
-      props.put("annotators", "segment," + annotators);
-    else
-      props.put("annotators", "tokenize," + annotators);
+    props.put("annotators", annotators);
 
     // disable ssplit (even though we need it to run the rest of the annotators)
     props.put("ssplit.isOneSentence", "true");

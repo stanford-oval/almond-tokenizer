@@ -10,7 +10,7 @@ posix.h : $(CLASS_PATH)/edu/stanford/nlp/sempre/PosixHelper.class
 	$(JAVAHOME)/bin/javah -classpath $(CLASS_PATH) -o $@ edu.stanford.nlp.sempre.PosixHelper
 
 CPPFLAGS := -I $(JNIPATH) -I $(JNIPATH_MD)
-CXXFLAGS := --std=c++14 -Wall -O2 -g -fPIC -DPIC -Wl,-no-undefined
+CXXFLAGS := --std=c++11 -Wall -O2 -g -fPIC -DPIC -Wl,-no-undefined
 
 libposix.so : posix.h posix.cpp
 	g++ -shared -o $@ $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -fPIC -DPIC $^

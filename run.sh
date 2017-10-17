@@ -56,4 +56,4 @@ MODE_ARGS="${MODE_ARGS}
 -PPDBModel.ppdbModelPath ${SEMPREDIR}/data/ppdb.txt"
 fi
 
-exec ${JAVA} ${BASE_ARGS} ${TARGET} ${MODE_ARGS} ${EXTRA_ARGS}
+exec ${JAVA} ${BASE_ARGS} ${TARGET} ${MODE_ARGS} -SpellCheckerAnnotator.dictionaryDirectory ${SEMPREDIR}/myspell ${EXTRA_ARGS}

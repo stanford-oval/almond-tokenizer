@@ -32,6 +32,7 @@ public class SpellCheckerAnnotator implements Annotator {
   public static Options opts = new Options();
 
   private final HunspellDictionary dictionary;
+  private final boolean enabled;
 
   private static final Pattern NUMERIC_PATTERN = Pattern.compile("[-+0-9:/.]+.*");
   private static final Pattern BLANK_PATTERN = Pattern.compile("_+");
@@ -43,6 +44,31 @@ public class SpellCheckerAnnotator implements Annotator {
 
   public SpellCheckerAnnotator(String name, Properties props) {
     this(props == null ? "en_US" : (String) props.getOrDefault("spellcheck.dictPath", "en_US"));
+  }
+
+  private SpellCheckerAnnotator(String languageTag) {
+    switch (languageTag) {
+    case "en":
+      languageTag = "en_US";
+      break;
+    case "it":
+      languageTag = "it_IT";
+      break;
+    case "zh":
+      enabled = false;
+      dictionary = null;
+      return;
+
+    default:
+      // don't add a country, and hope for the best  
+    }
+    enabled = true;
+
+    try {
+      dictionary = new HunspellDictionary(opts.dictionaryDirectory + "/" + languageTag);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
 
     for (String line : IOUtils.readLines(opts.extraDictionary)) {
       extraDictionary.add(line.trim());
@@ -55,25 +81,6 @@ public class SpellCheckerAnnotator implements Annotator {
       
       String[] tokens = line.split("\t");
       replacements.put(tokens[0], tokens[1]);
-    }
-  }
-
-  private SpellCheckerAnnotator(String languageTag) {
-    switch (languageTag) {
-    case "en":
-      languageTag = "en_US";
-      break;
-    case "it":
-      languageTag = "it_IT";
-      break;
-    default:
-      // don't add a country, and hope for the best  
-    }
-
-    try {
-      dictionary = new HunspellDictionary(opts.dictionaryDirectory + "/" + languageTag);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
     }
   }
 
@@ -114,6 +121,9 @@ public class SpellCheckerAnnotator implements Annotator {
 
   @Override
   public void annotate(Annotation annotation) {
+    if (!enabled)
+        return;
+
     List<CoreLabel> tokens = annotation.get(CoreAnnotations.TokensAnnotation.class);
 
     List<CoreLabel> newTokens = new ArrayList<>();

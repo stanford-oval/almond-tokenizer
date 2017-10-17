@@ -13,7 +13,7 @@ import edu.stanford.nlp.sempre.thingtalk.ArgFilterHelpers;
 import edu.stanford.nlp.sempre.thingtalk.ThingTalk;
 import fig.basic.LogInfo;
 
-class QueryExchangeState extends AbstractHttpExchangeState {
+public class QueryExchangeState extends AbstractHttpExchangeState {
   private final APIServer server;
 
   static private final int MAX_ITEMS = 5;
