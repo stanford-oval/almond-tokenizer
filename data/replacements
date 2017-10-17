@@ -2,6 +2,7 @@
 # it's possible that hunspell would do these on its own
 allmend	almond
 almont	almond
+anold	an old
 bling	bing
 bingg	bing
 bodytrance	bodytrace
@@ -9,9 +10,12 @@ bodytracescale	bodytrace scale
 BodyTrack	bodytrace
 d.m	dm
 dropbow	dropbox
+dropx	dropbox
+expresso	espresso
 gitbub	github
 gifthub	github
 gifi	giphy
+gipgy	giphy
 hastag	hashtag
 hastags	hashtags
 headpad	heatpad
@@ -23,6 +27,7 @@ imgfli	imgflip
 imgfl	imgflip
 imgflp	imgflip
 instgram	instagram
+lgwebos	lg webos
 linkediin	linkedin
 linkenin	linkedin
 LinkdIn	linkedin
@@ -34,7 +39,9 @@ mzlb	mlb
 nasas	nasa 's
 omle	omlet
 omelt	omlet
+opinon	opinion
 parklod	parklon
+parklong	parklon
 parkon	parklon
 paklon	parklon
 peklon	parklon
@@ -97,3 +104,15 @@ themostat	thermostat
 
 # PTB tokenizer weirdness
 earth.at	earth at
+
+# weird stuff
+lastest	latest
+callifornia	california
+aquire	acquire
+thats	that 's
+wwebos	webos
+titile	title
+carn	can
+anygmail	any gmail
+reches	reaches
+stree	street

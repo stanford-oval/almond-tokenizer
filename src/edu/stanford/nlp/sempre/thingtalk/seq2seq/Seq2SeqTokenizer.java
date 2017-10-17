@@ -155,6 +155,7 @@ public class Seq2SeqTokenizer {
       case "cubs":
       case "aapl":
       case "lakers":
+      case "walmart":
 
         // in our dataset, Barcelona refers to the team
       case "barcellona":
@@ -168,6 +169,7 @@ public class Seq2SeqTokenizer {
       case "chinese":
       case "english":
       case "german":
+      case "swedish":
         tag = "LANGUAGE";
         break;
       }
@@ -385,6 +387,7 @@ public class Seq2SeqTokenizer {
         break;
 
       case "stock":
+      case "stocks":
       case "finance":
       case "quote":
       case "dividend":

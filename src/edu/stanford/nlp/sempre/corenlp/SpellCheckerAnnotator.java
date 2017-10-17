@@ -50,7 +50,7 @@ public class SpellCheckerAnnotator implements Annotator {
     
     for (String line : IOUtils.readLines(opts.extraReplacements)) {
       line = line.trim();
-      if (line.startsWith("#"))
+      if (line.startsWith("#") || line.isEmpty())
         continue;
       
       String[] tokens = line.split("\t");
