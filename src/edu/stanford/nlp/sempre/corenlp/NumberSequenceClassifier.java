@@ -96,6 +96,8 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
   private static final Pattern ORDINAL_PATTERN = Pattern.compile(
       "(?i)[2-9]?1st|[2-9]?2nd|[2-9]?3rd|1[0-9]th|[2-9]?[04-9]th|100+th|zeroth|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteenth|nineteenth|twentieth|twenty-first|twenty-second|twenty-third|twenty-fourth|twenty-fifth|twenty-sixth|twenty-seventh|twenty-eighth|twenty-ninth|thirtieth|thirty-first|fortieth|fiftieth|sixtieth|seventieth|eightieth|ninetieth|hundredth|thousandth|millionth");
 
+  private static final Pattern ORDINAL_SUFFIX_PATTERN = Pattern.compile("st|nd|th", Pattern.CASE_INSENSITIVE);
+
   private static final Pattern ARMY_TIME_MORNING = Pattern.compile("0([0-9])([0-9]){2}");
 
   private static final Pattern PART_OF_DAY_PATTERN = Pattern.compile("noon|midnight|midday", Pattern.CASE_INSENSITIVE);
@@ -219,6 +221,14 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
         }
         if (PART_OF_DAY_PATTERN.matcher(me.word()).matches()) {
           me.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
+        }
+        if (ORDINAL_SUFFIX_PATTERN.matcher(me.word()).matches()) {
+          if ("NUMBER".equals(prev.get(CoreAnnotations.AnswerAnnotation.class))) {
+            me.set(CoreAnnotations.AnswerAnnotation.class, "ORDINAL");
+            prev.set(CoreAnnotations.AnswerAnnotation.class, "ORDINAL");
+          } else if ("DATE".equals(prev.get(CoreAnnotations.AnswerAnnotation.class))) {
+            me.set(CoreAnnotations.AnswerAnnotation.class, "DATE");
+          }
         }
       } else if (me.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("JJ")) {
         if ((next.word() != null && MONTH_PATTERN.matcher(next.word()).matches()) ||

@@ -27,7 +27,6 @@ setup_words = ['setup', 'send'] + tell_words
 mixing_prob = 0.3
 
 for (utterance, target_json) in examples:
-    json_obj = json.loads(target_json)
     name, gender = random.choice(names).split(',')
     gender = gender.strip()
 
