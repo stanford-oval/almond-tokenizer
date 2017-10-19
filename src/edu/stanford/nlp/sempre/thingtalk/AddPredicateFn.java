@@ -103,6 +103,9 @@ public class AddPredicateFn extends SemanticFn {
             if (lastArg != null && !lastArg.isLeftOf(callable.child(1)))
                 return null;
 
+            if(logicOp.equals("or") && invocation.isEmptyPredicate())
+                return null;
+
             while (true) {
                 if (!argnameIter.hasNext())
                     return null;
@@ -116,8 +119,6 @@ public class AddPredicateFn extends SemanticFn {
                 if (!operatorOk(param.type, operator))
                     continue;
 
-                if(logicOp.equals("or") && invocation.isEmptyPredicate())
-                    continue;
 
                 Derivation left = callable.child(0);
                 Derivation right = callable.child(1);

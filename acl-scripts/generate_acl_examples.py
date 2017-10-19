@@ -1,32 +1,42 @@
 #!/usr/bin/env python
 
+# * Usage : ./generate_acl_examples.py <Input CSV file> <Device Names> <Person Names> <List of Verbs> <Output CSV file> <Format : turk/other>
+
 import sys, csv, json, random
 
-fp = open(sys.argv[1], 'r')
-rdr = csv.reader(fp)
+if len(sys.argv) != 7:
+    print "\t * Usage : ./generate_acl_examples.py <Input CSV file> <Device Names> <Person Names> <List of Verbs> <Output CSV file> <Format : turk/other>"
+    sys.exit(1)
+
+# FIXME : Needs options flag for generated output
+
 examples = []
-for row in rdr:
-    examples.append((row[6], row[7]))
-fp.close()
+devices = []
+names = []
+verbs = []
+generated_examples = []
 
-fp2 = open(sys.argv[2], 'r')
-devices = fp2.read().splitlines()
-fp2.close()
+with open(sys.argv[1], 'r') as fp:
+    rdr = csv.reader(fp)
+    for row in rdr:
+        examples.append((row[0], row[2], row[3]))
 
-fp3 = open(sys.argv[3], 'r')
-names = fp3.read().splitlines()
-fp3.close()
+with open(sys.argv[2], 'r') as fp:
+    devices = fp.read().splitlines()
 
-fp4 = open(sys.argv[4], 'r')
-verbs = fp4.read().splitlines()
-fp4.close()
+with open(sys.argv[3], 'r') as fp:
+    names = fp.read().splitlines()
+
+with open(sys.argv[4], 'r') as fp:
+    verbs = fp.read().splitlines()
 
 tell_words = ['tell', 'ask', 'suggest', 'inform', 'advise', 'recommend', 'request']
 setup_words = ['setup', 'send'] + tell_words
 
 mixing_prob = 0.3
 
-for (utterance, target_json) in examples:
+for (tid, target_json, utterance) in examples:
+    json_obj = json.loads(target_json)
     name, gender = random.choice(names).split(',')
     gender = gender.strip()
 
@@ -52,7 +62,8 @@ for (utterance, target_json) in examples:
                 except ValueError:
                     pass
 
-        if len(index) == 2:
+        if False:
+        #if len(index) == 2:
             # person_splits: 0.3, 0.3, 0.4
             person1_mask = False
             person2_mask = False
@@ -165,9 +176,11 @@ for (utterance, target_json) in examples:
 
             if modified or modified2:
                 new_utterance = "%s %s %s" % (' '.join(new_split1), ' '.join(new_split2), ' '.join(split3))
-                print new_utterance, "\t", json.dumps(json_obj)
+                #print new_utterance, "\t", json.dumps(json_obj)
+                generated_examples.append((tid, json.dumps(json_obj), new_utterance))
 
-        elif len(index) == 1:
+        elif False:
+        #elif len(index) == 1:
             key = index[0][0]
             split1 = utterance.split()[0:index[0][1]+1]
             split2 = utterance.split()[index[0][1]+1:len(utterance)]
@@ -215,7 +228,8 @@ for (utterance, target_json) in examples:
             if modified == True:
                 json_obj["rule"][key]["person"] = name.lower()
                 new_utterance = "%s %s" % (' '.join(new_split1), ' '.join(split2))
-                print new_utterance, "\t", json.dumps(json_obj)
+                #print new_utterance, "\t", json.dumps(json_obj)
+                generated_examples.append((tid, json.dumps(json_obj), new_utterance))
         else:
             if utterance.split()[0].lower() in verbs:
                 setup_word = random.choice(setup_words)
@@ -232,11 +246,14 @@ for (utterance, target_json) in examples:
                 new_json_obj = {}
                 new_json_obj["setup"] = {}
                 new_json_obj["setup"]["person"] = name.lower()
-                new_json_obj["setup"]["rule"] = json_obj
+                new_json_obj["setup"]["rule"] = json_obj["rule"]
                 
-                print new_utterance, "\t", json.dumps(new_json_obj)
+                #print new_utterance, "\t", json.dumps(new_json_obj)
+                generated_examples.append((tid, json.dumps(new_json_obj), new_utterance))
             else:
-                print utterance, "\t", json.dumps(json_obj)
+                pass
+                #print utterance, "\t", json.dumps(json_obj)
+                #generated_examples.append((tid, json.dumps(json_obj), utterance))
 
     else: # Primitive
         double_case = False
@@ -283,11 +300,13 @@ for (utterance, target_json) in examples:
                         new_utterance = utterance.replace(" on ", " on @" + name + "'s ")
         new_utterance = new_utterance.replace(" I ", " @" + name + " ").replace(" i ", " @" + name + " ")
 
-        if new_utterance != "":
+        if False:
+        #if new_utterance != "":
             for prim in json_obj.keys():
                 json_obj[prim]['person'] = name.lower()
 
-            print new_utterance, "\t", json.dumps(json_obj)
+            #print new_utterance, "\t", json.dumps(json_obj)
+            generated_examples.append((tid, json.dumps(json_obj), new_utterance))
         else:
             if utterance != "" and utterance.split()[0].lower() in verbs:
                 tell_word = random.choice(tell_words)
@@ -308,6 +327,26 @@ for (utterance, target_json) in examples:
                 #print >>sys.stderr, json.dumps(new_json_obj)
                 #print >>sys.stderr, ""
 
-                print new_utterance, "\t", json.dumps(new_json_obj)
+                #print new_utterance, "\t", json.dumps(new_json_obj)
+                generated_examples.append((tid, json.dumps(new_json_obj), new_utterance))
             else:
-                print utterance, "\t", json.dumps(json_obj)
+                #print utterance, "\t", json.dumps(json_obj)
+                #generated_examples.append((tid, json.dumps(json_obj), utterance))
+                pass
+
+with open(sys.argv[5], 'wt') as fp:
+    writer = csv.writer(fp)
+    if sys.argv[6] == "turk":
+        writer.writerow(('id1','json1','sentence1','id2','json2','sentence2','id3','json3','sentence3'))
+        row = ()
+        for ex in generated_examples:
+            row += ex
+            if len(row) == 9:
+                writer.writerow(row)
+                row = ()
+        if len(row) > 0:
+            writer.writerow(row) 
+    else:
+        writer.writerow(('id', 'json', 'sentence'))
+        for ex in generated_examples:
+            writer.writerow(ex)
