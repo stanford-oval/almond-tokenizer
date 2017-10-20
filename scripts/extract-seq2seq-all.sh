@@ -44,15 +44,16 @@ ${SEMPREDIR}/scripts/run-extract-seq2seq.sh -ExtractSeq2Seq.types $1 -ExtractSeq
 }
 
 # extract the datasets
-do_one "$BASEAUTHOR_TRAIN" base-author
-do_one "$PARA_TRAINDEV" paraphrasing-train+dev
-do_one "$PARA_TEST" paraphrasing-test
-do_one "$SCENARIO" scenario
-do_one "$CHEATSHEET" cheatsheet
-do_one "$GENERATED" generated
-do_one "generated-cheatsheet" generated-cheatsheet
-do_one "acl-remote-prim-turk0 acl-remote-prim-turk1-train acl-remote-comp-turk0" remote-train+dev
-do_one "acl-remote-prim acl-remote-comp" generated-remote
-do_one "acl-setup-comp-turk0 acl-setup-prim-turk0" setup-train+dev
-do_one "policy1-train policy2-train" policy-train+dev
-do_one "policy1-test policy2-test" policy-test
+#do_one "$BASEAUTHOR_TRAIN" base-author
+#do_one "$PARA_TRAINDEV" paraphrasing-train+dev
+#do_one "$PARA_TEST" paraphrasing-test
+#do_one "$SCENARIO" scenario
+#do_one "$CHEATSHEET" cheatsheet
+#do_one "$GENERATED" generated
+#do_one "generated-cheatsheet" generated-cheatsheet
+#do_one "acl-remote-prim-turk0 acl-remote-prim-turk1-train acl-remote-comp-turk0" remote-train+dev
+#do_one "acl-remote-prim acl-remote-comp" generated-remote
+do_one "acl-setup-comp-turk0 acl-setup-prim-turk0 acl-setup2-train acl-setup3-train acl-setup4-train" setup-train+dev
+do_one "acl-setup2-test acl-setup3-test acl-setup4-test" setup-test
+#do_one "policy1-train policy2-train policy3-train" policy-train+dev
+#do_one "policy1-test policy2-test policy3-test" policy-test

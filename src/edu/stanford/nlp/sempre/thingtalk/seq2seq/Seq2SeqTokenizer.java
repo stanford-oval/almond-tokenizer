@@ -245,6 +245,23 @@ public class Seq2SeqTokenizer {
   }
 
   private void computeConstituencyParse(Result result) {
+    if (true) {
+        if (result.tokens.size() == 1) {
+             result.constituencyParse.add(result.tokens.get(0));
+             return;
+        }
+
+        for (int i = 0; i < result.tokens.size()-1; i++) {
+             result.constituencyParse.add("(");
+        }
+        result.constituencyParse.add(result.tokens.get(0));
+        for (int i = 1; i < result.tokens.size(); i++) {
+             result.constituencyParse.add(result.tokens.get(i));
+             result.constituencyParse.add(")");
+        }
+        return;
+    }
+
     String sentencestring = Joiner.on(' ').join(result.tokens);
     Annotation document = new Annotation(sentencestring);
 
@@ -295,8 +312,11 @@ public class Seq2SeqTokenizer {
     case "u.s.":
     case "usa":
     case "united states":
+    case "united states of america":
+    case "united kingdom":
     case "america":
     case "england":
+    case "california":
 
       // how sabrina could be a location is beyond me
     case "sabrina":
@@ -308,6 +328,8 @@ public class Seq2SeqTokenizer {
     case "wapo":
       return null;
     }
+    if ("la".equals(entity))
+      entity = "los angeles";
 
     Collection<LocationLexicon.Entry<LocationValue>> entries = locationLexicon.lookup(entity);
     if (entries.isEmpty())
