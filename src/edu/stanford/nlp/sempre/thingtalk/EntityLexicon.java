@@ -1,11 +1,17 @@
 package edu.stanford.nlp.sempre.thingtalk;
 
-import java.sql.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.*;
+import java.util.function.Function;
 
-import javax.sql.DataSource;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import edu.stanford.nlp.sempre.LanguageInfo.LanguageUtils;
+import edu.stanford.nlp.sempre.Json;
 import edu.stanford.nlp.sempre.ValueFormula;
 import fig.basic.LogInfo;
 
@@ -13,10 +19,25 @@ public class EntityLexicon extends AbstractLexicon<TypedStringValue> {
   private static final Map<String, EntityLexicon> instances = new HashMap<>();
 
   private final String languageTag;
-  private final DataSource dataSource;
+
+  private static class ThingpediaEntityLookupResult {
+    @JsonProperty
+    public String result;
+    @JsonProperty
+    public List<ThingpediaEntityEntry> data;
+  }
+  private static class ThingpediaEntityEntry {
+    @JsonProperty
+    public String name;
+    @JsonProperty
+    public String value;
+    @JsonProperty
+    public String canonical;
+    @JsonProperty
+    public String type;
+  }
 
   private EntityLexicon(String languageTag) {
-    dataSource = ThingpediaDatabase.getSingleton();
     this.languageTag = languageTag;
   }
 
@@ -34,7 +55,14 @@ public class EntityLexicon extends AbstractLexicon<TypedStringValue> {
       e.clear();
   }
 
-  private static final String QUERY = "select entity_id,entity_value,entity_canonical,entity_name from entity_lexicon where language = ? and token in (?, ?)";
+  private static final String URL_TEMPLATE = "https://thingpedia.stanford.edu/thingpedia/api/entities/lookup?locale=%s&q=%s";
+
+  private static <E1, E2> Collection<E2> map(Collection<E1> from, Function<E1, E2> f) {
+    Collection<E2> to = new ArrayList<>();
+    for (E1 e : from)
+      to.add(f.apply(e));
+    return to;
+  }
 
   @Override
   protected Collection<Entry<TypedStringValue>> doLookup(String rawPhrase) {
@@ -43,28 +71,25 @@ public class EntityLexicon extends AbstractLexicon<TypedStringValue> {
       return Collections.emptySet();
   
     Collection<Entry<TypedStringValue>> entries = new LinkedList<>();
+    
+    try {
+      URL url = new URL(String.format(URL_TEMPLATE, languageTag, URLEncoder.encode(rawPhrase, "utf-8")));
+      if (opts.verbose >= 3)
+        LogInfo.logs("EntityLexicon HTTP call to %s", url);
 
-    try (Connection con = dataSource.getConnection(); PreparedStatement stmt = con.prepareStatement(QUERY)) {
-      stmt.setString(1, languageTag);
-      stmt.setString(2, token);
-      stmt.setString(3, LanguageUtils.stem(token));
+      URLConnection connection = url.openConnection();
 
-      try (ResultSet rs = stmt.executeQuery()) {
-        while (rs.next()) {
-          String id = rs.getString(1);
-          String entityValue = rs.getString(2);
-          String entityCanonical = rs.getString(3);
-          String entityName = rs.getString(4);
-
-          String type = "Entity(" + id + ")";
-          entries.add(new Entry<>("GENERIC_ENTITY_" + id,
-              new ValueFormula<>(new TypedStringValue(type, entityValue, entityName)),
-              entityCanonical));
-        }
+      try (Reader reader = new InputStreamReader(connection.getInputStream())) {
+        return map(Json.readValueHard(reader, ThingpediaEntityLookupResult.class).data,
+            (ThingpediaEntityEntry entry) -> {
+          String type = "Entity(" + entry.type + ")";
+          return new Entry<>("GENERIC_ENTITY_" + entry.type,
+              new ValueFormula<>(new TypedStringValue(type, entry.value, entry.name)),
+              entry.canonical);
+        });
       }
-    } catch (SQLException e) {
-      if (opts.verbose > 0)
-        LogInfo.logs("Exception during lexicon lookup: %s", e.getMessage());
+    } catch (IOException e) {
+      LogInfo.logs("Exception during entity lookup: %s", e.getMessage());
     }
     return entries;
   }
