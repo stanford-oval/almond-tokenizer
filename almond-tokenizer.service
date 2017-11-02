@@ -1,0 +1,15 @@
+[Unit]
+Description=SEMPRE-based Natural Language Tokenizer for Almond
+
+[Service]
+WorkingDirectory=/opt/almond-tokenizer
+ExecStart=/opt/almond-tokenizer/run.sh
+
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=full
+CapabilitiesBoundingSet=
+
+[Install]
+WantedBy=multi-user.target
+
