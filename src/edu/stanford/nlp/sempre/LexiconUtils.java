@@ -18,7 +18,7 @@ class LexiconUtils {
     Arrays.sort(IGNORED_WORDS);
   }
 
-  public static boolean isIgnored(String word) {
+  private static boolean isIgnored(String word) {
     return Arrays.binarySearch(IGNORED_WORDS, word) >= 0 ||
         UnitHelpers.isUnit(word);
   }

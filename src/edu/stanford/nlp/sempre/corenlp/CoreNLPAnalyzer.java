@@ -11,19 +11,13 @@ import com.google.common.collect.Lists;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.semgraph.SemanticGraph;
-import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
-import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.sempre.LanguageAnalyzer;
 import edu.stanford.nlp.sempre.LanguageInfo;
-import edu.stanford.nlp.sempre.LanguageInfo.DependencyEdge;
 import edu.stanford.nlp.sempre.SempreUtils;
 import edu.stanford.nlp.time.TimeAnnotations;
 import edu.stanford.nlp.time.Timex;
-import edu.stanford.nlp.util.CoreMap;
 import fig.basic.LogInfo;
 import fig.basic.Option;
 import fig.basic.Utils;
@@ -213,7 +207,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     languageInfo.nerTags.clear();
     languageInfo.nerValues.clear();
     languageInfo.lemmaTokens.clear();
-    languageInfo.dependencyChildren.clear();
 
     // Break hyphens
     if (opts.splitHyphens)
@@ -376,28 +369,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
       r.recognize(languageInfo);
 
     languageInfo.computeNerTokens();
-
-    // Fills in a stanford dependency graph for constructing a feature
-    for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
-      SemanticGraph ccDeps = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
-      if (ccDeps == null) continue;
-      int sentenceBegin = sentence.get(CoreAnnotations.TokenBeginAnnotation.class);
-
-      // Iterate over all tokens and their dependencies
-      for (int sourceTokenIndex = sentenceBegin;
-          sourceTokenIndex < sentence.get(CoreAnnotations.TokenEndAnnotation.class); sourceTokenIndex++) {
-        final ArrayList<DependencyEdge> outgoing = new ArrayList<>();
-        languageInfo.dependencyChildren.add(outgoing);
-        IndexedWord node = ccDeps.getNodeByIndexSafe(sourceTokenIndex - sentenceBegin + 1);  // + 1 for ROOT
-        if (node != null) {
-          for (SemanticGraphEdge edge : ccDeps.outgoingEdgeList(node)) {
-            final String relation = edge.getRelation().toString();
-            final int targetTokenIndex = sentenceBegin + edge.getTarget().index() - 1;
-            outgoing.add(new DependencyEdge(relation, targetTokenIndex));
-          }
-        }
-      }
-    }
     return languageInfo;
   }
 
@@ -423,7 +394,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
         LogInfo.logs("posTags: %s", langInfo.posTags);
         LogInfo.logs("nerTags: %s", langInfo.nerTags);
         LogInfo.logs("nerValues: %s", langInfo.nerValues);
-        LogInfo.logs("dependencyChildren: %s", langInfo.dependencyChildren);
         LogInfo.end_track();
       }
     } catch (IOException e) {

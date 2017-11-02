@@ -36,36 +36,12 @@ public class LanguageInfo implements MemUsage.Instrumented {
   private Set<String> lowercasedSpans;
   private Set<String> nerSpans;
 
-
-  public static class DependencyEdge {
-    @JsonProperty
-    public final String label;  // Dependency label
-    @JsonProperty
-    public final int modifier;  // Position of modifier
-
-    @JsonCreator
-    public DependencyEdge(@JsonProperty("label") String label, @JsonProperty("modifier") int modifier) {
-      this.label = label;
-      this.modifier = modifier;
-    }
-
-    @Override
-    public String toString() {
-      return label + "->" + modifier;
-    }
-  }
-
-  @JsonProperty
-  // Dependencies of each token, represented as a (relation, parentIndex) pair
-  public final List<List<DependencyEdge>> dependencyChildren;
-
   public LanguageInfo() {
     this(new ArrayList<String>(),
         new ArrayList<String>(),
         new ArrayList<String>(),
         new ArrayList<String>(),
-        new ArrayList<String>(),
-        new ArrayList<List<DependencyEdge>>());
+        new ArrayList<String>());
   }
 
   @JsonCreator
@@ -73,15 +49,13 @@ public class LanguageInfo implements MemUsage.Instrumented {
       @JsonProperty("lemmaTokens") List<String> lemmaTokens,
       @JsonProperty("posTags") List<String> posTags,
       @JsonProperty("nerTags") List<String> nerTags,
-      @JsonProperty("nerValues") List<String> nerValues,
-      @JsonProperty("dependencyChildren") List<List<DependencyEdge>> dependencyChildren) {
+      @JsonProperty("nerValues") List<String> nerValues) {
     this.tokens = tokens;
     this.lemmaTokens = lemmaTokens;
     this.posTags = posTags;
     this.nerTags = nerTags;
     this.nerValues = nerValues;
     this.nerTokens = new ArrayList<>();
-    this.dependencyChildren = dependencyChildren;
 
     computeNerTokens();
   }
@@ -230,156 +204,6 @@ public class LanguageInfo implements MemUsage.Instrumented {
     return res;
   }
 
-  public void addSpan(LanguageInfo other, int start, int end) {
-    for (int i = start; i < end; ++i) {
-      this.tokens.add(other.tokens.get(i));
-      this.lemmaTokens.add(other.lemmaTokens.get(i));
-      this.posTags.add(other.posTags.get(i));
-      this.nerTags.add(other.nerTags.get(i));
-      this.nerValues.add(other.nerValues.get(i));
-    }
-  }
-
-  public List<String> getSpanProperties(int start, int end) {
-    List<String> res = new ArrayList<>();
-    res.add("lemmas=" + lemmaPhrase(start, end));
-    res.add("pos=" + posSeq(start, end));
-    res.add("ner=" + nerSeq(start, end));
-    return res;
-  }
-
-  public void  addWordInfo(WordInfo wordInfo) {
-    this.tokens.add(wordInfo.token);
-    this.lemmaTokens.add(wordInfo.lemma);
-    this.posTags.add(wordInfo.pos);
-    this.nerTags.add(wordInfo.nerTag);
-    this.nerValues.add(wordInfo.nerValue);
-  }
-
-  public void  addWordInfos(List<WordInfo> wordInfos) {
-    for (WordInfo wInfo : wordInfos)
-      addWordInfo(wInfo);
-  }
-
-  public WordInfo getWordInfo(int i) {
-    return new WordInfo(tokens.get(i), lemmaTokens.get(i), posTags.get(i), nerTags.get(i), nerValues.get(i));
-  }
-
-  /**
-   * returns spans of named entities
-   * @return
-   */
-  public Set<IntPair> getNamedEntitySpans() {
-    Set<IntPair> res = new LinkedHashSet<>();
-    int start = -1;
-    String prevTag = "O";
-
-    for (int i = 0; i < nerTags.size(); ++i) {
-      String currTag = nerTags.get(i);
-      if (currTag.equals("O")) {
-        if (!prevTag.equals("O")) {
-          res.add(new IntPair(start, i));
-          start = -1;
-        }
-      } else { // currNe is not "O"
-        if (!currTag.equals(prevTag)) {
-          if (!prevTag.equals("O")) {
-            res.add(new IntPair(start, i));
-          }
-          start = i;
-        }
-      }
-      prevTag = currTag;
-    }
-    if (start != -1)
-      res.add(new IntPair(start, nerTags.size()));
-    return res;
-  }
-
-  /**
-   * returns spans of named entities
-   * @return
-   */
-  public Set<IntPair> getProperNounSpans() {
-    Set<IntPair> res = new LinkedHashSet<>();
-    int start = -1;
-    String prevTag = "O";
-
-    for (int i = 0; i < posTags.size(); ++i) {
-      String currTag = posTags.get(i);
-      if (LanguageUtils.isProperNoun(currTag)) {
-        if (!LanguageUtils.isProperNoun(prevTag))
-          start = i;
-      } else { // curr tag is not proper noun
-        if (LanguageUtils.isProperNoun(prevTag)) {
-          res.add(new IntPair(start, i));
-          start = -1;
-        }
-      }
-      prevTag = currTag;
-    }
-    if (start != -1)
-      res.add(new IntPair(start, posTags.size()));
-    return res;
-  }
-
-  public Set<IntPair> getNamedEntitiesAndProperNouns() {
-    Set<IntPair> res = getNamedEntitySpans();
-    res.addAll(getProperNounSpans());
-    return res;
-  }
-
-  public Map<String, IntPair> getLemmaSpans() {
-    if (lemmaSpans == null) {
-      lemmaSpans = new HashMap<>();
-      for (int i = 0; i < numTokens() - 1; ++i) {
-        for (int j = i + 1; j < numTokens(); ++j)
-          lemmaSpans.put(lemmaPhrase(i, j), new IntPair(i, j));
-      }
-    }
-    return lemmaSpans;
-  }
-
-  public Set<String> getLowerCasedSpans() {
-    if (lowercasedSpans == null) {
-      lowercasedSpans = new HashSet<>();
-      for (int i = 0; i < numTokens() - 1; ++i) {
-        for (int j = i + 1; j < numTokens(); ++j)
-          lowercasedSpans.add(phrase(i, j).toLowerCase());
-      }
-    }
-    return lowercasedSpans;
-  }
-
-  public Set<String> getNerSpans() {
-    if (nerSpans == null) {
-      nerSpans = new HashSet<>();
-      for (int i = 0; i < nerTokens.size(); ++i) {
-        for (int j = i + 1; j <= nerTokens.size(); ++j)
-          nerSpans.add(nerPhrase(i, j));
-      }
-    }
-    return nerSpans;
-  }
-
-  public boolean matchLemmas(List<WordInfo> wordInfos) {
-    for (int i = 0; i < numTokens(); ++i) {
-      if (matchLemmasFromIndex(wordInfos, i))
-        return true;
-    }
-    return false;
-  }
-
-  private boolean matchLemmasFromIndex(List<WordInfo> wordInfos, int start) {
-    if (start + wordInfos.size() > numTokens())
-      return false;
-    for (int j = 0; j < wordInfos.size(); ++j) {
-      if (!wordInfos.get(j).lemma.equals(lemmaTokens.get(start + j)))
-        return false;
-    }
-    return true;
-  }
-
   /**
    * Static methods with langauge utilities
    * @author jonathanberant
@@ -414,28 +238,11 @@ public class LanguageInfo implements MemUsage.Instrumented {
       return (pos.startsWith("N") || pos.startsWith("V") || pos.startsWith("J"));
     }
 
-    public static String getLemmaPhrase(List<WordInfo> wordInfos) {
-      String[] res = new String[wordInfos.size()];
-      for (int i = 0; i < wordInfos.size(); ++i) {
-        res[i] = wordInfos.get(i).lemma;
-      }
-      return Joiner.on(' ').join(res);
-    }
-
     public static String getCanonicalPos(String pos) {
       if (pos.startsWith("N")) return "N";
       if (pos.startsWith("V")) return "V";
       if (pos.startsWith("W")) return "W";
       return pos;
-    }
-
-    public static String stem(String a) {
-      int i = a.indexOf(' ');
-      if (i != -1)
-        return stem(a.substring(0, i)) + ' ' + stem(a.substring(i + 1));
-
-      Stemmer stemmer = new Stemmer();
-      return stemmer.stem(a);
     }
 
   }
@@ -447,24 +254,9 @@ public class LanguageInfo implements MemUsage.Instrumented {
         + MemUsage.getBytes(lemmaSpans);
   }
 
-  public boolean isNumberAndDate(int index) {
-    return posTags.get(index).equals("CD") && nerTags.get(index).equals("DATE");
-  }
-
   public static boolean isContentWord(String pos) {
     return pos.equals("NN") || pos.equals("NNS") ||
             (pos.startsWith("V") && !pos.equals("VBD-AUX")) ||
             pos.startsWith("J");
-  }
-
-  public static class WordInfo {
-    public final String token;
-    public final String lemma;
-    public final String pos;
-    public final String nerTag;
-    public final String nerValue;
-    public WordInfo(String token, String lemma, String pos, String nerTag, String nerValue) {
-      this.token = token; this.lemma = lemma; this.pos = pos; this.nerTag = nerTag; this.nerValue = nerValue;
-    }
   }
 }

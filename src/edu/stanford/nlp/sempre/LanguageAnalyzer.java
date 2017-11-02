@@ -27,7 +27,6 @@ public abstract class LanguageAnalyzer {
       singleton = (LanguageAnalyzer) Utils.newInstanceHard(SempreUtils.resolveClassName(opts.languageAnalyzer));
     return singleton;
   }
-  public static void setSingleton(LanguageAnalyzer analyzer) { singleton = analyzer; }
 
   public abstract LanguageInfo analyze(String utterance);
 }

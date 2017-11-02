@@ -19,25 +19,4 @@ public final class SempreUtils {
       return name;
     return "edu.stanford.nlp.sempre." + name;
   }
-
-  public static <K, V> void logMap(Map<K, V> map, String desc) {
-    LogInfo.begin_track("Logging %s map", desc);
-    for (K key : map.keySet())
-      LogInfo.log(key + "\t" + map.get(key));
-    LogInfo.end_track();
-  }
-
-  public static <K> void logMap(TObjectDoubleMap<K> map, String desc) {
-    LogInfo.begin_track("Logging %s map", desc);
-    for (K key : map.keySet())
-      LogInfo.log(key + "\t" + map.get(key));
-    LogInfo.end_track();
-  }
-
-  public static <K> void addToDoubleMap(TObjectDoubleMap<K> mutatedMap, TObjectDoubleMap<K> addedMap) {
-    addedMap.forEachEntry((key, value) -> {
-      mutatedMap.adjustOrPutValue(key, value, value);
-      return true;
-    });
-  }
 }

@@ -101,7 +101,7 @@ public class SpellCheckerAnnotator implements Annotator {
       if (i > 0) {
         CoreLabel slashToken = new CoreLabel(token);
         slashToken.set(CoreAnnotations.TextAnnotation.class, "/");
-        //slashToken.set(CoreAnnotations.LemmaAnnotation.class, "/");
+        slashToken.set(CoreAnnotations.LemmaAnnotation.class, "/");
         slashToken.set(CoreAnnotations.CharacterOffsetBeginAnnotation.class, begin);
         slashToken.set(CoreAnnotations.CharacterOffsetEndAnnotation.class, begin + 1);
         begin++;
@@ -109,7 +109,7 @@ public class SpellCheckerAnnotator implements Annotator {
       }
       CoreLabel newToken = new CoreLabel(token);
       newToken.set(CoreAnnotations.TextAnnotation.class, split[i]);
-      //newToken.set(CoreAnnotations.LemmaAnnotation.class, lemmaSplit[i]);
+      newToken.set(CoreAnnotations.LemmaAnnotation.class, lemmaSplit[i]);
       newToken.set(CoreAnnotations.CharacterOffsetBeginAnnotation.class, begin);
       newToken.set(CoreAnnotations.CharacterOffsetEndAnnotation.class, begin + split[i].length());
       begin += split[i].length();

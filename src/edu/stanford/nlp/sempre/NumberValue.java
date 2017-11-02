@@ -2,6 +2,7 @@ package edu.stanford.nlp.sempre;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,9 +15,6 @@ import fig.basic.LogInfo;
  * @author Percy Liang
  */
 public class NumberValue extends Value {
-  public static final String unitless = "fb:en.unitless";
-  public static final String yearUnit = "fb:en.year";
-
   public final double value;
   public final String unit;  // What measurement (e.g., "fb:en.meter" or unitless)
 
@@ -42,23 +40,31 @@ public class NumberValue extends Value {
 
       String unitStr = m.group(3);
       String unit;
-      if(unitStr.equals("S"))
-        unit = "s";
-      else if (unitStr.equals("m"))
-        unit = "min";
-      else if(unitStr.equals("M"))
-        unit = dailyValue ? "min" : "month";
-      else if(unitStr.equals("H"))
-        unit = "h";
-      else if(unitStr.equals("D"))
-        unit = "day";
-      else if(unitStr.equals("W"))
-        unit = "week";
-      else if(unitStr.equals("Y"))
-        unit = "year";
-      else {
-        LogInfo.warnings("Got unknown unit %s", unitStr);
-        return null;
+      switch (unitStr) {
+        case "S":
+          unit = "s";
+          break;
+        case "m":
+          unit = "min";
+          break;
+        case "M":
+          unit = dailyValue ? "min" : "month";
+          break;
+        case "H":
+          unit = "h";
+          break;
+        case "D":
+          unit = "day";
+          break;
+        case "W":
+          unit = "week";
+          break;
+        case "Y":
+          unit = "year";
+          break;
+        default:
+          LogInfo.warnings("Got unknown unit %s", unitStr);
+          return null;
       }
 
       try {
@@ -74,7 +80,7 @@ public class NumberValue extends Value {
   }
 
   public NumberValue(double value) {
-    this(value, unitless);
+    this(value, null);
   }
 
   public NumberValue(double value, String unit) {
@@ -86,7 +92,7 @@ public class NumberValue extends Value {
   public Map<String, Object> toJson() {
     Map<String, Object> json = new HashMap<>();
     json.put("value", value);
-    if(!unit.equals(unitless))
+    if(unit != null)
       json.put("unit", unit);
     return json;
   }
@@ -97,7 +103,7 @@ public class NumberValue extends Value {
     if (o == null || getClass() != o.getClass()) return false;
     NumberValue that = (NumberValue) o;
     if (this.value != that.value) return false;  // Warning: doing exact equality checking
-    if (!this.unit.equals(that.unit)) return false;
+    if (!Objects.equals(this.unit, that.unit)) return false;
     return true;
   }
 }
