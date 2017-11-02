@@ -12,7 +12,6 @@ import java.util.function.Function;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.stanford.nlp.sempre.Json;
-import edu.stanford.nlp.sempre.ValueFormula;
 import fig.basic.LogInfo;
 
 public class EntityLexicon extends AbstractLexicon<TypedStringValue> {
@@ -84,7 +83,7 @@ public class EntityLexicon extends AbstractLexicon<TypedStringValue> {
             (ThingpediaEntityEntry entry) -> {
           String type = "Entity(" + entry.type + ")";
           return new Entry<>("GENERIC_ENTITY_" + entry.type,
-              new ValueFormula<>(new TypedStringValue(type, entry.value, entry.name)),
+                  new TypedStringValue(type, entry.value, entry.name),
               entry.canonical);
         });
       }

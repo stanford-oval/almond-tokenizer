@@ -336,7 +336,7 @@ public class Seq2SeqTokenizer {
       return null;
 
     LocationLexicon.Entry<LocationValue> first = entries.iterator().next();
-    return (LocationValue) ((ValueFormula<?>) first.formula).value;
+    return first.value;
   }
 
   // refuse to return anything for yahoo, because otherwise every yahoo finance sentence
@@ -433,7 +433,7 @@ public class Seq2SeqTokenizer {
     List<Pair<Pair<String, Object>, Double>> weights = new ArrayList<>();
     for (EntityLexicon.Entry<TypedStringValue> entry : entitySet) {
       String nerTag = entry.nerTag;
-      TypedStringValue value = entry.formula.value;
+      TypedStringValue value = entry.value;
       String[] canonicalTokens = entry.rawPhrase.split("\\s+");
 
       if (hint != null && !nerTag.endsWith(hint))

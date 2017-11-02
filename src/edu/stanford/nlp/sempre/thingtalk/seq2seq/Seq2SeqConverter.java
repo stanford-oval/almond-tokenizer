@@ -7,7 +7,7 @@ import java.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import edu.stanford.nlp.sempre.*;
-import edu.stanford.nlp.sempre.thingtalk.ArgFilterHelpers;
+import edu.stanford.nlp.sempre.thingtalk.UnitHelpers;
 import edu.stanford.nlp.sempre.thingtalk.LocationValue;
 import edu.stanford.nlp.sempre.thingtalk.TypedStringValue;
 
@@ -385,7 +385,7 @@ class Seq2SeqConverter {
       break;
 
     case "Measure":
-      if (ArgFilterHelpers.isTimeUnit(value.get("unit").toString())) {
+      if (UnitHelpers.isTimeUnit(value.get("unit").toString())) {
         NumberValue numValue = new NumberValue(((Number) value.get("value")).doubleValue(),
             value.get("unit").toString());
         if (writeValue("DURATION", numValue, false))

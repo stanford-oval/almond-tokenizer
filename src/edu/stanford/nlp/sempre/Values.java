@@ -1,6 +1,7 @@
 package edu.stanford.nlp.sempre;
 
-import edu.stanford.nlp.sempre.thingtalk.*;
+import edu.stanford.nlp.sempre.thingtalk.LocationValue;
+import edu.stanford.nlp.sempre.thingtalk.TypedStringValue;
 import fig.basic.LispTree;
 
 // FIXME: Remove this dependency
@@ -19,29 +20,13 @@ public final class Values {
     if (tree.isLeaf())
       return null;
     String type = tree.child(0).value;
-    if ("name".equals(type)) return new NameValue(tree);
     if ("boolean".equals(type)) return new BooleanValue(tree);
     if ("number".equals(type)) return new NumberValue(tree);
     if ("string".equals(type)) return new StringValue(tree);
-    if ("list".equals(type)) return new ListValue(tree);
-    if ("table".equals(type)) return new TableValue(tree);
-    if ("description".equals(type)) return new DescriptionValue(tree);
-    if ("url".equals(type)) return new UriValue(tree);
-    if ("context".equals(type)) return new ContextValue(tree);
     if ("date".equals(type)) return new DateValue(tree);
-    if ("error".equals(type)) return new ErrorValue(tree);
     if ("time".equals(type)) return new TimeValue(tree);
-    // ThingTalk values
-    if ("param".equals(type)) return new ParamValue(tree);
-    if ("paramname".equals(type)) return new ParamNameValue(tree);
-    if ("channel".equals(type)) return new ChannelNameValue(tree);
-    if ("trigger".equals(type)) return new TriggerValue(tree);
-    if ("action".equals(type)) return new ActionValue(tree);
-    if ("command".equals(type)) return new CommandValue(tree);
     if ("location".equals(type)) return new LocationValue(tree);
     if ("typedstring".equals(type)) return new TypedStringValue(tree);
-    if ("rule".equals(type)) return new RuleValue(tree);
-    if ("setup".equals(type)) return new SetupValue(tree);
     return null;
   }
 

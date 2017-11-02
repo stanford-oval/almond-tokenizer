@@ -1,12 +1,11 @@
 package edu.stanford.nlp.sempre.api;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -20,7 +19,9 @@ import com.google.common.collect.Lists;
 import edu.stanford.nlp.sempre.*;
 import edu.stanford.nlp.sempre.corenlp.CoreNLPAnalyzer;
 import edu.stanford.nlp.sempre.thingtalk.seq2seq.Seq2SeqTokenizer;
+import fig.basic.IOUtils;
 import fig.basic.Option;
+import fig.basic.OptionsParser;
 import fig.exec.Execution;
 
 public class TokenizerServer implements Runnable {
@@ -170,7 +171,56 @@ public class TokenizerServer implements Runnable {
     }
   }
 
+  public static OptionsParser getOptionsParser() {
+    OptionsParser parser = new OptionsParser();
+    // Dynamically figure out which options we need to load
+    // To specify this:
+    //   java -Dmodules=core,freebase
+    List<String> modules = Arrays.asList(System.getProperty("modules", "core").split(","));
+
+    // All options are assumed to be of the form <class>opts.
+    // Read the module-classes.txt file, which specifies which classes are
+    // associated with each module.
+    List<Object> args = new ArrayList<>();
+    for (String line : IOUtils.readLinesHard("module-classes.txt")) {
+
+      // Example: core edu.stanford.nlp.sempre.Grammar
+      String[] tokens = line.split(" ");
+      if (tokens.length != 2)
+        throw new RuntimeException("Invalid: " + line);
+      String module = tokens[0];
+      String className = tokens[1];
+      if (!modules.contains(tokens[0]))
+        continue;
+
+      // Group (e.g., Grammar)
+      String[] classNameTokens = className.split("\\.");
+      String group = classNameTokens[classNameTokens.length - 1];
+
+      // Object (e.g., Grammar.opts)
+      Object opts = null;
+      try {
+        for (Field field : Class.forName(className).getDeclaredFields()) {
+          if (!"opts".equals(field.getName()))
+            continue;
+          opts = field.get(null);
+        }
+      } catch (Throwable t) {
+        System.out.println("Problem processing: " + line);
+        throw new RuntimeException(t);
+      }
+
+      if (opts != null) {
+        args.add(group);
+        args.add(opts);
+      }
+    }
+
+    parser.registerAll(args.toArray(new Object[0]));
+    return parser;
+  }
+
   public static void main(String[] args) {
-    Execution.run(args, "Main", new TokenizerServer(), Master.getOptionsParser());
+    Execution.run(args, "Main", new TokenizerServer(), getOptionsParser());
   }
 }

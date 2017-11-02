@@ -14,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import edu.stanford.nlp.sempre.Json;
-import edu.stanford.nlp.sempre.ValueFormula;
 import fig.basic.LogInfo;
 import fig.basic.Option;
 
@@ -94,8 +93,7 @@ public class LocationLexicon extends AbstractLexicon<LocationValue> {
         return map(Json.readValueHard(reader, new TypeReference<List<NominatimEntry>>() {
         }), (NominatimEntry entry) -> {
           String canonical = entry.display_name.toLowerCase().replaceAll("[,\\s+]", " ");
-          return new Entry<>("LOCATION", new ValueFormula<>(
-              new LocationValue(entry.lat, entry.lon, entry.display_name)),
+          return new Entry<>("LOCATION", new LocationValue(entry.lat, entry.lon, entry.display_name),
               canonical);
         });
       }

@@ -4,11 +4,8 @@ import java.util.*;
 
 import com.google.common.collect.Sets;
 
-import edu.stanford.nlp.sempre.NumberValue;
-import edu.stanford.nlp.sempre.Value;
-
-public class ArgFilterHelpers {
-  private ArgFilterHelpers() {
+public class UnitHelpers {
+  private UnitHelpers() {
   }
 
   private static final Set<String> TIME_UNITS = Sets.newHashSet("ms", "s", "min", "h", "day", "week", "month", "year");
@@ -53,21 +50,5 @@ public class ArgFilterHelpers {
 
   public static boolean isTimeUnit(String unit) {
     return TIME_UNITS.contains(unit);
-  }
-
-  private static boolean unitOk(String have, String want) {
-    if (!ALLOWED_UNITS.containsKey(want))
-      throw new RuntimeException("Invalid required unit " + want);
-    return ALLOWED_UNITS.get(want).contains(have);
-  }
-
-  static boolean typeOk(Type have, Type want, Value value) {
-    if (have instanceof Type.Measure && want instanceof Type.Measure && value instanceof NumberValue)
-      return unitOk(((NumberValue) value).unit, ((Type.Measure) want).getUnit());
-    return want.isAssignable(have);
-  }
-
-  static boolean typeOkArray(Type have, Type argtype, Value value) {
-    return argtype instanceof Type.Array && typeOk(have, ((Type.Array) argtype).getElementType(), value);
   }
 }

@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import edu.stanford.nlp.sempre.GenericObjectCache;
 import edu.stanford.nlp.sempre.Value;
-import edu.stanford.nlp.sempre.ValueFormula;
 import fig.basic.LogInfo;
 import fig.basic.Option;
 
@@ -18,12 +17,12 @@ public abstract class AbstractLexicon<E extends Value> {
 
   public static class Entry<E extends Value> {
     public final String nerTag;
-    public final ValueFormula<E> formula;
+    public final E value;
     public final String rawPhrase;
 
-    public Entry(String nerTag, ValueFormula<E> formula, String rawPhrase) {
+    public Entry(String nerTag, E value, String rawPhrase) {
       this.nerTag = nerTag;
-      this.formula = formula;
+      this.value = value;
       this.rawPhrase = rawPhrase;
     }
 
@@ -31,7 +30,7 @@ public abstract class AbstractLexicon<E extends Value> {
     public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((formula == null) ? 0 : formula.hashCode());
+      result = prime * result + ((value == null) ? 0 : value.hashCode());
       result = prime * result + ((nerTag == null) ? 0 : nerTag.hashCode());
       result = prime * result + ((rawPhrase == null) ? 0 : rawPhrase.hashCode());
       return result;
@@ -46,10 +45,10 @@ public abstract class AbstractLexicon<E extends Value> {
       if (getClass() != obj.getClass())
         return false;
       Entry other = (Entry) obj;
-      if (formula == null) {
-        if (other.formula != null)
+      if (value == null) {
+        if (other.value != null)
           return false;
-      } else if (!formula.equals(other.formula))
+      } else if (!value.equals(other.value))
         return false;
       if (nerTag == null) {
         if (other.nerTag != null)
