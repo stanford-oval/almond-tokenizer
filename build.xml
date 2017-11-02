@@ -15,7 +15,7 @@
 
   <!-- Create directories -->
   <target name="init">
-    <exec executable="${root}/scripts/extract-module-classes.rb"/>
+    <exec executable="${root}/scripts/extract-module-classes.sh"/>
     <mkdir dir="${classes}"/>
     <mkdir dir="${libsempre}"/>
   </target>
