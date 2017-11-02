@@ -3,17 +3,12 @@ JAVAHOME ?= /usr/lib/jvm/java-1.8.0
 JNIPATH ?= $(JAVAHOME)/include/
 JNIPATH_MD ?= $(JAVAHOME)/include/linux
 
-all : libposix.so libhunspell_jni.so
+all : libhunspell_jni.so
 
 # $* matches the target filename without the extension
-posix.h : $(CLASS_PATH)/edu/stanford/nlp/sempre/PosixHelper.class
-	$(JAVAHOME)/bin/javah -classpath $(CLASS_PATH) -o $@ edu.stanford.nlp.sempre.PosixHelper
 
 CPPFLAGS := -I $(JNIPATH) -I $(JNIPATH_MD)
 CXXFLAGS := --std=c++11 -Wall -O2 -g -fPIC -DPIC -Wl,-no-undefined
-
-libposix.so : posix.h posix.cpp
-	g++ -shared -o $@ $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -fPIC -DPIC $^
 
 hunspell-jni.h : $(CLASS_PATH)/edu/stanford/nlp/sempre/corenlp/HunspellDictionary.class
 	$(JAVAHOME)/bin/javah -classpath $(CLASS_PATH) -o $@ edu.stanford.nlp.sempre.corenlp.HunspellDictionary
@@ -26,4 +21,4 @@ libhunspell_jni.so : hunspell-jni.h hunspell-jni.cpp
 	g++ -shared -o $@ $(libhunspell_jni_CPPFLAGS) $(CXXFLAGS) $^ $(libhunspell_jni_LIBS)
 
 clean :
-	rm -f posix.h libposix.so hunspell-jni.h libhunspell-jni.so
+	rm -f hunspell-jni.h libhunspell-jni.so
