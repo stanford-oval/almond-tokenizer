@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.thingtalk;
+package edu.stanford.nlp.sempre;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,7 +11,6 @@ import java.util.function.Function;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import edu.stanford.nlp.sempre.Json;
 import fig.basic.LogInfo;
 
 public class EntityLexicon extends AbstractLexicon<TypedStringValue> {

@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.thingtalk;
+package edu.stanford.nlp.sempre;
 
 import java.io.PrintWriter;
 import java.sql.Connection;

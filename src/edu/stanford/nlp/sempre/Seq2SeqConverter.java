@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.thingtalk.seq2seq;
+package edu.stanford.nlp.sempre;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -7,9 +7,6 @@ import java.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import edu.stanford.nlp.sempre.*;
-import edu.stanford.nlp.sempre.thingtalk.UnitHelpers;
-import edu.stanford.nlp.sempre.thingtalk.LocationValue;
-import edu.stanford.nlp.sempre.thingtalk.TypedStringValue;
 
 class Seq2SeqConverter {
   public static void writeSequences(int id, List<List<String>> sequences, Writer writer) throws IOException {

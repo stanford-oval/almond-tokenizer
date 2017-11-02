@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.api;
+package edu.stanford.nlp.sempre;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -18,7 +18,6 @@ import com.google.common.collect.Lists;
 
 import edu.stanford.nlp.sempre.*;
 import edu.stanford.nlp.sempre.corenlp.CoreNLPAnalyzer;
-import edu.stanford.nlp.sempre.thingtalk.seq2seq.Seq2SeqTokenizer;
 import fig.basic.IOUtils;
 import fig.basic.Option;
 import fig.basic.OptionsParser;

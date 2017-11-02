@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.thingtalk;
+package edu.stanford.nlp.sempre;
 
 import java.util.Arrays;
 

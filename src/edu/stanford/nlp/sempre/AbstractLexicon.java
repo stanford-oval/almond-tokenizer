@@ -1,9 +1,7 @@
-package edu.stanford.nlp.sempre.thingtalk;
+package edu.stanford.nlp.sempre;
 
 import java.util.Collection;
 
-import edu.stanford.nlp.sempre.GenericObjectCache;
-import edu.stanford.nlp.sempre.Value;
 import fig.basic.LogInfo;
 import fig.basic.Option;
 

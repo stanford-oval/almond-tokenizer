@@ -1,6 +1,7 @@
 package edu.stanford.nlp.sempre;
 
-import fig.basic.*;
+import fig.basic.Option;
+import fig.basic.Utils;
 
 /**
  * LanguageAnalyzer takes an utterance and applies various NLP pre-processing steps to
@@ -10,7 +11,8 @@ import fig.basic.*;
  */
 public abstract class LanguageAnalyzer {
   public static class Options {
-    @Option public String languageAnalyzer = "SimpleAnalyzer";
+    @Option
+    public String languageAnalyzer = "corenlp.CoreNLPAnalyzer";
 
     @Option(gloss = "Whether to convert tokens in the utterance to lowercase")
     public boolean lowerCaseTokens = true;

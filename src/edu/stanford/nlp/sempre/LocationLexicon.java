@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.thingtalk;
+package edu.stanford.nlp.sempre;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import edu.stanford.nlp.sempre.Json;
 import fig.basic.LogInfo;
 import fig.basic.Option;
 

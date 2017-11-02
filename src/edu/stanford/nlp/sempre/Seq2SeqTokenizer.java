@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.thingtalk.seq2seq;
+package edu.stanford.nlp.sempre;
 
 import java.util.*;
 
@@ -9,8 +9,6 @@ import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.ParserAnnotator;
-import edu.stanford.nlp.sempre.*;
-import edu.stanford.nlp.sempre.thingtalk.*;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;

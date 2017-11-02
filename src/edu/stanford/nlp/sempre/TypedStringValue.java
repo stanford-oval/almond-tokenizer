@@ -1,9 +1,7 @@
-package edu.stanford.nlp.sempre.thingtalk;
+package edu.stanford.nlp.sempre;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import edu.stanford.nlp.sempre.Value;
 
 public class TypedStringValue extends Value {
   public final String type;

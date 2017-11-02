@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.thingtalk.seq2seq;
+package edu.stanford.nlp.sempre;
 
 import java.io.*;
 import java.sql.*;
@@ -6,11 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import edu.stanford.nlp.sempre.Example;
-import edu.stanford.nlp.sempre.StringValue;
-import edu.stanford.nlp.sempre.Value;
-import edu.stanford.nlp.sempre.api.TokenizerServer;
-import edu.stanford.nlp.sempre.thingtalk.ThingpediaDatabase;
+import edu.stanford.nlp.sempre.*;
 import fig.basic.LogInfo;
 import fig.basic.Option;
 import fig.exec.Execution;
