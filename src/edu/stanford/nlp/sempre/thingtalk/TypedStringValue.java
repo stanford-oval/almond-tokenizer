@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.stanford.nlp.sempre.Value;
-import fig.basic.LispTree;
 
 public class TypedStringValue extends Value {
   public final String type;
@@ -21,22 +20,6 @@ public class TypedStringValue extends Value {
     this.type = type;
     this.value = value;
     this.display = display;
-  }
-
-  public TypedStringValue(LispTree tree) {
-    this.type = tree.child(1).value;
-    this.value = tree.child(2).value;
-    this.display = tree.child(3).value;
-  }
-
-  @Override
-  public LispTree toLispTree() {
-    LispTree tree = LispTree.proto.newList();
-    tree.addChild("typedstring");
-    tree.addChild(type);
-    tree.addChild(value);
-    tree.addChild(display);
-    return tree;
   }
 
   public String getType() {

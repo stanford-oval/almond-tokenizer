@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.stanford.nlp.sempre.Value;
-import fig.basic.LispTree;
 
 public class LocationValue extends Value {
   public enum RelativeTag {
@@ -35,29 +34,6 @@ public class LocationValue extends Value {
     this.latitude = -1;
     this.longitude = -1;
     this.display = null;
-  }
-
-  public LocationValue(LispTree tree) {
-    this.relativeTag = RelativeTag.valueOf(tree.child(1).value.toUpperCase());
-    if (this.relativeTag == RelativeTag.ABSOLUTE) {
-      this.latitude = Double.parseDouble(tree.child(2).value);
-      this.longitude = Double.parseDouble(tree.child(3).value);
-      this.display = tree.child(4).value;
-    } else {
-      this.latitude = -1;
-      this.longitude = -1;
-      this.display = null;
-    }
-  }
-
-  @Override
-  public LispTree toLispTree() {
-    LispTree tree = LispTree.proto.newList();
-    tree.addChild("location");
-    tree.addChild(relativeTag.toString().toLowerCase());
-    tree.addChild(Double.toString(latitude));
-    tree.addChild(Double.toString(longitude));
-    return tree;
   }
 
   @Override

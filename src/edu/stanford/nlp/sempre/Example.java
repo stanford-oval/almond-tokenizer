@@ -6,10 +6,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Sets;
 
 import fig.basic.Evaluation;
-import fig.basic.LispTree;
 import fig.basic.LogInfo;
 
 /**
@@ -104,47 +102,6 @@ public class Example {
   public String toJson() { return Json.writeValueAsStringHard(this); }
   public static Example fromJson(String json) { return Json.readValueHard(json, Example.class); }
 
-  public static Example fromLispTree(LispTree tree, String defaultId) {
-    Builder b = new Builder().setId(defaultId);
-
-    for (int i = 1; i < tree.children.size(); i++) {
-      LispTree arg = tree.child(i);
-      String label = arg.child(0).value;
-      if ("id".equals(label)) {
-        b.setId(arg.child(1).value);
-      } else if ("utterance".equals(label)) {
-        b.setUtterance(arg.child(1).value);
-      } else if ("canonicalUtterance".equals(label)) {
-        b.setUtterance(arg.child(1).value);
-      } else if ("targetValue".equals(label) || "targetValues".equals(label)) {
-        if (arg.children.size() != 2)
-          throw new RuntimeException("Expect one target value");
-        b.setTargetValue(Values.fromLispTree(arg.child(1)));
-      }
-    }
-    b.setLanguageInfo(new LanguageInfo());
-
-    Example ex = b.createExample();
-
-    for (int i = 1; i < tree.children.size(); i++) {
-      LispTree arg = tree.child(i);
-      String label = arg.child(0).value;
-      if ("posTags".equals(label) || "nerTags".equals(label) || "url".equals(label)) {
-        // Do nothing
-      } else if ("tokens".equals(label)) {
-        int n = arg.child(1).children.size();
-        for (int j = 0; j < n; j++)
-          ex.languageInfo.tokens.add(arg.child(1).child(j).value);
-      } else if ("evaluation".equals(label)) {
-        ex.evaluation = Evaluation.fromLispTree(arg.child(1));
-      } else if (!Sets.newHashSet("id", "utterance", "targetFormula", "targetValue", "targetValues", "context", "original").contains(label)) {
-        throw new RuntimeException("Invalid example argument: " + arg);
-      }
-    }
-
-    return ex;
-  }
-
   public void preprocess() {
     this.preprocess(LanguageAnalyzer.getSingleton());
   }
@@ -164,32 +121,6 @@ public class Example {
       LogInfo.logs("targetValue: %s", targetValue);
     LogInfo.logs("Dependency children: %s", languageInfo.dependencyChildren);
     LogInfo.end_track();
-  }
-
-  public LispTree toLispTree(boolean outputPredDerivations) {
-    LispTree tree = LispTree.proto.newList();
-    tree.addChild("example");
-
-    if (id != null)
-      tree.addChild(LispTree.proto.newList("id", id));
-    if (utterance != null)
-      tree.addChild(LispTree.proto.newList("utterance", utterance));
-    if (targetValue != null)
-      tree.addChild(LispTree.proto.newList("targetValue", targetValue.toLispTree()));
-
-    if (languageInfo != null) {
-      if (languageInfo.tokens != null)
-        tree.addChild(LispTree.proto.newList("tokens", LispTree.proto.newList(languageInfo.tokens)));
-      if (languageInfo.posTags != null)
-        tree.addChild(LispTree.proto.newList("posTags", Joiner.on(' ').join(languageInfo.posTags)));
-      if (languageInfo.nerTags != null)
-        tree.addChild(LispTree.proto.newList("nerTags", Joiner.on(' ').join(languageInfo.nerTags)));
-    }
-
-    if (evaluation != null)
-      tree.addChild(LispTree.proto.newList("evaluation", evaluation.toLispTree()));
-
-    return tree;
   }
 
   public Map<String, Object> getTempState() {

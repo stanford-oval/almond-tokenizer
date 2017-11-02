@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.Joiner;
 
 import fig.basic.IntPair;
-import fig.basic.LispTree;
 import fig.basic.MemUsage;
 
 /**
@@ -466,20 +465,6 @@ public class LanguageInfo implements MemUsage.Instrumented {
     public final String nerValue;
     public WordInfo(String token, String lemma, String pos, String nerTag, String nerValue) {
       this.token = token; this.lemma = lemma; this.pos = pos; this.nerTag = nerTag; this.nerValue = nerValue;
-    }
-
-    @Override
-    public String toString() {
-      return toLispTree().toString();
-    }
-    public LispTree toLispTree() {
-      LispTree tree = LispTree.proto.newList();
-      tree.addChild("wordinfo");
-      tree.addChild(token);
-      tree.addChild(lemma);
-      tree.addChild(pos);
-      tree.addChild(nerTag);
-      return tree;
     }
   }
 }

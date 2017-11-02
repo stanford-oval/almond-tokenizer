@@ -1,7 +1,5 @@
 package edu.stanford.nlp.sempre;
 
-import fig.basic.LispTree;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,17 +11,10 @@ public class StringValue extends Value {
   public final String value;
 
   public StringValue(String value) { this.value = value; }
-  public StringValue(LispTree tree) { this.value = tree.child(1).value; }
 
-  public LispTree toLispTree() {
-    LispTree tree = LispTree.proto.newList();
-    tree.addChild("string");
-    tree.addChild(value);
-    return tree;
-  }
-
+  @Override
   public Map<String,Object> toJson() {
-    Map<String,Object> json = new HashMap<String,Object>();
+    Map<String,Object> json = new HashMap<>();
     json.put("value", value);
     return json;
   }

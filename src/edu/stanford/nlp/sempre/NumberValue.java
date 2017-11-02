@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fig.basic.Fmt;
-import fig.basic.LispTree;
 import fig.basic.LogInfo;
 
 /**
@@ -82,21 +80,6 @@ public class NumberValue extends Value {
   public NumberValue(double value, String unit) {
     this.value = value;
     this.unit = unit;
-  }
-
-  public NumberValue(LispTree tree) {
-    this.value = Double.parseDouble(tree.child(1).value);
-    this.unit = 2 < tree.children.size() ? tree.child(2).value : unitless;
-  }
-
-  @Override
-  public LispTree toLispTree() {
-    LispTree tree = LispTree.proto.newList();
-    tree.addChild("number");
-    tree.addChild(Fmt.D(value));
-    if (!unit.equals(unitless))
-      tree.addChild(unit);
-    return tree;
   }
 
   @Override

@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fig.basic.LispTree;
-
 public class DateValue extends Value {
   public final int year;
   public final int month;
@@ -16,7 +14,7 @@ public class DateValue extends Value {
   public final int minute;
   public final double second;
 
-	private static final Pattern PATTERN = Pattern
+  private static final Pattern PATTERN = Pattern
       .compile(
           "-?([0-9X*]{4})?-?([0-9X*]{2})?-?([0-9X*]{2})?(?:T([0-9X*]{2})?:?([0-9X*]{2})?:?([0-9X*]{2}(?:\\.[0-9]+)?)?)?Z?");
 
@@ -111,38 +109,8 @@ public class DateValue extends Value {
     this.second = second;
   }
 
-  public DateValue(LispTree tree) {
-    this.year = Integer.valueOf(tree.child(1).value);
-    this.month = Integer.valueOf(tree.child(2).value);
-    this.day = Integer.valueOf(tree.child(3).value);
-    if (tree.children.size() > 4) {
-      this.hour = Integer.valueOf(tree.child(4).value);
-      this.minute = Integer.valueOf(tree.child(5).value);
-      this.second = Double.valueOf(tree.child(6).value);
-    } else {
-      this.hour = 0;
-      this.minute = 0;
-      this.second = 0;
-    }
-  }
-
   @Override
-public LispTree toLispTree() {
-    LispTree tree = LispTree.proto.newList();
-    tree.addChild("date");
-    tree.addChild(String.valueOf(year));
-    tree.addChild(String.valueOf(month));
-    tree.addChild(String.valueOf(day));
-    if (hour != 0 || minute != 0 || second != 0) {
-      tree.addChild(String.valueOf(hour));
-      tree.addChild(String.valueOf(minute));
-      tree.addChild(String.valueOf(second));
-    }
-    return tree;
-  }
-
-  @Override
-public Map<String,Object> toJson() {
+  public Map<String, Object> toJson() {
     Map<String,Object> json = new HashMap<>();
     json.put("year", year);
     json.put("month", month);

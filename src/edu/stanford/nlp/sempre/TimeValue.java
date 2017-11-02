@@ -1,7 +1,5 @@
 package edu.stanford.nlp.sempre;
 
-import fig.basic.LispTree;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,21 +19,9 @@ public class TimeValue extends Value {
     this.minute = minute;
   }
 
-  public TimeValue(LispTree tree) {
-    this.hour = Integer.valueOf(tree.child(1).value);
-    this.minute = Integer.valueOf(tree.child(2).value);
-  }
-
   @Override
-  public LispTree toLispTree() {
-    LispTree tree = LispTree.proto.newList();
-    tree.addChild("time");
-    tree.addChild(String.valueOf(hour));
-    tree.addChild(String.valueOf(minute));
-    return tree;
-  }
   public Map<String,Object> toJson() {
-    Map<String,Object> json = new HashMap<String,Object>();
+    Map<String,Object> json = new HashMap<>();
     json.put("hour", hour);
     json.put("minute", minute);
     return json;
