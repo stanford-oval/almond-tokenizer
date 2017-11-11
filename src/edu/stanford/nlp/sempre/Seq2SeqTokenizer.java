@@ -12,9 +12,17 @@ import edu.stanford.nlp.pipeline.ParserAnnotator;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
+import fig.basic.Option;
 import fig.basic.Pair;
 
 public class Seq2SeqTokenizer {
+  public static class Options {
+    @Option
+    public boolean includeConstituencyParse = false;
+  }
+
+  public static final Options opts = new Options();
+
   public static class Value {
     public final String type;
     public final Object value;
@@ -78,11 +86,15 @@ public class Seq2SeqTokenizer {
     locationLexicon = LocationLexicon.getForLanguage(languageTag);
     entityLexicon = EntityLexicon.getForLanguage(languageTag);
     
-    Properties parseProperties = new Properties();
-    parseProperties.put("parse.model", "edu/stanford/nlp/models/lexparser/englishPCFG.caseless.ser.gz");
-    parseProperties.put("parse.binaryTrees", "true");
-    parseProperties.put("parse.buildgraphs", "false");
-    constituencyParser = new ParserAnnotator("parse", parseProperties);
+    if (opts.includeConstituencyParse) {
+      Properties parseProperties = new Properties();
+      parseProperties.put("parse.model", "edu/stanford/nlp/models/lexparser/englishPCFG.caseless.ser.gz");
+      parseProperties.put("parse.binaryTrees", "true");
+      parseProperties.put("parse.buildgraphs", "false");
+      constituencyParser = new ParserAnnotator("parse", parseProperties);
+    } else {
+      constituencyParser = null;
+    }
   }
 
   private void adjustNerTags(LanguageInfo utteranceInfo) {
@@ -243,7 +255,7 @@ public class Seq2SeqTokenizer {
   }
 
   private void computeConstituencyParse(Result result) {
-    if (true) {
+    if (constituencyParser == null) {
         if (result.tokens.size() == 1) {
              result.constituencyParse.add(result.tokens.get(0));
              return;
