@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import edu.stanford.nlp.sempre.*;
 import fig.basic.LogInfo;
 import fig.basic.Option;
 import fig.exec.Execution;
@@ -50,12 +49,11 @@ public class ExtractSeq2Seq implements Runnable {
           String type = set.getString(2);
           String utterance = set.getString(3);
           String targetJson = set.getString(4);
-          Value targetValue = new StringValue(targetJson);
 
           Example ex = new Example.Builder()
               .setId(type + "_" + Integer.toString(id))
               .setUtterance(utterance)
-              .setTargetValue(targetValue)
+              .setTargetJson(targetJson)
               .createExample();
 
           try {

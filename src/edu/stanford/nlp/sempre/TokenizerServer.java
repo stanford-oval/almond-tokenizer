@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.collect.Lists;
 
-import edu.stanford.nlp.sempre.*;
 import edu.stanford.nlp.sempre.corenlp.CoreNLPAnalyzer;
 import fig.basic.IOUtils;
 import fig.basic.Option;
@@ -56,7 +55,7 @@ public class TokenizerServer implements Runnable {
     final List<String> tokens;
 
     @JsonProperty
-    final Map<String, Map<String, Object>> values = new HashMap<>();
+    final Map<String, Object> values = new HashMap<>();
 
     @JsonProperty
     final List<String> constituencyParse;
@@ -65,6 +64,19 @@ public class TokenizerServer implements Runnable {
       this.req = req;
       this.tokens = tokenizerResult.tokens;
       this.constituencyParse = tokenizerResult.constituencyParse;
+    }
+  }
+  
+  public static class Error {
+    @JsonProperty
+    final int req;
+ 
+    @JsonProperty
+    final String error;
+    
+    public Error(int req, String error) {
+      this.req = req;
+      this.error = error;
     }
   }
 
@@ -79,8 +91,24 @@ public class TokenizerServer implements Runnable {
       e.printStackTrace(System.err);
     }
   }
+  
+  private synchronized void writeError(Writer outputStream, Error err) {
+    ObjectWriter writer = object.writer().withType(Error.class);
+    try {
+      writer.writeValue(outputStream, err);
+      outputStream.append('\n');
+      outputStream.flush();
+    } catch (IOException e) {
+      System.err.println("Failed to write tokenizer output out: " + e.getMessage());
+      e.printStackTrace(System.err);
+    }
+  }
 
   private void processInput(Writer outputStream, Input input) {
+    if (input.languageTag == null) {
+      writeError(outputStream, new Error(input.req, "Missing language tag"));
+      return;
+    }
     LanguageAnalyzer analyzer = analyzers.get(input.languageTag);
     Seq2SeqTokenizer tokenizer = tokenizers.get(input.languageTag);
 
@@ -95,15 +123,7 @@ public class TokenizerServer implements Runnable {
       String entityType = entity.type;
       for (int entityNum : entry.getValue()) {
         String entityToken = entityType + "_" + entityNum;
-
-        Value entityValue;
-        if (entity.value instanceof Double)
-          entityValue = new NumberValue((double) entity.value);
-        else if (entity.value instanceof String)
-          entityValue = new StringValue((String) entity.value);
-        else
-          entityValue = (Value) entity.value;
-        output.values.put(entityToken, entityValue.toJson());
+        output.values.put(entityToken, entity.value);
       }
     }
 
@@ -147,7 +167,7 @@ public class TokenizerServer implements Runnable {
   public void run() {
     for (String lang : opts.languages) {
       analyzers.put(lang, new CoreNLPAnalyzer(lang));
-      tokenizers.put(lang, new Seq2SeqTokenizer(lang, false));
+      tokenizers.put(lang, new Seq2SeqTokenizer(lang, true));
     }
 
     object.getFactory()

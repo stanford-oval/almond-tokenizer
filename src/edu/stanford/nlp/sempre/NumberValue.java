@@ -1,10 +1,10 @@
 package edu.stanford.nlp.sempre;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fig.basic.LogInfo;
 
@@ -15,18 +15,12 @@ import fig.basic.LogInfo;
  * @author Percy Liang
  */
 public class NumberValue extends Value {
+  @JsonProperty
   public final double value;
+  @JsonProperty
   public final String unit;  // What measurement (e.g., "fb:en.meter" or unitless)
 
   public static final Pattern PATTERN = Pattern.compile("(P|PT)([0-9\\.]+)([mMSDHYW])");
-
-  public static NumberValue parseNumber(String value) {
-    if (value.startsWith(">=") || value.startsWith("<="))
-      value = value.substring(2);
-    else if (value.startsWith(">") || value.startsWith("<") || value.startsWith("~"))
-      value = value.substring(1);
-    return new NumberValue(Double.parseDouble(value));
-  }
 
   public static NumberValue parseDurationValue(String durationStr) {
     if(!PATTERN.matcher(durationStr).matches())
@@ -79,22 +73,9 @@ public class NumberValue extends Value {
     }
   }
 
-  public NumberValue(double value) {
-    this(value, null);
-  }
-
   public NumberValue(double value, String unit) {
     this.value = value;
     this.unit = unit;
-  }
-
-  @Override
-  public Map<String, Object> toJson() {
-    Map<String, Object> json = new HashMap<>();
-    json.put("value", value);
-    if(unit != null)
-      json.put("unit", unit);
-    return json;
   }
 
   @Override public int hashCode() { return Double.valueOf(value).hashCode(); }

@@ -1,15 +1,15 @@
 package edu.stanford.nlp.sempre;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Created by joberant on 1/23/15.
  * Value for representing time
  */
 public class TimeValue extends Value {
-
+  @JsonProperty
   public final int hour;
+  @JsonProperty
   public final int minute;
 
   public TimeValue(int hour, int minute) {
@@ -17,14 +17,6 @@ public class TimeValue extends Value {
     if (minute > 59 || minute < 0) throw new RuntimeException("Illegal minute: " + minute);
     this.hour = hour;
     this.minute = minute;
-  }
-
-  @Override
-  public Map<String,Object> toJson() {
-    Map<String,Object> json = new HashMap<>();
-    json.put("hour", hour);
-    json.put("minute", minute);
-    return json;
   }
 
   @Override

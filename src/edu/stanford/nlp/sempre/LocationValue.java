@@ -1,48 +1,25 @@
 package edu.stanford.nlp.sempre;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LocationValue extends Value {
-  public enum RelativeTag {
-    ABSOLUTE, REL_CURRENT_LOCATION, REL_HOME, REL_WORK
-  }
-
-  private final RelativeTag relativeTag;
+  @JsonProperty
   private final double latitude;
+  @JsonProperty
   private final double longitude;
+  @JsonProperty
   private final String display;
 
   public LocationValue(double latitude, double longitude) {
-    this.relativeTag = RelativeTag.ABSOLUTE;
     this.latitude = latitude;
     this.longitude = longitude;
     this.display = null;
   }
 
   public LocationValue(double latitude, double longitude, String display) {
-    this.relativeTag = RelativeTag.ABSOLUTE;
     this.latitude = latitude;
     this.longitude = longitude;
     this.display = display;
-  }
-
-  public LocationValue(RelativeTag relativeTag) {
-    this.relativeTag = relativeTag;
-    this.latitude = -1;
-    this.longitude = -1;
-    this.display = null;
-  }
-
-  @Override
-  public Map<String, Object> toJson() {
-    Map<String, Object> json = new HashMap<>();
-    json.put("relativeTag", relativeTag.toString().toLowerCase());
-    json.put("latitude", latitude);
-    json.put("longitude", longitude);
-    if (display != null)
-      json.put("display", display);
-    return json;
   }
 
   @Override
@@ -54,7 +31,6 @@ public class LocationValue extends Value {
     result = prime * result + (int) (temp ^ (temp >>> 32));
     temp = Double.doubleToLongBits(Math.round(longitude * 100));
     result = prime * result + (int) (temp ^ (temp >>> 32));
-    result = prime * result + ((relativeTag == null) ? 0 : relativeTag.hashCode());
     return result;
   }
 
@@ -70,8 +46,6 @@ public class LocationValue extends Value {
     if (Math.abs(latitude - other.latitude) > 0.001)
       return false;
     if (Math.abs(longitude - other.longitude) > 0.001)
-      return false;
-    if (relativeTag != other.relativeTag)
       return false;
     return true;
   }

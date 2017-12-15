@@ -359,26 +359,26 @@ public class Seq2SeqTokenizer {
     if (applyHeuristics) {
       if (entity.equals("warriors"))
         return new Pair<>("GENERIC_ENTITY_sportradar:nba_team",
-            new TypedStringValue("Entity(sportradar:nba_team)", "gsw", "Golden State Warriors"));
+            new EntityValue("gsw", "Golden State Warriors"));
       if (entity.equals("cavaliers"))
         return new Pair<>("GENERIC_ENTITY_sportradar:nba_team",
-            new TypedStringValue("Entity(sportradar:nba_team)", "cle", "Cleveland Cavaliers"));
+            new EntityValue("cle", "Cleveland Cavaliers"));
       if (entity.equals("giants"))
         return new Pair<>("GENERIC_ENTITY_sportradar:mlb_team",
-            new TypedStringValue("Entity(sportradar:mlb_team)", "sf", "San Francisco Giants"));
+            new EntityValue("sf", "San Francisco Giants"));
       if (entity.equals("cubs"))
         return new Pair<>("GENERIC_ENTITY_sportradar:mlb_team",
-            new TypedStringValue("Entity(sportradar:mlb_team)", "chc", "Chicago Cubs"));
+            new EntityValue("chc", "Chicago Cubs"));
       if (entity.equals("lakers"))
         return new Pair<>("GENERIC_ENTITY_sportradar:nba_team",
-            new TypedStringValue("Entity(sportradar:nba_team)", "lal", "Los Angeles Lakers"));
+            new EntityValue("lal", "Los Angeles Lakers"));
       if (entity.equals("wolf pack") || entity.equals("nevada wolf pack"))
         return new Pair<>("GENERIC_ENTITY_sportradar:ncaafb_team",
-            new TypedStringValue("Entity(sportradar:ncaafb_team)", "nev", "Nevada Wolf Pack"));
+            new EntityValue("nev", "Nevada Wolf Pack"));
       // Barcellona Pozzo di Grotto, obviously
       if (entity.equals("barcelona"))
         return new Pair<>("GENERIC_ENTITY_sportradar:eu_soccer_team",
-            new TypedStringValue("Entity(sportradar:eu_soccer_team)", "bar", "FC Barcelona"));
+            new EntityValue("bar", "FC Barcelona"));
 
       if (NOT_ENTITIES.contains(entity))
         return null;
@@ -386,7 +386,7 @@ public class Seq2SeqTokenizer {
 
     String tokens[] = entity.split("\\s+");
 
-    Set<EntityLexicon.Entry<TypedStringValue>> entitySet = new HashSet<>();
+    Set<EntityLexicon.Entry<EntityValue>> entitySet = new HashSet<>();
 
     for (String token : tokens)
       entitySet.addAll(entityLexicon.lookup(token));
@@ -429,21 +429,21 @@ public class Seq2SeqTokenizer {
     if (entity.equals("california bears")) {
       if (nfootball > nbasketball)
         return new Pair<>("GENERIC_ENTITY_sportradar:ncaafb_team",
-            new TypedStringValue("Entity(sportradar:ncaafb_team)", "cal", "California Bears"));
+            new EntityValue("cal", "California Bears"));
       else if (nfootball < nbasketball)
         return new Pair<>("GENERIC_ENTITY_sportradar:ncaambb_team",
-            new TypedStringValue("Entity(sportradar:ncaambb_team)", "cal", "California Golden Bears"));
+            new EntityValue("cal", "California Golden Bears"));
     }
     if (entity.equals("google")) {
       if (nstock > 0)
         return new Pair<>("GENERIC_ENTITY_tt:stock_id",
-            new TypedStringValue("Entity(tt:stock_id)", "goog", "Alphabet Inc."));
+            new EntityValue("goog", "Alphabet Inc."));
     }
 
     List<Pair<Pair<String, Object>, Double>> weights = new ArrayList<>();
-    for (EntityLexicon.Entry<TypedStringValue> entry : entitySet) {
+    for (EntityLexicon.Entry<EntityValue> entry : entitySet) {
       String nerTag = entry.nerTag;
-      TypedStringValue value = entry.value;
+      EntityValue value = entry.value;
       String[] canonicalTokens = entry.rawPhrase.split("\\s+");
 
       if (hint != null && !nerTag.endsWith(hint))

@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fig.basic.LogInfo;
 
-public class EntityLexicon extends AbstractLexicon<TypedStringValue> {
+public class EntityLexicon extends AbstractLexicon<EntityValue> {
   private static final Map<String, EntityLexicon> instances = new HashMap<>();
 
   private final String languageTag;
@@ -63,12 +63,12 @@ public class EntityLexicon extends AbstractLexicon<TypedStringValue> {
   }
 
   @Override
-  protected Collection<Entry<TypedStringValue>> doLookup(String rawPhrase) {
+  protected Collection<Entry<EntityValue>> doLookup(String rawPhrase) {
     String token = LexiconUtils.preprocessRawPhrase(rawPhrase);
     if (token == null)
       return Collections.emptySet();
   
-    Collection<Entry<TypedStringValue>> entries = new LinkedList<>();
+    Collection<Entry<EntityValue>> entries = new LinkedList<>();
     
     try {
       URL url = new URL(String.format(URL_TEMPLATE, languageTag, URLEncoder.encode(rawPhrase, "utf-8")));
@@ -80,10 +80,8 @@ public class EntityLexicon extends AbstractLexicon<TypedStringValue> {
       try (Reader reader = new InputStreamReader(connection.getInputStream())) {
         return map(Json.readValueHard(reader, ThingpediaEntityLookupResult.class).data,
             (ThingpediaEntityEntry entry) -> {
-          String type = "Entity(" + entry.type + ")";
-          return new Entry<>("GENERIC_ENTITY_" + entry.type,
-                  new TypedStringValue(type, entry.value, entry.name),
-              entry.canonical);
+              return new Entry<>("GENERIC_ENTITY_" + entry.type, new EntityValue(entry.value, entry.name),
+                  entry.canonical);
         });
       }
     } catch (IOException e) {

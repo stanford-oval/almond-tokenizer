@@ -6,8 +6,6 @@ import java.util.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import edu.stanford.nlp.sempre.*;
-
 class Seq2SeqConverter {
   public static void writeSequences(int id, List<List<String>> sequences, Writer writer) throws IOException {
     writer.append(Integer.toString(id));
@@ -66,7 +64,7 @@ class Seq2SeqConverter {
   private void writeOutput() {
     try {
       Map<?, ?> json = Json.getMapper().readerWithView(Object.class).withType(Map.class)
-          .readValue(((StringValue) ex.targetValue).value);
+          .readValue(ex.targetJson);
 
       if (json.containsKey("special"))
         writeSpecial((Map<?, ?>) json.get("special"));
@@ -325,7 +323,7 @@ class Seq2SeqConverter {
         break;
       default:
         writeValue("GENERIC_ENTITY_" + type.substring("Entity(".length(), type.length() - 1),
-            new TypedStringValue(type, value.get("value").toString()));
+            new EntityValue(type, value.get("value").toString()));
       }
       return;
     }

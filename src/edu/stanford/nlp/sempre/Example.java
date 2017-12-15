@@ -1,13 +1,10 @@
 package edu.stanford.nlp.sempre;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.base.Joiner;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import fig.basic.Evaluation;
 import fig.basic.LogInfo;
 
 /**
@@ -28,7 +25,7 @@ public class Example {
   public final String utterance;
 
   // What we should try to predict.
-  public Value targetValue;
+  public final String targetJson;
 
   //// Information after preprocessing (e.g., tokenization, POS tagging, NER, syntactic parsing, etc.).
   public LanguageInfo languageInfo = null;
@@ -36,32 +33,36 @@ public class Example {
   public static class Builder {
     private String id;
     private String utterance;
-    private Value targetValue;
+    private String targetJson;
     private LanguageInfo languageInfo;
 
     public Builder setId(String id) { this.id = id; return this; }
     public Builder setUtterance(String utterance) { this.utterance = utterance; return this; }
-    public Builder setTargetValue(Value targetValue) { this.targetValue = targetValue; return this; }
+
+    public Builder setTargetJson(String targetJson) {
+      this.targetJson = targetJson;
+      return this;
+    }
     public Builder setLanguageInfo(LanguageInfo languageInfo) { this.languageInfo = languageInfo; return this; }
     public Builder withExample(Example ex) {
       setId(ex.id);
       setUtterance(ex.utterance);
-      setTargetValue(ex.targetValue);
+      setTargetJson(ex.targetJson);
       return this;
     }
     public Example createExample() {
-      return new Example(id, utterance, targetValue, languageInfo);
+      return new Example(id, utterance, targetJson, languageInfo);
     }
   }
 
   @JsonCreator
   public Example(@JsonProperty("id") String id,
                  @JsonProperty("utterance") String utterance,
-                 @JsonProperty("targetValue") Value targetValue,
+      @JsonProperty("target_json") String targetJson,
                  @JsonProperty("languageInfo") LanguageInfo languageInfo) {
     this.id = id;
     this.utterance = utterance;
-    this.targetValue = targetValue;
+    this.targetJson = targetJson;
     this.languageInfo = languageInfo;
   }
 
@@ -94,8 +95,8 @@ public class Example {
     LogInfo.logs("POS tags: %s", languageInfo.posTags);
     LogInfo.logs("NER tags: %s", languageInfo.nerTags);
     LogInfo.logs("NER values: %s", languageInfo.nerValues);
-    if (targetValue != null)
-      LogInfo.logs("targetValue: %s", targetValue);
+    if (targetJson != null)
+      LogInfo.logs("targetValue: %s", targetJson);
     LogInfo.end_track();
   }
 }

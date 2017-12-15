@@ -1,17 +1,23 @@
 package edu.stanford.nlp.sempre;
 
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class DateValue extends Value {
+  @JsonProperty
   public final int year;
+  @JsonProperty
   public final int month;
+  @JsonProperty
   public final int day;
+  @JsonProperty
   public final int hour;
+  @JsonProperty
   public final int minute;
+  @JsonProperty
   public final double second;
 
   private static final Pattern PATTERN = Pattern
@@ -107,18 +113,6 @@ public class DateValue extends Value {
     this.hour = hour;
     this.minute = minute;
     this.second = second;
-  }
-
-  @Override
-  public Map<String, Object> toJson() {
-    Map<String,Object> json = new HashMap<>();
-    json.put("year", year);
-    json.put("month", month);
-    json.put("day", day);
-    json.put("hour", hour);
-    json.put("minute", minute);
-    json.put("second", second);
-    return json;
   }
 
   @Override public int hashCode() {
