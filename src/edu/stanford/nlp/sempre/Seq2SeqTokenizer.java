@@ -255,22 +255,8 @@ public class Seq2SeqTokenizer {
   }
 
   private void computeConstituencyParse(Result result) {
-    if (constituencyParser == null) {
-        if (result.tokens.size() == 1) {
-             result.constituencyParse.add(result.tokens.get(0));
-             return;
-        }
-
-        for (int i = 0; i < result.tokens.size()-1; i++) {
-             result.constituencyParse.add("(");
-        }
-        result.constituencyParse.add(result.tokens.get(0));
-        for (int i = 1; i < result.tokens.size(); i++) {
-             result.constituencyParse.add(result.tokens.get(i));
-             result.constituencyParse.add(")");
-        }
-        return;
-    }
+    if (constituencyParser == null)
+      return;
 
     String sentencestring = Joiner.on(' ').join(result.tokens);
     Annotation document = new Annotation(sentencestring);
