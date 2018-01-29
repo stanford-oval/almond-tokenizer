@@ -150,6 +150,17 @@ public class Seq2SeqTokenizer {
         tag = "ORGANIZATION";
         utteranceInfo.nerTags.set(i + 1, tag);
       }
+      if (token.equals("mast") && i < utteranceInfo.tokens.size() - 1
+          && utteranceInfo.tokens.get(i + 1).equals("camera")) {
+        tag = "NASA_ROVER_CAMERA";
+        utteranceInfo.nerTags.set(i + 1, tag);
+      }
+      if (token.equals("word") && i < utteranceInfo.tokens.size() - 1
+          && (utteranceInfo.tokens.get(i + 1).equals("document")
+              || utteranceInfo.tokens.get(i + 1).equals("documents"))) {
+        tag = "MIME_TYPE";
+        utteranceInfo.nerTags.set(i + 1, tag);
+      }
 
       switch (token) {
       //case "google":
@@ -182,8 +193,27 @@ public class Seq2SeqTokenizer {
       case "swedish":
         tag = "LANGUAGE";
         break;
+        
+      case "pdf":
+      case "excel":
+      case "jpeg":
+      case "jpg":
+        tag = "MIME_TYPE";
+        break;
+        
+      case "document":
+      case "documents":
+      case "spreadsheet":
+      case "spreadsheets":
+      case "picture":
+      case "pictures":
+      case "image":
+      case "images":
+        if (i > 0 && "MIME_TYPE".equals(utteranceInfo.nerTags.get(i-1)))
+          tag = "MIME_TYPE";
+        break;
       }
-
+      
       if (tag != null && !utteranceInfo.nerTags.get(i).equals("QUOTED_STRING"))
         utteranceInfo.nerTags.set(i, tag);
     }
@@ -463,6 +493,8 @@ public class Seq2SeqTokenizer {
 
       weights.add(new Pair<>(new Pair<>(nerTag, value), weight));
     }
+    if (weights.isEmpty())
+      return null;
 
     weights.sort((one, two) -> {
       double w1 = one.getSecond();
@@ -569,6 +601,12 @@ public class Seq2SeqTokenizer {
 
     case "LANGUAGE":
       return findEntity(ex, entity, "tt:iso_lang_code");
+
+    case "NASA_ROVER_CAMERA":
+      return findEntity(ex, entity, "gov.nasa:curiosity_rover_camera");
+
+    case "MIME_TYPE":
+      return findEntity(ex, entity, "tt:mime_type");
 
     case "DURATION":
       if (nerValue != null) {
