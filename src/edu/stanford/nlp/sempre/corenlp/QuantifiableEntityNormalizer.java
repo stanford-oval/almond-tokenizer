@@ -439,7 +439,7 @@ public class QuantifiableEntityNormalizer {
     //first, see if it looks like european style
     s = convertToAmerican(s);
     // clean up string
-    s = s.replaceAll("[ \t\n\0\f\r,]", "");
+    s = s.replaceAll("[ \t\n\0\f\r,]", " ");
     s = s.toLowerCase();
     if (DEBUG2) {
       err.println("normalizedMoneyString: Normalizing " + s);
@@ -1111,7 +1111,8 @@ public class QuantifiableEntityNormalizer {
 
       // copy over the NER tag too
       if ((before.get(CoreAnnotations.NamedEntityTagAnnotation.class) == null
-          || before.get(CoreAnnotations.NamedEntityTagAnnotation.class).equals(BACKGROUND_SYMBOL)) &&
+          || before.get(CoreAnnotations.NamedEntityTagAnnotation.class).equals(BACKGROUND_SYMBOL)
+          || before.get(CoreAnnotations.NamedEntityTagAnnotation.class).equals("MISC")) &&
           (nscAnswer.get(CoreAnnotations.AnswerAnnotation.class) != null
               && !nscAnswer.get(CoreAnnotations.AnswerAnnotation.class).equals(BACKGROUND_SYMBOL))) {
         before.set(CoreAnnotations.NamedEntityTagAnnotation.class,

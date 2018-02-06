@@ -22,7 +22,6 @@ import edu.stanford.nlp.util.PaddedList;
  * Have been removed (compared to CoreNLP):
  * - SUTime
  * - Generic time words
- * - MONEY class (completely)
  * - Handling of "m" and "b" to mean million and billion
  * Have been added
  * - Month ORDINAL
@@ -93,6 +92,17 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
 
   private static final Pattern AM_PM = Pattern.compile("(a\\.?m\\.?)|(p\\.?m\\.?)", Pattern.CASE_INSENSITIVE);
 
+  public static final Pattern CURRENCY_WORD_PATTERN = Pattern.compile("(?:dollar|cent|euro)s?|penny|pence|yen|yuan|won",
+      Pattern.CASE_INSENSITIVE);
+
+  // pattern matches: dollar, pound sign XML escapes; pound sign, yen sign, euro, won; other country dollars; now omit # for pound
+  // TODO: Delete # as currency.  But doing this involves changing PTBTokenizer currency normalization rules
+  // Code \u0023 '#' was used for pound '£' in the ISO version of ASCII (ISO 646), and this is found in very old materials
+  // e.g., the 1999 Penn Treebank, but we now don't recognize this, as it now doesn't occur and wrongly recognizes
+  // currency whenever someone refers to the #4 country etc.
+  public static final Pattern CURRENCY_SYMBOL_PATTERN = Pattern
+      .compile("\\$|#|&#163;|&pound;|\u00A3|\u00A5|\u20AC|\u20A9|(?:US|HK|A|C|NT|S|NZ)\\$", Pattern.CASE_INSENSITIVE); // TODO: No longer include archaic # for pound
+
   private static final Pattern ORDINAL_PATTERN = Pattern.compile(
       "(?i)[2-9]?1st|[2-9]?2nd|[2-9]?3rd|1[0-9]th|[2-9]?[04-9]th|100+th|zeroth|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteenth|nineteenth|twentieth|twenty-first|twenty-second|twenty-third|twenty-fourth|twenty-fifth|twenty-sixth|twenty-seventh|twenty-eighth|twenty-ninth|thirtieth|thirty-first|fortieth|fiftieth|sixtieth|seventieth|eightieth|ninetieth|hundredth|thousandth|millionth");
 
@@ -129,7 +139,16 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
       //if (DEBUG) { System.err.println("Tagging:" + me.word()); }
       me.set(CoreAnnotations.AnswerAnnotation.class, flags.backgroundSymbol);
 
-      if (TIME_PATTERN.matcher(me.word()).matches() || TIME_PATTERN2.matcher(me.word()).matches()
+      if (CURRENCY_SYMBOL_PATTERN.matcher(me.word()).matches() &&
+          (prev.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("CD") ||
+              next.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("CD"))) {
+        // dollar, pound, pound, yen,
+        // Penn Treebank ancient # as pound, euro,
+        if (DEBUG) {
+          System.err.println("Found currency sign:" + me.word());
+        }
+        me.set(CoreAnnotations.AnswerAnnotation.class, "MONEY");
+      } else if (TIME_PATTERN.matcher(me.word()).matches() || TIME_PATTERN2.matcher(me.word()).matches()
           || TIME_PATTERN3.matcher(me.word()).matches()) {
         me.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
       } else if (DATE_PATTERN.matcher(me.word()).matches() || DATE_PATTERN2.matcher(me.word()).matches()) {
@@ -167,7 +186,11 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
           if (DEBUG) {
             System.err.println("Found number:" + me.word());
           }
-          me.set(CoreAnnotations.AnswerAnnotation.class, "NUMBER");
+          if (prev.getString(CoreAnnotations.AnswerAnnotation.class).equals("MONEY")) {
+            me.set(CoreAnnotations.AnswerAnnotation.class, "MONEY");
+          } else {
+            me.set(CoreAnnotations.AnswerAnnotation.class, "NUMBER");
+          }
         }
       } else if (AM_PM.matcher(me.word()).matches() &&
           (prev.get(CoreAnnotations.AnswerAnnotation.class).equals("TIME") ||
@@ -212,7 +235,21 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
           (me.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("NN") ||
               me.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("NNS") ||
               me.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("NNP"))) {
-        if (ORDINAL_PATTERN.matcher(me.word()).matches()) {
+        if (CURRENCY_WORD_PATTERN.matcher(me.word()).matches()) {
+          if (prev.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("CD") &&
+              prev.getString(CoreAnnotations.AnswerAnnotation.class).equals("NUMBER")) {
+            me.set(CoreAnnotations.AnswerAnnotation.class, "MONEY");
+
+            for (int j = i - 1; j >= 0; j--) {
+              CoreLabel prev2 = pl.get(j);
+              if (prev2.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("CD") &&
+                  prev2.getString(CoreAnnotations.AnswerAnnotation.class).equals("NUMBER"))
+                prev2.set(CoreAnnotations.AnswerAnnotation.class, "MONEY");
+              else
+                break;
+            }
+          }
+        } else if (ORDINAL_PATTERN.matcher(me.word()).matches()) {
           if ((next.word() != null && MONTH_PATTERN.matcher(next.word()).matches()) ||
               (next.word() != null && next.word().equalsIgnoreCase("of") &&
                   next2.word() != null && MONTH_PATTERN.matcher(next2.word()).matches())) {

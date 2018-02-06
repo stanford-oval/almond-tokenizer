@@ -87,4 +87,9 @@ public class NumberValue extends Value {
     if (!Objects.equals(this.unit, that.unit)) return false;
     return true;
   }
+
+  @Override
+  public String toString() {
+    return this.value + (this.unit != null ? " " + this.unit : "");
+  }
 }

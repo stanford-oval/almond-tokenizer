@@ -75,6 +75,15 @@ public class Seq2SeqTokenizer {
     public final List<String> constituencyParse = new ArrayList<>();
   }
 
+  private static final Map<String, String> CURRENCY_CODES = new HashMap<>();
+
+  static {
+    CURRENCY_CODES.put("$", "usd");
+    CURRENCY_CODES.put("\u20AC", "eur");
+    CURRENCY_CODES.put("\u00A3", "gbp");
+    CURRENCY_CODES.put("\u5143", "cny");
+  }
+
   private final boolean applyHeuristics;
   private final LocationLexicon locationLexicon;
   private final EntityLexicon entityLexicon;
@@ -159,6 +168,16 @@ public class Seq2SeqTokenizer {
           && (utteranceInfo.tokens.get(i + 1).equals("document")
               || utteranceInfo.tokens.get(i + 1).equals("documents"))) {
         tag = "MIME_TYPE";
+        utteranceInfo.nerTags.set(i + 1, tag);
+      }
+      if (token.equals("ancient") && i < utteranceInfo.tokens.size() - 1
+          && utteranceInfo.tokens.get(i + 1).equals("aliens")) {
+        tag = "MEME";
+        utteranceInfo.nerTags.set(i + 1, tag);
+      }
+      if (token.equals("futurama") && i < utteranceInfo.tokens.size() - 1
+          && utteranceInfo.tokens.get(i + 1).equals("fry")) {
+        tag = "MEME";
         utteranceInfo.nerTags.set(i + 1, tag);
       }
 
@@ -527,22 +546,13 @@ public class Seq2SeqTokenizer {
 
   private Pair<String, Object> nerValueToThingTalkValue(Example ex, String nerType, String nerValue,
       String entity) {
+    String unit = null;
     switch (nerType) {
     case "MONEY":
     case "PERCENT":
-      try {
-        if (nerValue == null)
-          return null;
-        if (nerValue.startsWith(">=") || nerValue.startsWith("<="))
-          nerValue = nerValue.substring(3);
-        else if (nerValue.startsWith(">") || nerValue.startsWith("<") || nerValue.startsWith("~"))
-          nerValue = nerValue.substring(2);
-        else
-          nerValue = nerValue.substring(1);
-        return new Pair<>("NUMBER", Double.valueOf(nerValue));
-      } catch (NumberFormatException e) {
-        return null;
-      }
+      unit = nerValue.substring(0, 1);
+      nerValue = nerValue.substring(1);
+      // fallthrough
 
     case "NUMBER":
       if (nerValue == null)
@@ -555,7 +565,11 @@ public class Seq2SeqTokenizer {
         double v = Double.valueOf(nerValue);
         if (v == 1 || v == 0)
           return null;
-        return new Pair<>(nerType, v);
+
+        if ("MONEY".equals(nerType))
+          return new Pair<>("CURRENCY", new NumberValue(v, CURRENCY_CODES.getOrDefault(unit, unit)));
+        else
+          return new Pair<>(nerType, v);
       } catch (NumberFormatException e) {
         return null;
       }
@@ -607,6 +621,9 @@ public class Seq2SeqTokenizer {
 
     case "MIME_TYPE":
       return findEntity(ex, entity, "tt:mime_type");
+
+    case "MEME":
+      return findEntity(ex, entity, "imgflip:meme_id");
 
     case "DURATION":
       if (nerValue != null) {
