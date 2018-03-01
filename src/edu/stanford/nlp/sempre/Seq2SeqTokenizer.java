@@ -71,6 +71,7 @@ public class Seq2SeqTokenizer {
 
   public static class Result {
     public final List<String> tokens = new ArrayList<>();
+    public final List<String> posTags = new ArrayList<>();
     public final Map<Value, List<Integer>> entities = new HashMap<>();
     public final List<String> constituencyParse = new ArrayList<>();
   }
@@ -180,8 +181,93 @@ public class Seq2SeqTokenizer {
         tag = "MEME";
         utteranceInfo.nerTags.set(i + 1, tag);
       }
+      if (token.equals("fry") && i < utteranceInfo.tokens.size() - 1
+          && utteranceInfo.tokens.get(i + 1).equals("futurama")) {
+        tag = "MEME";
+        utteranceInfo.nerTags.set(i + 1, tag);
+      }
+      if (token.equals("brace") && i < utteranceInfo.tokens.size() - 1
+          && (utteranceInfo.tokens.get(i + 1).equals("yourselves")
+              || utteranceInfo.tokens.get(i + 1).equals("yourself"))) {
+        tag = "MEME";
+        utteranceInfo.nerTags.set(i + 1, tag);
+      }
+      if (token.equals("fry") && i < utteranceInfo.tokens.size() - 2 &&
+          utteranceInfo.tokens.get(i + 1).equals("from") &&
+          utteranceInfo.tokens.get(i + 2).equals("futurama")) {
+        tag = "MEME";
+        utteranceInfo.nerTags.set(i + 1, tag);
+        utteranceInfo.nerTags.set(i + 2, tag);
+      }
+      if (token.equals("futurama") && i < utteranceInfo.tokens.size() - 2 &&
+          (utteranceInfo.tokens.get(i + 1).equals("from") || utteranceInfo.tokens.get(i + 1).equals("'s")) &&
+          utteranceInfo.tokens.get(i + 2).equals("fry")) {
+        tag = "MEME";
+        utteranceInfo.nerTags.set(i + 1, tag);
+        utteranceInfo.nerTags.set(i + 2, tag);
+      }
+      if ((token.equals("la") || token.equals("l.a.")) && i < utteranceInfo.tokens.size() - 2 &&
+          utteranceInfo.tokens.get(i + 1).equals(",") &&
+          (utteranceInfo.tokens.get(i + 2).equals("california") || utteranceInfo.tokens.get(i + 2).equals("ca") ||
+              utteranceInfo.tokens.get(i + 2).equals("cali"))) {
+        tag = "LOCATION";
+        utteranceInfo.nerTags.set(i + 1, tag);
+        utteranceInfo.nerTags.set(i + 2, tag);
+      }
+      if ((token.equals("la") || token.equals("l.a.")) && i < utteranceInfo.tokens.size() - 1 &&
+          (utteranceInfo.tokens.get(i + 1).equals("california") || utteranceInfo.tokens.get(i + 1).equals("ca") ||
+              utteranceInfo.tokens.get(i + 1).equals("cali"))) {
+        tag = "LOCATION";
+        utteranceInfo.nerTags.set(i + 1, tag);
+      }
+      if ((token.equals("front") || token.equals("rear")) && i < utteranceInfo.tokens.size() - 3 &&
+          utteranceInfo.tokens.get(i + 1).equals("hazard") &&
+          utteranceInfo.tokens.get(i + 2).equals("avoidance") &&
+          (utteranceInfo.tokens.get(i + 3).equals("camera") || utteranceInfo.tokens.get(i + 3).equals("cam"))) {
+        tag = "NASA_ROVER_CAMERA";
+        utteranceInfo.nerTags.set(i + 1, tag);
+        utteranceInfo.nerTags.set(i + 2, tag);
+        utteranceInfo.nerTags.set(i + 3, tag);
+      }
+      if (token.equals("mars") && i < utteranceInfo.tokens.size() - 3 &&
+          utteranceInfo.tokens.get(i + 1).equals("hand") &&
+          utteranceInfo.tokens.get(i + 2).equals("lens") &&
+          utteranceInfo.tokens.get(i + 3).equals("imager")) {
+        tag = "NASA_ROVER_CAMERA";
+        utteranceInfo.nerTags.set(i + 1, tag);
+        utteranceInfo.nerTags.set(i + 2, tag);
+        utteranceInfo.nerTags.set(i + 3, tag);
+      }
+      // palo, alto, california
+      if (token.equals("palo") && i < utteranceInfo.tokens.size() - 4 &&
+          utteranceInfo.tokens.get(i + 1).equals(",") &&
+          utteranceInfo.tokens.get(i + 2).equals("alto") &&
+          utteranceInfo.tokens.get(i + 3).equals(",") &&
+          (utteranceInfo.tokens.get(i + 4).equals("california") || utteranceInfo.tokens.get(i + 4).equals("ca") ||
+              utteranceInfo.tokens.get(i + 4).equals("cali"))) {
+        tag = "LOCATION";
+        utteranceInfo.nerTags.set(i + 1, tag);
+        utteranceInfo.nerTags.set(i + 2, tag);
+        utteranceInfo.nerTags.set(i + 3, tag);
+        utteranceInfo.nerTags.set(i + 4, tag);
+      }
+      if (token.equals("los") && i < utteranceInfo.tokens.size() - 3 &&
+          utteranceInfo.tokens.get(i + 1).equals("angeles") &&
+          utteranceInfo.tokens.get(i + 2).equals(",") &&
+          (utteranceInfo.tokens.get(i + 3).equals("california") || utteranceInfo.tokens.get(i + 3).equals("ca") ||
+              utteranceInfo.tokens.get(i + 3).equals("cali") ||
+              utteranceInfo.tokens.get(i + 3).equals("ca."))) {
+        tag = "LOCATION";
+        utteranceInfo.nerTags.set(i + 1, tag);
+        utteranceInfo.nerTags.set(i + 2, tag);
+        utteranceInfo.nerTags.set(i + 3, tag);
+      }
 
       switch (token) {
+      case "usa":
+        tag = "LOCATION";
+        break;
+
       //case "google":
       case "warriors":
       case "stanford":
@@ -213,10 +299,17 @@ public class Seq2SeqTokenizer {
         tag = "LANGUAGE";
         break;
         
+      case "inkwell":
+      case "lo-fi":
+      case "sierra":
+        tag = "INSTAGRAM_FILTER";
+        break;
+
       case "pdf":
       case "excel":
       case "jpeg":
       case "jpg":
+      case "png":
         tag = "MIME_TYPE";
         break;
         
@@ -231,6 +324,7 @@ public class Seq2SeqTokenizer {
         if (i > 0 && "MIME_TYPE".equals(utteranceInfo.nerTags.get(i-1)))
           tag = "MIME_TYPE";
         break;
+
       }
       
       if (tag != null && !utteranceInfo.nerTags.get(i).equals("QUOTED_STRING"))
@@ -241,17 +335,20 @@ public class Seq2SeqTokenizer {
   private void computeTokens(Example ex, LanguageInfo utteranceInfo, Result result) {
     Map<String, Integer> nextInt = new HashMap<>();
     StringBuilder fullEntity = new StringBuilder();
+    List<String> entityPosTags = new ArrayList<>();
 
     for (int i = 0; i < utteranceInfo.tokens.size(); i++) {
-      String token, tag, current;
+      String token, tag, posTag, current;
 
       tag = utteranceInfo.nerTags.get(i);
+      posTag = utteranceInfo.posTags.get(i);
       token = utteranceInfo.tokens.get(i);
 
       if (!"O".equals(tag)) {
         if (fullEntity.length() != 0)
           fullEntity.append(" ");
         fullEntity.append(token);
+        entityPosTags.add(posTag);
         if (i < utteranceInfo.tokens.size() - 1 &&
             utteranceInfo.nerTags.get(i + 1).equals(tag) &&
             Objects.equals(utteranceInfo.nerValues.get(i), utteranceInfo.nerValues.get(i + 1)))
@@ -277,14 +374,18 @@ public class Seq2SeqTokenizer {
           }
         } else {
           result.tokens.addAll(Arrays.asList(fullEntity.toString().split(" ")));
+          result.posTags.addAll(entityPosTags);
+          entityPosTags.clear();
           current = null;
         }
       } else {
         current = token;
       }
       fullEntity.setLength(0);
-      if (current != null)
-          result.tokens.add(current);
+      if (current != null) {
+        result.tokens.add(current);
+        result.posTags.add(posTag);
+      }
     }
   }
 
@@ -361,6 +462,8 @@ public class Seq2SeqTokenizer {
     case "united kingdom":
     case "america":
     case "england":
+    case "germany":
+    case "italy":
     case "california":
 
       // how sabrina could be a location is beyond me
@@ -373,8 +476,11 @@ public class Seq2SeqTokenizer {
     case "wapo":
       return null;
     }
-    if ("la".equals(entity))
+    if ("la".equals(entity) || entity.startsWith("la , ca") || entity.startsWith("la ca"))
       entity = "los angeles";
+
+    if (entity.startsWith("los angeles") || "l.a.".equals(entity))
+      return new LocationValue(34.0543942, -118.2439408);
 
     Collection<LocationLexicon.Entry<LocationValue>> entries = locationLexicon.lookup(entity);
     if (entries.isEmpty())
@@ -458,6 +564,7 @@ public class Seq2SeqTokenizer {
       case "finance":
       case "quote":
       case "dividend":
+      case "dividends":
         nstock++;
       }
     }
@@ -550,6 +657,8 @@ public class Seq2SeqTokenizer {
     switch (nerType) {
     case "MONEY":
     case "PERCENT":
+      if (nerValue == null)
+        return null;
       unit = nerValue.substring(0, 1);
       nerValue = nerValue.substring(1);
       // fallthrough
@@ -602,17 +711,19 @@ public class Seq2SeqTokenizer {
     case "EMAIL_ADDRESS":
     case "URL":
     case "QUOTED_STRING":
+    case "PATH_NAME":
       return new Pair<>(nerType, nerValue);
 
     case "LOCATION":
       LocationValue loc = findLocation(entity);
       if (loc == null)
-        return null;
+        return findEntity(ex, entity, "tt:country");
       return new Pair<>(nerType, loc);
 
     case "ORGANIZATION":
       return findEntity(ex, entity, null);
 
+    case "NATIONALITY":
     case "LANGUAGE":
       return findEntity(ex, entity, "tt:iso_lang_code");
 
@@ -624,6 +735,9 @@ public class Seq2SeqTokenizer {
 
     case "MEME":
       return findEntity(ex, entity, "imgflip:meme_id");
+
+    case "INSTAGRAM_FILTER":
+      return findEntity(ex, entity, "com.instagram:filter");
 
     case "DURATION":
       if (nerValue != null) {

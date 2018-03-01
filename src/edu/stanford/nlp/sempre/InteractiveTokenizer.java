@@ -32,6 +32,7 @@ public class InteractiveTokenizer implements Runnable {
 
         Seq2SeqTokenizer.Result result = tokenizer.process(ex);
         LogInfo.logs("tokens: %s", result.tokens);
+        LogInfo.logs("pos tags: %s", result.posTags);
 
         for (Map.Entry<Seq2SeqTokenizer.Value, List<Integer>> entry : result.entities.entrySet()) {
           Seq2SeqTokenizer.Value entity = entry.getKey();

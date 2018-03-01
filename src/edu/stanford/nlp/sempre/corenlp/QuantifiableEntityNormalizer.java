@@ -53,7 +53,7 @@ public class QuantifiableEntityNormalizer {
   public static final String BACKGROUND_SYMBOL = "O";
 
   private static final Pattern timePattern = Pattern
-      .compile("([0-2]?[0-9])((?::[0-5][0-9]){0,2})([PpAa]\\.?[Mm]\\.?)?");
+      .compile("([0-2]?[0-9])((?::?[0-5][0-9]){0,2})([PpAa]\\.?[Mm]?\\.?)?");
 
   private static final Pattern moneyPattern = Pattern
       .compile("([$\u00A3\u00A5\u20AC#]?)(-?[0-9,]+(?:\\.[0-9]*)?|\\.[0-9]+)[-a-zA-Z]*");
@@ -101,6 +101,7 @@ public class QuantifiableEntityNormalizer {
 
     currencyWords = Generics.newHashMap();
     currencyWords.put("dollars?", '$');
+    currencyWords.put("bucks?", '$');
     currencyWords.put("cents?", '$');
     currencyWords.put("pounds?", '\u00A3');
     currencyWords.put("pence|penny", '\u00A3');
@@ -343,6 +344,10 @@ public class QuantifiableEntityNormalizer {
   public static String normalizedTimeString(String s, String ampm) {
     if (DEBUG2)
       err.println("normalizingTime: " + s);
+    if (s.startsWith("morning at "))
+      s = s.substring("morning at ".length()) + "am";
+    else if (s.startsWith("evening at "))
+      s = s.substring("evening at ".length()) + "pm";
     s = s.replaceAll("[ \t\n\0\f\r]", "");
     Matcher m = timePattern.matcher(s);
     if (s.equalsIgnoreCase("noon") || s.equalsIgnoreCase("midday")) {
@@ -819,6 +824,10 @@ public class QuantifiableEntityNormalizer {
       return "L";
     } else if (longPrev.matches(middleTwoWords)) {
       return "M";
+    } else if (longPrev.matches("morning (at|of)")) {
+      return "am";
+    } else if (longPrev.matches("(evening|afternoon) (at|of)")) {
+      return "pm";
     }
 
     if (prev.matches(earlyOneWord) || prev2.matches(earlyOneWord)) {

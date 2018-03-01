@@ -55,6 +55,9 @@ public class TokenizerServer implements Runnable {
     final List<String> tokens;
 
     @JsonProperty
+    final List<String> pos;
+
+    @JsonProperty
     final Map<String, Object> values = new HashMap<>();
 
     @JsonProperty
@@ -63,6 +66,7 @@ public class TokenizerServer implements Runnable {
     Output(int req, Seq2SeqTokenizer.Result tokenizerResult) {
       this.req = req;
       this.tokens = tokenizerResult.tokens;
+      this.pos = tokenizerResult.posTags;
       this.constituencyParse = tokenizerResult.constituencyParse;
     }
   }

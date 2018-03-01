@@ -37,7 +37,7 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     // are reflected in the lemma tokens and POS tags
     @Option(gloss = "What CoreNLP annotators to run")
     public List<String> annotators = Lists.newArrayList("tokenize", "quote2", "ssplit", "pos", "lemma",
-        "ner", "quote_ner", "spellcheck", "ssplit", "pos", "lemma");
+        "ner", "regexner", "quote_ner", "spellcheck", "ssplit", "pos", "lemma");
 
     @Option(gloss = "Whether to use case-sensitive models")
     public boolean caseSensitive = false;
@@ -134,6 +134,9 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     props.put("ner.applyNumericClassifiers", "false");
     props.put("ner.useSUTime", "false");
 
+    // enable regexner
+    props.put("regexner.mapping", "edu/stanford/nlp/models/regexner/type_map_clean");
+
     // move quotes to a NER tag
     props.put("customAnnotatorClass.quote2", QuotedStringAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.quote_ner", QuotedStringEntityAnnotator.class.getCanonicalName());
@@ -213,7 +216,9 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
       utterance = breakHyphens(utterance);
 
     // Run Stanford CoreNLP
-    Annotation annotation = pipeline.process(utterance);
+
+    // Work around CoreNLP issue #622
+    Annotation annotation = pipeline.process(utterance + " ");
 
     // run numeric classifiers
     recognizeNumberSequences(annotation.get(CoreAnnotations.TokensAnnotation.class));

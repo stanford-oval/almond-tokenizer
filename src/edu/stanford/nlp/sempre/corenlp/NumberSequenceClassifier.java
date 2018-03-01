@@ -90,9 +90,13 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
   private static final Pattern TIME_PATTERN3 = Pattern.compile("[0-2]?[0-9](:[0-5][0-9])?[ap]\\.?m\\.?",
       Pattern.CASE_INSENSITIVE);
 
+  private static final Pattern TIME_PATTERN4 = Pattern.compile("[0-2]?[0-9][0-5][0-9][ap]\\.?m?\\.?",
+      Pattern.CASE_INSENSITIVE);
+
   private static final Pattern AM_PM = Pattern.compile("(a\\.?m\\.?)|(p\\.?m\\.?)", Pattern.CASE_INSENSITIVE);
 
-  public static final Pattern CURRENCY_WORD_PATTERN = Pattern.compile("(?:dollar|cent|euro)s?|penny|pence|yen|yuan|won",
+  public static final Pattern CURRENCY_WORD_PATTERN = Pattern.compile(
+      "(?:dollar|cent|euro|buck)s?|penny|pence|yen|yuan|won",
       Pattern.CASE_INSENSITIVE);
 
   // pattern matches: dollar, pound sign XML escapes; pound sign, yen sign, euro, won; other country dollars; now omit # for pound
@@ -139,6 +143,15 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
       //if (DEBUG) { System.err.println("Tagging:" + me.word()); }
       me.set(CoreAnnotations.AnswerAnnotation.class, flags.backgroundSymbol);
 
+      /*if ("morning".equals(me.word()) || "evening".equals(me.word())) {
+        if ("at".equals(next.word()) &&
+            (TIME_PATTERN.matcher(next2.word()).matches() || TIME_PATTERN2.matcher(next2.word()).matches()
+                || TIME_PATTERN3.matcher(next2.word()).matches())) {
+          me.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
+          next.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
+          next2.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
+        }
+      }*/
       if (CURRENCY_SYMBOL_PATTERN.matcher(me.word()).matches() &&
           (prev.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("CD") ||
               next.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("CD"))) {
@@ -149,7 +162,7 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
         }
         me.set(CoreAnnotations.AnswerAnnotation.class, "MONEY");
       } else if (TIME_PATTERN.matcher(me.word()).matches() || TIME_PATTERN2.matcher(me.word()).matches()
-          || TIME_PATTERN3.matcher(me.word()).matches()) {
+          || TIME_PATTERN3.matcher(me.word()).matches() || TIME_PATTERN4.matcher(me.word()).matches()) {
         me.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
       } else if (DATE_PATTERN.matcher(me.word()).matches() || DATE_PATTERN2.matcher(me.word()).matches()) {
         me.set(CoreAnnotations.AnswerAnnotation.class, "DATE");

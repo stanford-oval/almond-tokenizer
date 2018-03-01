@@ -38,6 +38,7 @@ public class SpellCheckerAnnotator implements Annotator {
   private static final Pattern BLANK_PATTERN = Pattern.compile("_+");
   private static final Set<String> PTB_PUNCTUATION = Sets.newHashSet("-lrb-", "-lsb-", "-rrb-", "-rsb-", "'", "`", "''",
       "``", ",", "-LRB-", "-RRB-", "%", ">", "<", "-LSB-", "-RSB-");
+  private static final Pattern FILENAME_PATTERN = Pattern.compile(".*\\.[a-zA-Z0-9]{2,4}");
 
   private final Set<String> extraDictionary = new HashSet<>();
   private final Map<String, String> replacements = new HashMap<>();
@@ -132,7 +133,8 @@ public class SpellCheckerAnnotator implements Annotator {
 
       if (token.get(QuoteAnnotation.class) != null ||
           PTB_PUNCTUATION.contains(word) ||
-          word.contains("@") || word.startsWith("#") || word.length() <= 2 ||
+          word.contains("@") || word.startsWith("#") || word.contains(".") || word.length() <= 2 ||
+          FILENAME_PATTERN.matcher(word).matches() ||
           NUMERIC_PATTERN.matcher(word).matches() ||
           BLANK_PATTERN.matcher(word).matches() ||
           word.startsWith("http") || word.startsWith("www") ||
@@ -141,13 +143,13 @@ public class SpellCheckerAnnotator implements Annotator {
         continue;
       }
 
-      if (extraDictionary.contains(word.toLowerCase()) || dictionary.spell(word)) {
-        newTokens.add(token);
+      if (replacements.containsKey(word.toLowerCase())) {
+        doReplace(token, newTokens, word, replacements.get(word.toLowerCase()));
         continue;
       }
 
-      if (replacements.containsKey(word.toLowerCase())) {
-        doReplace(token, newTokens, word, replacements.get(word.toLowerCase()));
+      if (extraDictionary.contains(word.toLowerCase()) || dictionary.spell(word)) {
+        newTokens.add(token);
         continue;
       }
 

@@ -23,6 +23,11 @@ public class LocationValue extends Value {
   }
 
   @Override
+  public String toString() {
+    return "[Lat: " + this.latitude + ", Lon: + " + this.longitude + " (" + this.display + ")]";
+  }
+
+  @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
