@@ -179,11 +179,7 @@ public class TokenizerServer implements Runnable {
         .disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
 
     try {
-      ServerSocketChannel socketChannel = (ServerSocketChannel) System.inheritedChannel();
-      if (socketChannel != null)
-        server = socketChannel.socket();
-      else
-        server = new ServerSocket(8888);
+      server = new ServerSocket(8888);
 
       while (true) {
         Socket socket = server.accept();
