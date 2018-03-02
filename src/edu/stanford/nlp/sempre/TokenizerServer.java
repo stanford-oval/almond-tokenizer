@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.collect.Lists;
+import info.faljse.SDNotify.SDNotify;
 
 import edu.stanford.nlp.sempre.corenlp.CoreNLPAnalyzer;
 import fig.basic.IOUtils;
@@ -180,6 +181,7 @@ public class TokenizerServer implements Runnable {
 
     try {
       server = new ServerSocket(8888);
+      SDNotify.sendNotify();
 
       while (true) {
         Socket socket = server.accept();

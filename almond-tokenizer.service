@@ -4,6 +4,7 @@ Description=SEMPRE-based Natural Language Tokenizer for Almond
 [Service]
 WorkingDirectory=/opt/almond-tokenizer
 ExecStart=/opt/almond-tokenizer/run.sh
+Type=notify
 StandardInput=null
 StandardOutput=journal
 
