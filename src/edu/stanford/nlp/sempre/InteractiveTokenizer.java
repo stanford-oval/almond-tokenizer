@@ -6,9 +6,11 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
-import fig.basic.LogInfo;
+import edu.stanford.nlp.util.logging.Redwood;
 
 public class InteractiveTokenizer implements Runnable {
+  private static final Redwood.RedwoodChannels log = Redwood.channels(InteractiveTokenizer.class);
+
   public static void main(String[] args) {
     InteractiveTokenizer tokenizer = new InteractiveTokenizer();
     tokenizer.run();
@@ -25,23 +27,24 @@ public class InteractiveTokenizer implements Runnable {
         String text = reader.readLine();
         if (text == null)
           break;
-        LogInfo.begin_track("Analyzing \"%s\"", text);
+        Redwood.startTrack();
+        log.logf("Analyzing \"%s\"", text);
         Example ex = new Example.Builder().setUtterance(text).createExample();
         ex.preprocess(analyzer);
 
         Seq2SeqTokenizer.Result result = tokenizer.process(ex);
-        LogInfo.logs("tokens: %s", result.tokens);
-        LogInfo.logs("pos tags: %s", result.posTags);
+        log.logf("tokens: %s", result.tokens);
+        log.logf("pos tags: %s", result.posTags);
 
         for (Map.Entry<Seq2SeqTokenizer.Value, List<Integer>> entry : result.entities.entrySet()) {
           Seq2SeqTokenizer.Value entity = entry.getKey();
           String entityType = entity.type;
           for (int entityNum : entry.getValue()) {
             String entityToken = entityType + "_" + entityNum;
-            LogInfo.logs("%s = %s", entityToken, entity.value);
+            log.logf("%s = %s", entityToken, entity.value);
           }
         }
-        LogInfo.end_track();
+        Redwood.endTrack();
       }
     } catch (IOException e) {
       e.printStackTrace();

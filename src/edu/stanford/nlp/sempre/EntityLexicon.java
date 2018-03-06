@@ -11,9 +11,10 @@ import java.util.function.Function;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import fig.basic.LogInfo;
+import edu.stanford.nlp.util.logging.Redwood;
 
 public class EntityLexicon extends AbstractLexicon<EntityValue> {
+  private static final Redwood.RedwoodChannels log = Redwood.channels(EntityLexicon.class);
   private static final Map<String, EntityLexicon> instances = new HashMap<>();
 
   private final String languageTag;
@@ -73,7 +74,7 @@ public class EntityLexicon extends AbstractLexicon<EntityValue> {
     try {
       URL url = new URL(String.format(URL_TEMPLATE, languageTag, URLEncoder.encode(rawPhrase, "utf-8")));
       if (verbose >= 3)
-        LogInfo.logs("EntityLexicon HTTP call to %s", url);
+        log.debugf("EntityLexicon HTTP call to %s", url);
 
       URLConnection connection = url.openConnection();
 
@@ -85,7 +86,7 @@ public class EntityLexicon extends AbstractLexicon<EntityValue> {
         });
       }
     } catch (IOException e) {
-      LogInfo.logs("Exception during entity lookup: %s", e.getMessage());
+      log.errf("Exception during entity lookup: %s", e.getMessage());
     }
     return entries;
   }

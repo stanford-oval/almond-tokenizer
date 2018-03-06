@@ -13,16 +13,6 @@ pullparmesan() {
 }
 
 cd $SEMPREDIR
-if test -d fig ; then
-  (cd fig ; git pull )
-else
-  git clone 'https://github.com/percyliang/fig' fig
-fi
-
-make -C fig
-mkdir -p lib
-ln -sf ../fig/fig.jar lib/fig.jar
-
 pullsempre '/u/nlp/data/semparse/resources/guava-14.0.1.jar'
 # TestNG -- testing framework
 pullsempre '/u/nlp/data/semparse/resources/testng-6.8.5.jar'

@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import fig.basic.LogInfo;
+import edu.stanford.nlp.util.logging.Redwood;
 
 /**
  * Represents a numerical value (optionally comes with a unit).
@@ -15,6 +15,8 @@ import fig.basic.LogInfo;
  * @author Percy Liang
  */
 public class NumberValue extends Value {
+  private static final Redwood.RedwoodChannels log = Redwood.channels(NumberValue.class);
+
   @JsonProperty
   public final double value;
   @JsonProperty
@@ -35,40 +37,40 @@ public class NumberValue extends Value {
       String unitStr = m.group(3);
       String unit;
       switch (unitStr) {
-        case "S":
-          unit = "s";
-          break;
-        case "m":
-          unit = "min";
-          break;
-        case "M":
-          unit = dailyValue ? "min" : "month";
-          break;
-        case "H":
-          unit = "h";
-          break;
-        case "D":
-          unit = "day";
-          break;
-        case "W":
-          unit = "week";
-          break;
-        case "Y":
-          unit = "year";
-          break;
-        default:
-          LogInfo.warnings("Got unknown unit %s", unitStr);
-          return null;
+      case "S":
+        unit = "s";
+        break;
+      case "m":
+        unit = "min";
+        break;
+      case "M":
+        unit = dailyValue ? "min" : "month";
+        break;
+      case "H":
+        unit = "h";
+        break;
+      case "D":
+        unit = "day";
+        break;
+      case "W":
+        unit = "week";
+        break;
+      case "Y":
+        unit = "year";
+        break;
+      default:
+        log.warnf("Got unknown unit %s", unitStr);
+        return null;
       }
 
       try {
         return new NumberValue(Double.parseDouble(m.group(2)), unit);
       } catch(NumberFormatException e) {
-        LogInfo.warnings("Cannot parse %s as a number", m.group(1));
+        log.warnf("Cannot parse %s as a number", m.group(1));
         return null;
       }
     } else {
-      LogInfo.warning("Cannot parse duration string");
+      log.warn("Cannot parse duration string");
       return null;
     }
   }

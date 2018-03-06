@@ -11,7 +11,7 @@ import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import fig.basic.LogInfo;
+import edu.stanford.nlp.util.logging.Redwood;
 
 /**
  * CoreNLPAnalyzer uses Stanford CoreNLP pipeline to analyze an input string utterance
@@ -20,6 +20,8 @@ import fig.basic.LogInfo;
  * @author akchou
  */
 public class CoreNLPAnalyzer {
+  private static final Redwood.RedwoodChannels log = Redwood.channels(CoreNLPAnalyzer.class);
+
   // Observe that we run almost everything twice
   // This is because NER and quote_ner have to run before spellcheck (so that spellcheck
   // doesn't try to fix names and quotes), but we want to rerun lemmatization
@@ -62,7 +64,7 @@ public class CoreNLPAnalyzer {
       break;
 
     default:
-      LogInfo.logs("Unrecognized language %s, analysis will not work!", languageTag);
+      log.errf("Unrecognized language %s, analysis will not work!", languageTag);
     }
 
     props.put("annotators", annotators);
@@ -283,13 +285,14 @@ public class CoreNLPAnalyzer {
         if (text == null)
           break;
         LanguageInfo langInfo = analyzer.analyze(text);
-        LogInfo.begin_track("Analyzing \"%s\"", text);
-        LogInfo.logs("tokens: %s", langInfo.tokens);
-        LogInfo.logs("lemmaTokens: %s", langInfo.lemmaTokens);
-        LogInfo.logs("posTags: %s", langInfo.posTags);
-        LogInfo.logs("nerTags: %s", langInfo.nerTags);
-        LogInfo.logs("nerValues: %s", langInfo.nerValues);
-        LogInfo.end_track();
+        Redwood.startTrack();
+        log.logf("Analyzing \"%s\"", text);
+        log.logf("tokens: %s", langInfo.tokens);
+        log.logf("lemmaTokens: %s", langInfo.lemmaTokens);
+        log.logf("posTags: %s", langInfo.posTags);
+        log.logf("nerTags: %s", langInfo.nerTags);
+        log.logf("nerValues: %s", langInfo.nerValues);
+        Redwood.endTrack();
       }
     } catch (IOException e) {
         e.printStackTrace();

@@ -5,8 +5,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import fig.basic.LogInfo;
-
 /**
  * An example corresponds roughly to an input-output pair, the basic unit which
  * we make predictions on.  The Example object stores both the input,
@@ -75,15 +73,5 @@ public class Example {
 
   public void preprocess(CoreNLPAnalyzer analyzer) {
     this.languageInfo = analyzer.analyze(this.utterance);
-  }
-
-  public void log() {
-    LogInfo.begin_track("Example: %s", utterance);
-    LogInfo.logs("Tokens: %s", getTokens());
-    LogInfo.logs("Lemmatized tokens: %s", getLemmaTokens());
-    LogInfo.logs("POS tags: %s", languageInfo.posTags);
-    LogInfo.logs("NER tags: %s", languageInfo.nerTags);
-    LogInfo.logs("NER values: %s", languageInfo.nerValues);
-    LogInfo.end_track();
   }
 }

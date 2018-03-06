@@ -2,10 +2,11 @@ package edu.stanford.nlp.sempre;
 
 import java.util.Collection;
 
-import fig.basic.LogInfo;
+import edu.stanford.nlp.util.logging.Redwood;
 
 public abstract class AbstractLexicon<E extends Value> {
   static final int verbose = 0;
+  private static final Redwood.RedwoodChannels log = Redwood.channels(AbstractLexicon.class);
 
   public static class Entry<E extends Value> {
     public final String nerTag;
@@ -66,15 +67,15 @@ public abstract class AbstractLexicon<E extends Value> {
 
   public Collection<Entry<E>> lookup(String rawPhrase) {
     if (verbose >= 2)
-      LogInfo.logs("AbstractLexicon.lookup %s", rawPhrase);
+      log.debugf("AbstractLexicon.lookup %s", rawPhrase);
     Collection<Entry<E>> fromCache = cache.hit(rawPhrase);
     if (fromCache != null) {
       if (verbose >= 3)
-        LogInfo.logs("AbstractLexicon.cacheHit");
+        log.debugf("AbstractLexicon.cacheHit");
       return fromCache;
     }
     if (verbose >= 3)
-      LogInfo.logs("AbstractLexicon.cacheMiss");
+      log.debugf("AbstractLexicon.cacheMiss");
 
     fromCache = doLookup(rawPhrase);
     // cache location lookups forever

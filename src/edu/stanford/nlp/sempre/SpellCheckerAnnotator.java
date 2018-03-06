@@ -14,9 +14,11 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.Annotator;
 import edu.stanford.nlp.sempre.QuotedStringAnnotator.QuoteAnnotation;
 import edu.stanford.nlp.util.ArraySet;
-import fig.basic.LogInfo;
+import edu.stanford.nlp.util.logging.Redwood;
 
 public class SpellCheckerAnnotator implements Annotator {
+  private static final Redwood.RedwoodChannels log = Redwood.channels(SpellCheckerAnnotator.class);
+
   private final HunspellDictionary dictionary;
   private final boolean enabled;
 
@@ -151,7 +153,7 @@ public class SpellCheckerAnnotator implements Annotator {
 
       List<String> replacements = dictionary.suggest(word);
       if (replacements.isEmpty()) {
-        LogInfo.logs("Found no replacement for mispelled word %s", word);
+        log.logf("Found no replacement for mispelled word %s", word);
         newTokens.add(token);
         continue;
       } else {
@@ -182,7 +184,7 @@ public class SpellCheckerAnnotator implements Annotator {
       newToken.set(CoreAnnotations.LemmaAnnotation.class, newWord);
       newTokens.add(newToken);
     }
-    LogInfo.logs("Replaced mispelled word %s as %s", word, replacement);
+    log.logf("Replaced mispelled word %s as %s", word, replacement);
   }
 
   @Override
@@ -192,7 +194,6 @@ public class SpellCheckerAnnotator implements Annotator {
 
   @Override
   public Set<Class<? extends CoreAnnotation>> requires() {
-    // TODO Auto-generated method stub
     return Collections.unmodifiableSet(new ArraySet<>(Arrays.asList(
         CoreAnnotations.TextAnnotation.class,
         CoreAnnotations.TokensAnnotation.class,

@@ -13,9 +13,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import fig.basic.LogInfo;
+import edu.stanford.nlp.util.logging.Redwood;
 
 public class LocationLexicon extends AbstractLexicon<LocationValue> {
+  private static final Redwood.RedwoodChannels log = Redwood.channels(LocationLexicon.class);
+
   @JsonIgnoreProperties({ "boundingbox", "licence" })
   private static class NominatimEntry {
     @JsonProperty
@@ -72,7 +74,7 @@ public class LocationLexicon extends AbstractLexicon<LocationValue> {
     try {
       URL url = new URL(String.format(URL_TEMPLATE, languageTag, URLEncoder.encode(rawPhrase, "utf-8")));
       if (verbose >= 3)
-        LogInfo.logs("LocationLexicon HTTP call to %s", url);
+        log.debugf("LocationLexicon HTTP call to %s", url);
 
       URLConnection connection = url.openConnection();
       connection.setRequestProperty("User-Agent", "Almond Tokenizer/2.1 JavaSE/1.8");
@@ -87,7 +89,7 @@ public class LocationLexicon extends AbstractLexicon<LocationValue> {
         });
       }
     } catch (IOException e) {
-      LogInfo.logs("Failed to contact location server: %s", e.getMessage());
+      log.errf("Failed to contact location server: %s", e.getMessage());
       return Collections.emptyList();
     }
   }

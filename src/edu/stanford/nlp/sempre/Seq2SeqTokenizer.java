@@ -12,10 +12,27 @@ import edu.stanford.nlp.pipeline.ParserAnnotator;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
-import fig.basic.Pair;
 
 public class Seq2SeqTokenizer {
   private static final boolean INCLUDE_CONSTITUENCY_PARSE = false;
+
+  private static class Pair<E1, E2> {
+    private final E1 e1;
+    private final E2 e2;
+
+    public Pair(E1 e1, E2 e2) {
+      this.e1 = e1;
+      this.e2 = e2;
+    }
+
+    public E1 getFirst() {
+      return e1;
+    }
+
+    public E2 getSecond() {
+      return e2;
+    }
+  }
 
   public static class Value {
     public final String type;
