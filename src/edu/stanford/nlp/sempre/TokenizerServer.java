@@ -32,7 +32,7 @@ public class TokenizerServer implements Runnable {
 
   private final ObjectMapper object = new ObjectMapper();
   private ServerSocket server;
-  private final Map<String, LanguageAnalyzer> analyzers = new HashMap<>();
+  private final Map<String, CoreNLPAnalyzer> analyzers = new HashMap<>();
   private final Map<String, Seq2SeqTokenizer> tokenizers = new HashMap<>();
   private final Executor threadPool = Executors.newFixedThreadPool(2 * Runtime.getRuntime().availableProcessors());
 
@@ -117,7 +117,7 @@ public class TokenizerServer implements Runnable {
       writeError(outputStream, new Error(input.req, "Missing language tag"));
       return;
     }
-    LanguageAnalyzer analyzer = analyzers.get(input.languageTag);
+    CoreNLPAnalyzer analyzer = analyzers.get(input.languageTag);
     Seq2SeqTokenizer tokenizer = tokenizers.get(input.languageTag);
 
     Example ex = new Example.Builder().setUtterance(input.utterance).createExample();

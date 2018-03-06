@@ -14,7 +14,6 @@ import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.sempre.LanguageAnalyzer;
 import edu.stanford.nlp.sempre.LanguageInfo;
 import fig.basic.LogInfo;
 import fig.basic.Option;
@@ -25,7 +24,7 @@ import fig.basic.Option;
  *
  * @author akchou
  */
-public class CoreNLPAnalyzer extends LanguageAnalyzer {
+public class CoreNLPAnalyzer {
   public static class Options {
     // Observe that we run almost everything twice
     // This is because NER and quote_ner have to run before spellcheck (so that spellcheck
@@ -39,9 +38,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
 
     @Option(gloss = "What language to use (as a two letter tag)")
     public String languageTag = "en";
-
-    @Option(gloss = "Ignore DATE tags on years (numbers between 1000 and 3000) and parse them as numbers")
-    public boolean yearsAsNumbers = false;
   }
 
   public static Options opts = new Options();
@@ -135,7 +131,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     QuantifiableEntityNormalizer.applySpecializedNER(words);
   }
 
-  @Override
   public LanguageInfo analyze(String utterance) {
     LanguageInfo languageInfo = new LanguageInfo();
 
@@ -173,7 +168,7 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
         addComma = true;
       }
 
-      if (opts.yearsAsNumbers && nerTag.equals("DATE") && INTEGER_PATTERN.matcher(nerValue).matches()) {
+      if (nerTag.equals("DATE") && INTEGER_PATTERN.matcher(nerValue).matches()) {
         nerTag = "NUMBER";
       }
 
@@ -297,7 +292,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
 
   // Test on example sentence.
   public static void main(String[] args) {
-    CoreNLPAnalyzer.opts.yearsAsNumbers = true;
     CoreNLPAnalyzer analyzer = new CoreNLPAnalyzer();
 
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {

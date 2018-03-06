@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.stanford.nlp.sempre.corenlp.CoreNLPAnalyzer;
 import fig.basic.LogInfo;
 
 /**
@@ -24,45 +25,34 @@ public class Example {
   // Input utterance
   public final String utterance;
 
-  // What we should try to predict.
-  public final String targetJson;
-
   //// Information after preprocessing (e.g., tokenization, POS tagging, NER, syntactic parsing, etc.).
   public LanguageInfo languageInfo = null;
 
   public static class Builder {
     private String id;
     private String utterance;
-    private String targetJson;
     private LanguageInfo languageInfo;
 
     public Builder setId(String id) { this.id = id; return this; }
     public Builder setUtterance(String utterance) { this.utterance = utterance; return this; }
 
-    public Builder setTargetJson(String targetJson) {
-      this.targetJson = targetJson;
-      return this;
-    }
     public Builder setLanguageInfo(LanguageInfo languageInfo) { this.languageInfo = languageInfo; return this; }
     public Builder withExample(Example ex) {
       setId(ex.id);
       setUtterance(ex.utterance);
-      setTargetJson(ex.targetJson);
       return this;
     }
     public Example createExample() {
-      return new Example(id, utterance, targetJson, languageInfo);
+      return new Example(id, utterance, languageInfo);
     }
   }
 
   @JsonCreator
   public Example(@JsonProperty("id") String id,
                  @JsonProperty("utterance") String utterance,
-      @JsonProperty("target_json") String targetJson,
                  @JsonProperty("languageInfo") LanguageInfo languageInfo) {
     this.id = id;
     this.utterance = utterance;
-    this.targetJson = targetJson;
     this.languageInfo = languageInfo;
   }
 
@@ -84,11 +74,7 @@ public class Example {
   }
   public String posTag(int i) { return languageInfo.posTags.get(i); }
 
-  public void preprocess() {
-    this.preprocess(LanguageAnalyzer.getSingleton());
-  }
-
-  public void preprocess(LanguageAnalyzer analyzer) {
+  public void preprocess(CoreNLPAnalyzer analyzer) {
     this.languageInfo = analyzer.analyze(this.utterance);
   }
 
@@ -99,8 +85,6 @@ public class Example {
     LogInfo.logs("POS tags: %s", languageInfo.posTags);
     LogInfo.logs("NER tags: %s", languageInfo.nerTags);
     LogInfo.logs("NER values: %s", languageInfo.nerValues);
-    if (targetJson != null)
-      LogInfo.logs("targetValue: %s", targetJson);
     LogInfo.end_track();
   }
 }
