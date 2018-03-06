@@ -46,7 +46,7 @@ string_to_jstring(JNIEnv *env, const std::string &str) {
 }
 
 JNIEXPORT jlong JNICALL
-Java_edu_stanford_nlp_sempre_corenlp_HunspellDictionary_nativeLoadLib(JNIEnv *env, jclass, jstring jaffPath, jstring jdicPath)
+Java_edu_stanford_nlp_sempre_HunspellDictionary_nativeLoadLib(JNIEnv *env, jclass, jstring jaffPath, jstring jdicPath)
 {
     AutoReleaseString affPath(env, jaffPath);
     AutoReleaseString dicPath(env, jdicPath);
@@ -55,7 +55,7 @@ Java_edu_stanford_nlp_sempre_corenlp_HunspellDictionary_nativeLoadLib(JNIEnv *en
 }
 
 JNIEXPORT jboolean JNICALL
-Java_edu_stanford_nlp_sempre_corenlp_HunspellDictionary_nativeSpell(JNIEnv *env, jclass, jlong jlib, jstring jword)
+Java_edu_stanford_nlp_sempre_HunspellDictionary_nativeSpell(JNIEnv *env, jclass, jlong jlib, jstring jword)
 {
     Hunspell *lib = (Hunspell*)jlib;
     AutoReleaseString word(env, jword);
@@ -68,7 +68,7 @@ Java_edu_stanford_nlp_sempre_corenlp_HunspellDictionary_nativeSpell(JNIEnv *env,
 }
 
 JNIEXPORT jobject JNICALL
-Java_edu_stanford_nlp_sempre_corenlp_HunspellDictionary_nativeSuggest(JNIEnv *env, jclass, jlong jlib, jstring jword)
+Java_edu_stanford_nlp_sempre_HunspellDictionary_nativeSuggest(JNIEnv *env, jclass, jlong jlib, jstring jword)
 {
     Hunspell *lib = (Hunspell*)jlib;
     AutoReleaseString word(env, jword);
@@ -93,7 +93,7 @@ Java_edu_stanford_nlp_sempre_corenlp_HunspellDictionary_nativeSuggest(JNIEnv *en
 }
 
 JNIEXPORT void JNICALL
-Java_edu_stanford_nlp_sempre_corenlp_HunspellDictionary_nativeFreeLib(JNIEnv *env, jclass, jlong jlib)
+Java_edu_stanford_nlp_sempre_HunspellDictionary_nativeFreeLib(JNIEnv *env, jclass, jlong jlib)
 {
     Hunspell *lib = (Hunspell*)jlib;
     delete lib;

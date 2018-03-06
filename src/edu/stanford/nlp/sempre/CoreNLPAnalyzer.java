@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.corenlp;
+package edu.stanford.nlp.sempre;
 
 import java.io.*;
 import java.util.List;
@@ -14,7 +14,6 @@ import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.sempre.LanguageInfo;
 import fig.basic.LogInfo;
 import fig.basic.Option;
 

@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.corenlp;
+package edu.stanford.nlp.sempre;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,7 +9,7 @@ import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.Annotator;
-import edu.stanford.nlp.sempre.corenlp.QuotedStringAnnotator.QuoteAnnotation;
+import edu.stanford.nlp.sempre.QuotedStringAnnotator.QuoteAnnotation;
 import edu.stanford.nlp.util.ArraySet;
 import edu.stanford.nlp.util.CoreMap;
 

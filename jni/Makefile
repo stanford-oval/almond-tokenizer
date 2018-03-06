@@ -10,8 +10,8 @@ all : libhunspell_jni.so
 CPPFLAGS := -I $(JNIPATH) -I $(JNIPATH_MD)
 CXXFLAGS := --std=c++11 -Wall -O2 -g -fPIC -DPIC -Wl,-no-undefined
 
-hunspell-jni.h : $(CLASS_PATH)/edu/stanford/nlp/sempre/corenlp/HunspellDictionary.class
-	$(JAVAHOME)/bin/javah -classpath $(CLASS_PATH) -o $@ edu.stanford.nlp.sempre.corenlp.HunspellDictionary
+hunspell-jni.h : $(CLASS_PATH)/edu/stanford/nlp/sempre/HunspellDictionary.class
+	$(JAVAHOME)/bin/javah -classpath $(CLASS_PATH) -o $@ edu.stanford.nlp.sempre.HunspellDictionary
 
 libhunspell_jni_OBJECTS = hunspell-jni.o
 libhunspell_jni_CPPFLAGS := $(CPPFLAGS) $(shell pkg-config --cflags hunspell)

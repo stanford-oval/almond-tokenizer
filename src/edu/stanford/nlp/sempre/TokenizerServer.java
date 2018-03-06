@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.collect.Lists;
 
-import edu.stanford.nlp.sempre.corenlp.CoreNLPAnalyzer;
 import fig.basic.IOUtils;
 import fig.basic.Option;
 import fig.basic.OptionsParser;

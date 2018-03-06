@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.corenlp;
+package edu.stanford.nlp.sempre;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.corenlp;
+package edu.stanford.nlp.sempre;
 
 import java.io.IOException;
 import java.util.*;
@@ -12,7 +12,7 @@ import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.Annotator;
-import edu.stanford.nlp.sempre.corenlp.QuotedStringAnnotator.QuoteAnnotation;
+import edu.stanford.nlp.sempre.QuotedStringAnnotator.QuoteAnnotation;
 import edu.stanford.nlp.util.ArraySet;
 import fig.basic.LogInfo;
 import fig.basic.Option;

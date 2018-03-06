@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre.corenlp;
+package edu.stanford.nlp.sempre;
 
 import java.util.List;
 import java.util.Properties;

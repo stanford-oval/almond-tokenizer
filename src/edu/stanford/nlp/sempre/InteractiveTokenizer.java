@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
-import edu.stanford.nlp.sempre.corenlp.CoreNLPAnalyzer;
 import fig.basic.LogInfo;
 import fig.exec.Execution;
 
