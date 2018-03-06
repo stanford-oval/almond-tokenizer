@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import fig.basic.LogInfo;
-import fig.exec.Execution;
 
 public class InteractiveTokenizer implements Runnable {
   public static void main(String[] args) {
-    Execution.run(args, "Main", new InteractiveTokenizer(), TokenizerServer.getOptionsParser());
+    InteractiveTokenizer tokenizer = new InteractiveTokenizer();
+    tokenizer.run();
   }
 
   @Override
