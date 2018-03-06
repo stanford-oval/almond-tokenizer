@@ -72,7 +72,7 @@ public class EntityLexicon extends AbstractLexicon<EntityValue> {
     
     try {
       URL url = new URL(String.format(URL_TEMPLATE, languageTag, URLEncoder.encode(rawPhrase, "utf-8")));
-      if (opts.verbose >= 3)
+      if (verbose >= 3)
         LogInfo.logs("EntityLexicon HTTP call to %s", url);
 
       URLConnection connection = url.openConnection();

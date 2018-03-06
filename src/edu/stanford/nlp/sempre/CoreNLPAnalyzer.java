@@ -6,16 +6,12 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import fig.basic.LogInfo;
-import fig.basic.Option;
 
 /**
  * CoreNLPAnalyzer uses Stanford CoreNLP pipeline to analyze an input string utterance
@@ -24,30 +20,18 @@ import fig.basic.Option;
  * @author akchou
  */
 public class CoreNLPAnalyzer {
-  public static class Options {
-    // Observe that we run almost everything twice
-    // This is because NER and quote_ner have to run before spellcheck (so that spellcheck
-    // doesn't try to fix names and quotes), but we want to rerun lemmatization
-    // after spellcheck so that new spaces and slash-splitting that spellcheck does
-    // are reflected in the lemma tokens and POS tags
-    @Option(gloss = "What CoreNLP annotators to run")
-    public List<String> annotators = Lists.newArrayList("tokenize", "quote2", "ssplit", "pos", "lemma",
-        "quote_ner", "ner", "regexner", "custom_regexp_ner", "phone_ner", "url_ner",
-        "spellcheck", "ssplit", "pos", "lemma");
-
-    @Option(gloss = "What language to use (as a two letter tag)")
-    public String languageTag = "en";
-  }
-
-  public static Options opts = new Options();
+  // Observe that we run almost everything twice
+  // This is because NER and quote_ner have to run before spellcheck (so that spellcheck
+  // doesn't try to fix names and quotes), but we want to rerun lemmatization
+  // after spellcheck so that new spaces and slash-splitting that spellcheck does
+  // are reflected in the lemma tokens and POS tags
+  private static final String annotators = "tokenize,quote2,ssplit,pos,lemma," +
+      "quote_ner,ner,regexner,custom_regexp_ner,phone_ner,url_ner" +
+      "spellcheck,ssplit,pos,lemma";
 
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
 
   private final StanfordCoreNLP pipeline;
-
-  public CoreNLPAnalyzer() {
-    this(opts.languageTag);
-  }
 
   public CoreNLPAnalyzer(String languageTag) {
     Properties props = new Properties();
@@ -81,7 +65,6 @@ public class CoreNLPAnalyzer {
       LogInfo.logs("Unrecognized language %s, analysis will not work!", languageTag);
     }
 
-    String annotators = Joiner.on(',').join(opts.annotators);
     props.put("annotators", annotators);
 
     // disable ssplit (even though we need it to run the rest of the annotators)
@@ -291,7 +274,7 @@ public class CoreNLPAnalyzer {
 
   // Test on example sentence.
   public static void main(String[] args) {
-    CoreNLPAnalyzer analyzer = new CoreNLPAnalyzer();
+    CoreNLPAnalyzer analyzer = new CoreNLPAnalyzer("en");
 
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
       while (true) {

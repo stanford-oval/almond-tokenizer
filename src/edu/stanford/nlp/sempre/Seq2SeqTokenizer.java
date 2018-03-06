@@ -12,16 +12,10 @@ import edu.stanford.nlp.pipeline.ParserAnnotator;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
-import fig.basic.Option;
 import fig.basic.Pair;
 
 public class Seq2SeqTokenizer {
-  public static class Options {
-    @Option
-    public boolean includeConstituencyParse = false;
-  }
-
-  public static final Options opts = new Options();
+  private static final boolean INCLUDE_CONSTITUENCY_PARSE = false;
 
   public static class Value {
     public final String type;
@@ -97,7 +91,7 @@ public class Seq2SeqTokenizer {
     locationLexicon = LocationLexicon.getForLanguage(languageTag);
     entityLexicon = EntityLexicon.getForLanguage(languageTag);
     
-    if (opts.includeConstituencyParse) {
+    if (INCLUDE_CONSTITUENCY_PARSE) {
       Properties parseProperties = new Properties();
       parseProperties.put("parse.model", "edu/stanford/nlp/models/lexparser/englishPCFG.caseless.ser.gz");
       parseProperties.put("parse.binaryTrees", "true");

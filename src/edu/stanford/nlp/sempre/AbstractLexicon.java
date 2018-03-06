@@ -3,15 +3,9 @@ package edu.stanford.nlp.sempre;
 import java.util.Collection;
 
 import fig.basic.LogInfo;
-import fig.basic.Option;
 
 public abstract class AbstractLexicon<E extends Value> {
-  public static class Options {
-    @Option
-    public int verbose = 0;
-  }
-
-  public static Options opts = new Options();
+  static final int verbose = 0;
 
   public static class Entry<E extends Value> {
     public final String nerTag;
@@ -71,15 +65,15 @@ public abstract class AbstractLexicon<E extends Value> {
   protected abstract Collection<Entry<E>> doLookup(String rawPhrase);
 
   public Collection<Entry<E>> lookup(String rawPhrase) {
-    if (opts.verbose >= 2)
+    if (verbose >= 2)
       LogInfo.logs("AbstractLexicon.lookup %s", rawPhrase);
     Collection<Entry<E>> fromCache = cache.hit(rawPhrase);
     if (fromCache != null) {
-      if (opts.verbose >= 3)
+      if (verbose >= 3)
         LogInfo.logs("AbstractLexicon.cacheHit");
       return fromCache;
     }
-    if (opts.verbose >= 3)
+    if (verbose >= 3)
       LogInfo.logs("AbstractLexicon.cacheMiss");
 
     fromCache = doLookup(rawPhrase);

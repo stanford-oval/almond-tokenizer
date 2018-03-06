@@ -15,22 +15,8 @@ import edu.stanford.nlp.pipeline.Annotator;
 import edu.stanford.nlp.sempre.QuotedStringAnnotator.QuoteAnnotation;
 import edu.stanford.nlp.util.ArraySet;
 import fig.basic.LogInfo;
-import fig.basic.Option;
 
 public class SpellCheckerAnnotator implements Annotator {
-  public static class Options {
-    @Option
-    public String dictionaryDirectory = "/usr/share/myspell";
-
-    @Option
-    public String extraDictionary = "./data/dictionary";
-
-    @Option
-    public String extraReplacements = "./data/replacements";
-  }
-
-  public static Options opts = new Options();
-
   private final HunspellDictionary dictionary;
   private final boolean enabled;
 
@@ -44,10 +30,16 @@ public class SpellCheckerAnnotator implements Annotator {
   private final Map<String, String> replacements = new HashMap<>();
 
   public SpellCheckerAnnotator(String name, Properties props) {
-    this(props == null ? "en_US" : (String) props.getOrDefault("spellcheck.dictPath", "en_US"));
+    this(props.getProperty(name + ".dictPath", "en_US"),
+        props.getProperty(name + ".extraDictionary", "./data/dictionary"),
+        props.getProperty(name + ".extraReplacements", "./data/replacements"),
+        props.getProperty(name + ".dictionaryDirectory", "/usr/share/myspell"));
   }
 
-  private SpellCheckerAnnotator(String languageTag) {
+  private SpellCheckerAnnotator(String languageTag,
+      String extraDictionaryPath,
+      String extraReplacementsPath,
+      String dictionaryDirectory) {
     switch (languageTag) {
     case "en":
       languageTag = "en_US";
@@ -66,16 +58,16 @@ public class SpellCheckerAnnotator implements Annotator {
     enabled = true;
 
     try {
-      dictionary = new HunspellDictionary(opts.dictionaryDirectory + "/" + languageTag);
+      dictionary = new HunspellDictionary(dictionaryDirectory + "/" + languageTag);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
 
-    for (String line : IOUtils.readLines(opts.extraDictionary)) {
+    for (String line : IOUtils.readLines(extraDictionaryPath)) {
       extraDictionary.add(line.trim());
     }
     
-    for (String line : IOUtils.readLines(opts.extraReplacements)) {
+    for (String line : IOUtils.readLines(extraReplacementsPath)) {
       line = line.trim();
       if (line.startsWith("#") || line.isEmpty())
         continue;

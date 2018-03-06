@@ -14,18 +14,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import fig.basic.LogInfo;
-import fig.basic.Option;
 
 public class LocationLexicon extends AbstractLexicon<LocationValue> {
-  public static class Options {
-    @Option
-    public String email = null;
-    @Option
-    public int verbose = 0;
-  }
-
-  public static Options opts = new Options();
-
   @JsonIgnoreProperties({ "boundingbox", "licence" })
   private static class NominatimEntry {
     @JsonProperty
@@ -81,11 +71,11 @@ public class LocationLexicon extends AbstractLexicon<LocationValue> {
   protected Collection<Entry<LocationValue>> doLookup(String rawPhrase) {
     try {
       URL url = new URL(String.format(URL_TEMPLATE, languageTag, URLEncoder.encode(rawPhrase, "utf-8")));
-      if (opts.verbose >= 3)
+      if (verbose >= 3)
         LogInfo.logs("LocationLexicon HTTP call to %s", url);
 
       URLConnection connection = url.openConnection();
-      connection.setRequestProperty("User-Agent", String.format("SEMPRE/2.1 JavaSE/1.8 (operated by %s)", opts.email));
+      connection.setRequestProperty("User-Agent", "Almond Tokenizer/2.1 JavaSE/1.8");
       connection.setUseCaches(true);
 
       try (Reader reader = new InputStreamReader(connection.getInputStream())) {
