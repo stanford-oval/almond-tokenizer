@@ -42,7 +42,7 @@ public abstract class AbstractLexicon<E extends Value> {
         return false;
       if (getClass() != obj.getClass())
         return false;
-      Entry other = (Entry) obj;
+      Entry<?> other = (Entry<?>) obj;
       if (value == null) {
         if (other.value != null)
           return false;

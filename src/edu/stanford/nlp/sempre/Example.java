@@ -73,12 +73,16 @@ public class Example {
 
   // Return a string representing the tokens between start and end.
   public List<String> getTokens() { return languageInfo.tokens; }
-  public List<String> getLemmaTokens() { return languageInfo.lemmaTokens; }
+
+  public List<String> getLemmaTokens() {
+    return languageInfo.lemmaTokens;
+  }
   public String token(int i) { return languageInfo.tokens.get(i); }
-  public String lemmaToken(int i) { return languageInfo.lemmaTokens.get(i); }
+
+  public String lemmaToken(int i) {
+    return languageInfo.lemmaTokens.get(i);
+  }
   public String posTag(int i) { return languageInfo.posTags.get(i); }
-  public String phrase(int start, int end) { return languageInfo.phrase(start, end); }
-  public String lemmaPhrase(int start, int end) { return languageInfo.lemmaPhrase(start, end); }
 
   public void preprocess() {
     this.preprocess(LanguageAnalyzer.getSingleton());

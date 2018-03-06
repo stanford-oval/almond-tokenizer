@@ -13,9 +13,6 @@ public abstract class LanguageAnalyzer {
   public static class Options {
     @Option
     public String languageAnalyzer = "corenlp.CoreNLPAnalyzer";
-
-    @Option(gloss = "Whether to convert tokens in the utterance to lowercase")
-    public boolean lowerCaseTokens = true;
   }
   public static Options opts = new Options();
 

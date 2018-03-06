@@ -1,7 +1,9 @@
 package edu.stanford.nlp.sempre.corenlp;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,8 +18,6 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.sempre.LanguageAnalyzer;
 import edu.stanford.nlp.sempre.LanguageInfo;
 import edu.stanford.nlp.sempre.SempreUtils;
-import edu.stanford.nlp.time.TimeAnnotations;
-import edu.stanford.nlp.time.Timex;
 import fig.basic.LogInfo;
 import fig.basic.Option;
 import fig.basic.Utils;
@@ -39,9 +39,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     public List<String> annotators = Lists.newArrayList("tokenize", "quote2", "ssplit", "pos", "lemma",
         "ner", "regexner", "quote_ner", "spellcheck", "ssplit", "pos", "lemma");
 
-    @Option(gloss = "Whether to use case-sensitive models")
-    public boolean caseSensitive = false;
-
     @Option(gloss = "What language to use (as a two letter tag)")
     public String languageTag = "en";
 
@@ -53,27 +50,12 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
 
     @Option(gloss = "Ignore DATE tags on years (numbers between 1000 and 3000) and parse them as numbers")
     public boolean yearsAsNumbers = false;
-
-    @Option(gloss = "Whether to split hyphens or not")
-    public boolean splitHyphens = true;
   }
 
   public static Options opts = new Options();
 
-  // TODO(pliang): don't muck with the POS tag; instead have a separate flag
-  // for isContent which looks at posTag != "MD" && lemma != "be" && lemma !=
-  // "have"
-  // Need to update TextToTextMatcher
-  private static final String[] AUX_VERB_ARR = new String[] {"is", "are", "was",
-      "were", "am", "be", "been", "will", "shall", "have", "has", "had",
-      "would", "could", "should", "do", "does", "did", "can", "may", "might",
-      "must", "seem" };
-  private static final Set<String> AUX_VERBS = new HashSet<>(Arrays.asList(AUX_VERB_ARR));
-  private static final String AUX_VERB_TAG = "VBD-AUX";
-
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
 
-  private final String languageTag;
   private final StanfordCoreNLP pipeline;
   private final NamedEntityRecognizer[] extraRecognizers;
 
@@ -82,30 +64,19 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
   }
 
   public CoreNLPAnalyzer(String languageTag) {
-    this.languageTag = languageTag;
-
     Properties props = new Properties();
     
     switch (languageTag) {
     case "en":
     case "en_US":
-      if (opts.caseSensitive) {
-        props.put("pos.model",
-            "edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger");
-        props.put("ner.model",
-            "edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz");
-      } else {
-        props.put("pos.model", "edu/stanford/nlp/models/pos-tagger/english-caseless-left3words-distsim.tagger");
-        props.put("ner.model",
-            "edu/stanford/nlp/models/ner/english.all.3class.caseless.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.conll.4class.caseless.distsim.crf.ser.gz");
-      }
+      props.put("pos.model", "edu/stanford/nlp/models/pos-tagger/english-caseless-left3words-distsim.tagger");
+      props.put("ner.model",
+          "edu/stanford/nlp/models/ner/english.all.3class.caseless.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.conll.4class.caseless.distsim.crf.ser.gz");
       break;
 
     case "de":
       loadResource("StanfordCoreNLP-german.properties", props);
-      if (!opts.caseSensitive) {
-        props.put("pos.model", "edu/stanford/nlp/models/pos-tagger/german/german-fast-caseless.tagger");
-      }
+      props.put("pos.model", "edu/stanford/nlp/models/pos-tagger/german/german-fast-caseless.tagger");
       break;
 
     case "fr":
@@ -172,27 +143,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     }
   }
 
-  // Stanford tokenizer doesn't break hyphens.
-  // Replace hypens with spaces for utterances like
-  // "Spanish-speaking countries" but not for "2012-03-28".
-  // Also not break hyphens with spaces for things like 1-800-GOT-MILK
-  public static String breakHyphens(String utterance) {
-    StringBuilder buf = new StringBuilder(utterance);
-
-    boolean seenHyphen = false;
-    for (int i = 1; i < buf.length() - 1; i++) {
-      char c = buf.charAt(i);
-      if (c == '-') {
-        if (!seenHyphen && Character.isLetter(buf.charAt(i - 1)) && Character.isLetter(buf.charAt(i + 1)))
-          buf.setCharAt(i, ' ');
-        else
-          seenHyphen = true;
-      } else if (Character.isWhitespace(c))
-        seenHyphen = false;
-    }
-    return buf.toString();
-  }
-
   // recognize two numbers in one token, because CoreNLP's tokenizer will not split them
   private static final Pattern BETWEEN_PATTERN = Pattern.compile("(-?[0-9]+(?:\\.[0-9]+)?)-(-?[0-9]+(?:\\.[0-9]+)?)");
 
@@ -212,10 +162,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     languageInfo.nerValues.clear();
     languageInfo.lemmaTokens.clear();
 
-    // Break hyphens
-    if (opts.splitHyphens)
-      utterance = breakHyphens(utterance);
-
     utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
 
     // Run Stanford CoreNLP
@@ -233,12 +179,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
       if (nerTag == null)
         nerTag = "O";
       String nerValue = token.get(NormalizedNamedEntityTagAnnotation.class);
-      if(nerValue == null) {
-        Timex nerValue_ = token.get(TimeAnnotations.TimexAnnotation.class);
-        if(nerValue_ != null) {
-          nerValue = nerValue_.value();
-        }
-      }
       String posTag = token.get(PartOfSpeechAnnotation.class);
 
       boolean addComma = false;
@@ -283,16 +223,8 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
         }
       }
 
-      if (LanguageAnalyzer.opts.lowerCaseTokens) {
-        languageInfo.tokens.add(wordLower);
-      } else {
-        languageInfo.tokens.add(word);
-      }
-      if (languageTag.equals("en")) {
-        languageInfo.posTags.add(AUX_VERBS.contains(wordLower) ? AUX_VERB_TAG : posTag);
-      } else {
-        languageInfo.posTags.add(token.get(PartOfSpeechAnnotation.class));
-      }
+      languageInfo.tokens.add(wordLower);
+      languageInfo.posTags.add(token.get(PartOfSpeechAnnotation.class));
       languageInfo.lemmaTokens.add(token.get(LemmaAnnotation.class));
 
       // if it's not a noun and not an adjective it's not an organization 
@@ -379,7 +311,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     for (NamedEntityRecognizer r : extraRecognizers)
       r.recognize(languageInfo);
 
-    languageInfo.computeNerTokens();
     return languageInfo;
   }
 
@@ -389,7 +320,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
         "corenlp.EmailEntityRecognizer", "corenlp.URLEntityRecognizer");
     CoreNLPAnalyzer.opts.regularExpressions = Lists.newArrayList("USERNAME:[@](.+)", "HASHTAG:[#](.+)");
     CoreNLPAnalyzer.opts.yearsAsNumbers = true;
-    CoreNLPAnalyzer.opts.splitHyphens = false;
     CoreNLPAnalyzer analyzer = new CoreNLPAnalyzer();
 
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
