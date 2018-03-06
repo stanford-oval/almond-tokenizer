@@ -4,7 +4,6 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.channels.ServerSocketChannel;
 import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -15,13 +14,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.collect.Lists;
-import info.faljse.SDNotify.SDNotify;
 
 import edu.stanford.nlp.sempre.corenlp.CoreNLPAnalyzer;
 import fig.basic.IOUtils;
 import fig.basic.Option;
 import fig.basic.OptionsParser;
 import fig.exec.Execution;
+import info.faljse.SDNotify.SDNotify;
 
 public class TokenizerServer implements Runnable {
   public static class Options {

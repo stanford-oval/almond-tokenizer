@@ -282,10 +282,6 @@ public class Seq2SeqTokenizer {
       case "aapl":
       case "lakers":
       case "walmart":
-
-        // in our dataset, Barcelona refers to the team
-      case "barcellona":
-      case "barcelona":
         tag = "ORGANIZATION";
         break;
 
