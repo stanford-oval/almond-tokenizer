@@ -70,6 +70,7 @@ public class Seq2SeqTokenizer {
   }
 
   public static class Result {
+    public final List<String> rawTokens = new ArrayList<>();
     public final List<String> tokens = new ArrayList<>();
     public final List<String> posTags = new ArrayList<>();
     public final Map<Value, List<Integer>> entities = new HashMap<>();
@@ -331,20 +332,19 @@ public class Seq2SeqTokenizer {
   private void computeTokens(Example ex, LanguageInfo utteranceInfo, Result result) {
     Map<String, Integer> nextInt = new HashMap<>();
     StringBuilder fullEntity = new StringBuilder();
-    List<String> entityPosTags = new ArrayList<>();
+    result.rawTokens.addAll(utteranceInfo.tokens);
+    result.posTags.addAll(utteranceInfo.posTags);
 
     for (int i = 0; i < utteranceInfo.tokens.size(); i++) {
-      String token, tag, posTag, current;
+      String token, tag, current;
 
       tag = utteranceInfo.nerTags.get(i);
-      posTag = utteranceInfo.posTags.get(i);
       token = utteranceInfo.tokens.get(i);
 
       if (!"O".equals(tag)) {
         if (fullEntity.length() != 0)
           fullEntity.append(" ");
         fullEntity.append(token);
-        entityPosTags.add(posTag);
         if (i < utteranceInfo.tokens.size() - 1 &&
             utteranceInfo.nerTags.get(i + 1).equals(tag) &&
             Objects.equals(utteranceInfo.nerValues.get(i), utteranceInfo.nerValues.get(i + 1)))
@@ -370,18 +370,14 @@ public class Seq2SeqTokenizer {
           }
         } else {
           result.tokens.addAll(Arrays.asList(fullEntity.toString().split(" ")));
-          result.posTags.addAll(entityPosTags);
-          entityPosTags.clear();
           current = null;
         }
       } else {
         current = token;
       }
       fullEntity.setLength(0);
-      if (current != null) {
+      if (current != null)
         result.tokens.add(current);
-        result.posTags.add(posTag);
-      }
     }
   }
 
@@ -390,9 +386,9 @@ public class Seq2SeqTokenizer {
     LanguageInfo utteranceInfo = ex.languageInfo;
     Result result = new Result();
 
-    if (applyHeuristics) {
+    /*if (applyHeuristics) {
       adjustNerTags(utteranceInfo);
-    }
+    }*/
 
     computeTokens(ex, utteranceInfo, result);
     computeConstituencyParse(result);
@@ -572,11 +568,8 @@ public class Seq2SeqTokenizer {
         return new Pair<>("GENERIC_ENTITY_sportradar:ncaambb_team",
             new EntityValue("cal", "California Golden Bears"));
     }
-    if (entity.equals("google")) {
-      if (nstock > 0)
-        return new Pair<>("GENERIC_ENTITY_tt:stock_id",
-            new EntityValue("goog", "Alphabet Inc."));
-    }
+    if ((entity.equals("google") || entity.equals("facebook")) && nstock == 0)
+        return null;
 
     List<Pair<Pair<String, Object>, Double>> weights = new ArrayList<>();
     for (EntityLexicon.Entry<EntityValue> entry : entitySet) {
@@ -650,6 +643,10 @@ public class Seq2SeqTokenizer {
   private Pair<String, Object> nerValueToThingTalkValue(Example ex, String nerType, String nerValue,
       String entity) {
     String unit = null;
+
+    if (nerType.startsWith("GENERIC_ENTITY_") && !nerType.equals("GENERIC_ENTITY_sportradar"))
+      return findEntity(ex, entity, nerType.substring("GENERIC_ENTITY_".length()));
+
     switch (nerType) {
     case "MONEY":
     case "PERCENT":
@@ -717,23 +714,8 @@ public class Seq2SeqTokenizer {
       return new Pair<>(nerType, loc);
 
     case "ORGANIZATION":
+    case "GENERIC_ENTITY_sportradar":
       return findEntity(ex, entity, null);
-
-    case "NATIONALITY":
-    case "LANGUAGE":
-      return findEntity(ex, entity, "tt:iso_lang_code");
-
-    case "NASA_ROVER_CAMERA":
-      return findEntity(ex, entity, "gov.nasa:curiosity_rover_camera");
-
-    case "MIME_TYPE":
-      return findEntity(ex, entity, "tt:mime_type");
-
-    case "MEME":
-      return findEntity(ex, entity, "imgflip:meme_id");
-
-    case "INSTAGRAM_FILTER":
-      return findEntity(ex, entity, "com.instagram:filter");
 
     case "DURATION":
       if (nerValue != null) {

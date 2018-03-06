@@ -135,7 +135,8 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     props.put("ner.useSUTime", "false");
 
     // enable regexner
-    props.put("regexner.mapping", "edu/stanford/nlp/models/regexner/type_map_clean");
+    props.put("regexner.mapping", "./data/regexner_gazette");
+    props.put("regexner.ignoreCase", "true");
 
     // move quotes to a NER tag
     props.put("customAnnotatorClass.quote2", QuotedStringAnnotator.class.getCanonicalName());
