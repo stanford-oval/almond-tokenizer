@@ -1,14 +1,18 @@
 package edu.stanford.nlp.sempre.corenlp;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.stanford.nlp.sempre.LanguageInfo;
+import edu.stanford.nlp.ling.CoreAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.Annotator;
+import edu.stanford.nlp.util.ArraySet;
+import edu.stanford.nlp.util.CoreMap;
 
-public class PhoneNumberEntityRecognizer implements NamedEntityRecognizer {
+public class PhoneNumberEntityAnnotator implements Annotator {
   // recognize std syntax +... or north american 1-
   private static final Pattern INTL_PREFIX = Pattern.compile("^(\\+1-?|\\+[2-9][0-9]{1,2}-?|1-|1(?=\\())");
   // recognize common (000) area code, or just 0000, followed by optional -
@@ -27,7 +31,7 @@ public class PhoneNumberEntityRecognizer implements NamedEntityRecognizer {
   private static final char[] TOUCH_TONES = "22233344455566677778889999".toCharArray();
 
   private static class PhoneNumberParser {
-    private final List<String> tokens;
+    private final List<CoreLabel> tokens;
     private final int startToken;
 
     private int tokenIdx = 0;
@@ -37,7 +41,7 @@ public class PhoneNumberEntityRecognizer implements NamedEntityRecognizer {
     private boolean hasAreaCode = false;
     private final StringBuilder buffer = new StringBuilder();
 
-    public PhoneNumberParser(List<String> tokens, int startToken) {
+    public PhoneNumberParser(List<CoreLabel> tokens, int startToken) {
       this.tokens = tokens;
       this.startToken = startToken;
     }
@@ -46,7 +50,7 @@ public class PhoneNumberEntityRecognizer implements NamedEntityRecognizer {
       if (tokens.size() <= startToken + tokenIdx)
         return false;
 
-      String token = tokens.get(startToken + tokenIdx);
+      String token = tokens.get(startToken + tokenIdx).word();
       if (charIdx > 0)
         token = token.substring(charIdx);
 
@@ -69,7 +73,7 @@ public class PhoneNumberEntityRecognizer implements NamedEntityRecognizer {
       if (tokens.size() <= startToken + tokenIdx)
         return false;
 
-      String token = tokens.get(startToken + tokenIdx);
+      String token = tokens.get(startToken + tokenIdx).word();
       if (charIdx > 0)
         token = token.substring(charIdx);
 
@@ -92,7 +96,7 @@ public class PhoneNumberEntityRecognizer implements NamedEntityRecognizer {
       if (tokens.size() <= startToken + tokenIdx)
         return false;
 
-      String token = tokens.get(startToken + tokenIdx);
+      String token = tokens.get(startToken + tokenIdx).word();
       if (charIdx > 0)
         token = token.substring(charIdx);
       if (charIdx == 0 && (hasAreaCode || hasIntlPrefix || buffer.length() >= 4))
@@ -161,34 +165,40 @@ public class PhoneNumberEntityRecognizer implements NamedEntityRecognizer {
   }
 
   @Override
-  public void recognize(LanguageInfo info) {
-    int n = info.numTokens();
-    for (int i = 0; i < n; i++) {
-      if (info.nerTags.get(i).equals("TIME") || info.nerTags.get(i).equals("DATE")
-          || info.nerTags.get(i).equals("QUOTED_STRING"))
-        continue;
-      PhoneNumberParser parser = new PhoneNumberParser(info.tokens, i);
-      String parsed = parser.tryParse();
+  public void annotate(Annotation document) {
+    for (CoreMap sentence : document.get(CoreAnnotations.SentencesAnnotation.class)) {
+      List<CoreLabel> tokens = sentence.get(CoreAnnotations.TokensAnnotation.class);
+      for (int i = 0; i < tokens.size(); i++) {
+        CoreLabel token = tokens.get(i);
+        String ner = token.ner();
+        if (ner.equals("TIME") || ner.equals("DATE") || ner.equals("QUOTED_STRING"))
+          continue;
+        PhoneNumberParser parser = new PhoneNumberParser(tokens, i);
+        String parsed = parser.tryParse();
 
-      if (parsed != null) {
-        for (int j = 0; j < parser.consumedTokens(); j++) {
-          info.nerTags.set(i + j, "PHONE_NUMBER");
-          info.nerValues.set(i + j, parsed);
+        if (parsed != null) {
+          for (int j = 0; j < parser.consumedTokens(); j++) {
+            tokens.get(i + j).setNER("PHONE_NUMBER");
+            tokens.get(i + j).set(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class, parsed);
+          }
+          i += parser.consumedTokens() - 1;
         }
-        i += parser.consumedTokens() - 1;
       }
     }
   }
 
-  public static void main(String[] args) {
-    Scanner scanner = new Scanner(System.in);
+  @Override
+  public Set<Class<? extends CoreAnnotation>> requirementsSatisfied() {
+    return Collections.emptySet();
+  }
 
-    String line;
-    while ((line = scanner.nextLine()) != null) {
-      PhoneNumberParser parser = new PhoneNumberParser(Arrays.asList(line.split("\\s+")), 0);
-
-      String parsed = parser.tryParse();
-      System.out.println(parsed != null ? parsed : "null");
-    }
+  @Override
+  public Set<Class<? extends CoreAnnotation>> requires() {
+    return Collections.unmodifiableSet(new ArraySet<>(Arrays.asList(
+        CoreAnnotations.TextAnnotation.class,
+        CoreAnnotations.TokensAnnotation.class,
+        CoreAnnotations.SentencesAnnotation.class,
+        CoreAnnotations.PositionAnnotation.class,
+        CoreAnnotations.NamedEntityTagAnnotation.class)));
   }
 }

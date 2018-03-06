@@ -1,7 +1,6 @@
 package edu.stanford.nlp.sempre.corenlp;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -17,10 +16,8 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.sempre.LanguageAnalyzer;
 import edu.stanford.nlp.sempre.LanguageInfo;
-import edu.stanford.nlp.sempre.SempreUtils;
 import fig.basic.LogInfo;
 import fig.basic.Option;
-import fig.basic.Utils;
 
 /**
  * CoreNLPAnalyzer uses Stanford CoreNLP pipeline to analyze an input string utterance
@@ -37,16 +34,11 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     // are reflected in the lemma tokens and POS tags
     @Option(gloss = "What CoreNLP annotators to run")
     public List<String> annotators = Lists.newArrayList("tokenize", "quote2", "ssplit", "pos", "lemma",
-        "ner", "regexner", "quote_ner", "spellcheck", "ssplit", "pos", "lemma");
+        "quote_ner", "ner", "regexner", "custom_regexp_ner", "phone_ner", "url_ner",
+        "spellcheck", "ssplit", "pos", "lemma");
 
     @Option(gloss = "What language to use (as a two letter tag)")
     public String languageTag = "en";
-
-    @Option(gloss = "Additional named entity recognizers to run")
-    public List<String> entityRecognizers = new ArrayList<>();
-
-    @Option(gloss = "Additional regular expressions to apply to tokens")
-    public List<String> regularExpressions = new ArrayList<>();
 
     @Option(gloss = "Ignore DATE tags on years (numbers between 1000 and 3000) and parse them as numbers")
     public boolean yearsAsNumbers = false;
@@ -57,7 +49,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
 
   private final StanfordCoreNLP pipeline;
-  private final NamedEntityRecognizer[] extraRecognizers;
 
   public CoreNLPAnalyzer() {
     this(opts.languageTag);
@@ -112,6 +103,10 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     // move quotes to a NER tag
     props.put("customAnnotatorClass.quote2", QuotedStringAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.quote_ner", QuotedStringEntityAnnotator.class.getCanonicalName());
+    props.put("customAnnotatorClass.phone_ner", PhoneNumberEntityAnnotator.class.getCanonicalName());
+    props.put("customAnnotatorClass.url_ner", URLEntityAnnotator.class.getCanonicalName());
+    props.put("customAnnotatorClass.custom_regexp_ner", RegexpEntityAnnotator.class.getCanonicalName());
+    props.put("custom_regexp_ner.patterns", "./data/regex_patterns");
 
     // enable spell checking with our custom annotator
     props.put("customAnnotatorClass.spellcheck", SpellCheckerAnnotator.class.getCanonicalName());
@@ -122,16 +117,6 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
 
     pipeline = new StanfordCoreNLP(props);
 
-    extraRecognizers = new NamedEntityRecognizer[opts.entityRecognizers.size() + opts.regularExpressions.size()];
-    for (int i = 0; i < opts.entityRecognizers.size(); i++)
-      extraRecognizers[i] = (NamedEntityRecognizer) Utils
-          .newInstanceHard(SempreUtils.resolveClassName(opts.entityRecognizers.get(i)));
-    for (int i = 0; i < opts.regularExpressions.size(); i++) {
-      String spec = opts.regularExpressions.get(i);
-      int split = spec.indexOf(':');
-      extraRecognizers[opts.entityRecognizers.size() + i] = new RegexpEntityRecognizer(spec.substring(0, split),
-          spec.substring(split + 1));
-    }
   }
 
   private static void loadResource(String name, Properties into) {
@@ -307,18 +292,11 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
       }
     }
 
-    // Run additional entity recognizers
-    for (NamedEntityRecognizer r : extraRecognizers)
-      r.recognize(languageInfo);
-
     return languageInfo;
   }
 
   // Test on example sentence.
   public static void main(String[] args) {
-    CoreNLPAnalyzer.opts.entityRecognizers = Lists.newArrayList("corenlp.PhoneNumberEntityRecognizer",
-        "corenlp.EmailEntityRecognizer", "corenlp.URLEntityRecognizer");
-    CoreNLPAnalyzer.opts.regularExpressions = Lists.newArrayList("USERNAME:[@](.+)", "HASHTAG:[#](.+)");
     CoreNLPAnalyzer.opts.yearsAsNumbers = true;
     CoreNLPAnalyzer analyzer = new CoreNLPAnalyzer();
 
