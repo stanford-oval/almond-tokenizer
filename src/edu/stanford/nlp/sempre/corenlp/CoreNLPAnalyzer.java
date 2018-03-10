@@ -349,6 +349,11 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
         languageInfo.nerValues.set(i + 1, null);
       }
 
+      if ("us".equals(token) && "business".equals(next)) {
+        languageInfo.nerTags.set(i + 1, "O");
+        languageInfo.nerValues.set(i + 1, null);
+      }
+
       // apple post is not a f... newspaper
       // stupid corenlp
       if ("apple".equals(token) && "post".equals(next)) {

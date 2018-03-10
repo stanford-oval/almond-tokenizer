@@ -498,6 +498,8 @@ public class Seq2SeqTokenizer {
   private Pair<String, Object> findEntity(Example ex, String entity, String hint) {
     // override the lexicon on this one
     if (applyHeuristics) {
+      if (entity.equals("uber") || entity.equals("wall street journal"))
+        return null;
       if (entity.equals("warriors"))
         return new Pair<>("GENERIC_ENTITY_sportradar:nba_team",
             new EntityValue("gsw", "Golden State Warriors"));
