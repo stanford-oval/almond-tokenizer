@@ -350,8 +350,8 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
       }
 
       if ("us".equals(token) && "business".equals(next)) {
-        languageInfo.nerTags.set(i + 1, "O");
-        languageInfo.nerValues.set(i + 1, null);
+        languageInfo.nerTags.set(i, "O");
+        languageInfo.nerValues.set(i, null);
       }
 
       // apple post is not a f... newspaper
