@@ -216,6 +216,8 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
     if (opts.splitHyphens)
       utterance = breakHyphens(utterance);
 
+    utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
+
     // Run Stanford CoreNLP
 
     // Work around CoreNLP issue #622
@@ -340,7 +342,7 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
           "LOCATION".equals(languageInfo.nerTags.get(i))))
         continue;
 
-      if (("washington".equals(token) && "post".equals(next)) ||
+      if (("washington".equals(token) && ("post".equals(next) || "posts".equals(next))) ||
           ("chicago".equals(token) && "cubs".equals(next)) ||
           ("toronto".equals(token) && "fc".equals(next))) {
         languageInfo.nerTags.set(i, "ORGANIZATION");

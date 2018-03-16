@@ -272,18 +272,21 @@ public class Seq2SeqTokenizer {
       //case "google":
       case "warriors":
       case "stanford":
-      case "apple":
       case "giants":
       case "cavaliers":
       case "sta":
       case "stan":
+      case "cubs":
+      case "lakers":
+        tag = "GENERIC_ENTITY_sportradar";
+        break;
+
+      case "aapl":
       case "msft":
       case "goog":
-      case "cubs":
-      case "aapl":
-      case "lakers":
+      case "apple":
       case "walmart":
-        tag = "ORGANIZATION";
+        tag = "GENERIC_ENTITY_tt:stock_id";
         break;
 
       case "italian":
@@ -487,7 +490,7 @@ public class Seq2SeqTokenizer {
   private static final Set<String> NOT_ENTITIES = Sets.newHashSet("wsj world news", "yahoo", "capital weather gang",
       "ac state", "ncaa mens");
 
-  private Pair<String, Object> findEntity(Example ex, String entity, String hint) {
+  private Pair<String, Object> findEntity(Example ex, String entity, String hint, String fromTag) {
     // override the lexicon on this one
     if (applyHeuristics) {
       if (entity.equals("uber") || entity.equals("wall street journal") || entity.startsWith("uber pool")
@@ -583,6 +586,8 @@ public class Seq2SeqTokenizer {
 
       if (hint != null && !nerTag.endsWith(hint))
         continue;
+      if (fromTag.equals("ORGANIZATION") && !nerTag.startsWith("GENERIC_ENTITY_sportradar"))
+        continue;
 
       double weight = 0;
       if (nerTag.endsWith("sportradar:mlb_team"))
@@ -649,7 +654,7 @@ public class Seq2SeqTokenizer {
     String unit = null;
 
     if (nerType.startsWith("GENERIC_ENTITY_") && !nerType.equals("GENERIC_ENTITY_sportradar"))
-      return findEntity(ex, entity, nerType.substring("GENERIC_ENTITY_".length()));
+      return findEntity(ex, entity, nerType.substring("GENERIC_ENTITY_".length()), nerType);
 
     switch (nerType) {
     case "MONEY":
@@ -714,12 +719,12 @@ public class Seq2SeqTokenizer {
     case "LOCATION":
       LocationValue loc = findLocation(entity);
       if (loc == null)
-        return findEntity(ex, entity, "tt:country");
+        return findEntity(ex, entity, "tt:country", nerType);
       return new Pair<>(nerType, loc);
 
-    case "ORGANIZATION":
+    //case "ORGANIZATION":
     case "GENERIC_ENTITY_sportradar":
-      return findEntity(ex, entity, null);
+      return findEntity(ex, entity, null, nerType);
 
     case "DURATION":
       if (nerValue != null) {
