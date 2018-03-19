@@ -500,6 +500,11 @@
 ( "st." "andrews" "knights" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "andrezieux" "boutheon" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "fidelis" "andria" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "la" "angels" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "la" "dodgers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "la" "clippers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "la" "lakers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "la" "rams" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "los" "angeles" "angels" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "los" "angeles" "dodgers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "los" "angeles" "clippers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
@@ -693,6 +698,7 @@
 ( "atmel" ( "corp" | "corp." | "corporation" )? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "atmi" ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "toronto" "atomic" "fc"? )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "toronto" "fc" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "atossa" "genetics" ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "atricure" ","? ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "atrion" ( "corp" | "corp." | "corporation" )? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0

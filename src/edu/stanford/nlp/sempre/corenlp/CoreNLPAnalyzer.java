@@ -136,7 +136,7 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
 
     // enable regexner
     props.put("regexner.mapping", "./data/regexner_gazette");
-    props.put("regexner.ignoreCase", "true");
+    props.put("regexner.ignorecase", "true");
 
     // move quotes to a NER tag
     props.put("customAnnotatorClass.quote2", QuotedStringAnnotator.class.getCanonicalName());
@@ -342,9 +342,7 @@ public class CoreNLPAnalyzer extends LanguageAnalyzer {
           "LOCATION".equals(languageInfo.nerTags.get(i))))
         continue;
 
-      if (("washington".equals(token) && ("post".equals(next) || "posts".equals(next))) ||
-          ("chicago".equals(token) && "cubs".equals(next)) ||
-          ("toronto".equals(token) && "fc".equals(next))) {
+      if ("washington".equals(token) && ("post".equals(next) || "posts".equals(next))) {
         languageInfo.nerTags.set(i, "ORGANIZATION");
         languageInfo.nerValues.set(i, null);
 

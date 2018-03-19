@@ -495,7 +495,7 @@ public class Seq2SeqTokenizer {
     if (applyHeuristics) {
       if (entity.equals("uber") || entity.equals("wall street journal") || entity.startsWith("uber pool")
           || entity.startsWith("sunset time") || entity.startsWith("sunrise time") ||
-          entity.startsWith("lg "))
+          entity.startsWith("lg ") || entity.equals("pool"))
         return null;
       if (entity.equals("warriors"))
         return new Pair<>("GENERIC_ENTITY_sportradar:nba_team",
@@ -635,7 +635,7 @@ public class Seq2SeqTokenizer {
 
     double maxWeight = weights.get(0).getSecond();
     if (weights.size() > 1 && weights.get(1).getSecond() == maxWeight) {
-      //System.out.println("Ambiguous entity " + entity + ", could be any of " + weights);
+      System.out.println("Ambiguous entity " + entity + ", could be any of " + weights);
       return null;
     }
 
