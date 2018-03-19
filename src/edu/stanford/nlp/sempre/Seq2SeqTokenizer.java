@@ -506,6 +506,22 @@ public class Seq2SeqTokenizer {
   private static final Set<String> NOT_ENTITIES = Sets.newHashSet("wsj world news", "yahoo", "capital weather gang",
       "ac state", "ncaa mens");
 
+  private static boolean tokensEquals(String one, String two) {
+    if (one.equals(two))
+      return true;
+    if (Stemmer.stem(one).equals(Stemmer.stem(two)))
+      return true;
+    if (one.equals("cardinals") && two.equals("cardinal"))
+      return true;
+    if (one.equals("cardinal") && two.equals("cardinals"))
+      return true;
+    if (one.equals("yourself") && two.equals("yourselves"))
+      return true;
+    if (one.equals("yourselves") && two.equals("yourself"))
+      return true;
+    return false;
+  }
+
   private Pair<String, Object> findEntity(Example ex, String entity, String hint, String fromTag) {
     // override the lexicon on this one
     if (applyHeuristics) {
@@ -617,10 +633,7 @@ public class Seq2SeqTokenizer {
       for (String canonicalToken : canonicalTokens) {
         boolean found = false;
         for (String token : tokens) {
-          if (token.equals(canonicalToken)) {
-            weight += 1;
-            found = true;
-          } else if (token.equals("cardinals") && canonicalToken.equals("cardinal")) {
+          if (tokensEquals(token, canonicalToken)) {
             weight += 1;
             found = true;
           } else if (token.equals("la") && (canonicalToken.equals("los") || canonicalToken.equals("angeles"))) {
@@ -629,7 +642,7 @@ public class Seq2SeqTokenizer {
           }
         }
         if (!found)
-          weight -= 0.125;
+          weight -= 0.1;
       }
 
       weights.add(new Pair<>(new Pair<>(nerTag, value), weight));

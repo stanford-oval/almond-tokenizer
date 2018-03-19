@@ -1233,7 +1233,8 @@
 ( "jack" "in" "the" "box" ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "pacific" "oregon" "boxers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "boyce" "college" "bulldogs" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
-( "brace" "yourselves" "x" "is" "coming" )	GENERIC_ENTITY_imgflip:meme_id		0
+( "brace" "yourselves" (?: "x" "is" "coming" )? )	GENERIC_ENTITY_imgflip:meme_id		0
+( "brace" "yourself" (?: "x" "is" "coming" )? )	GENERIC_ENTITY_imgflip:meme_id		0
 ( "brackley" "town" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "bradford" "city" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "pittsburgh" "at" "bradford" "panthers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
