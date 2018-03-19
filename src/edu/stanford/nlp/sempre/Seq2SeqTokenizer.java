@@ -32,6 +32,11 @@ public class Seq2SeqTokenizer {
     public E2 getSecond() {
       return e2;
     }
+
+    @Override
+    public String toString() {
+      return "(" + e1 + ", " + e2 + ")";
+    }
   }
 
   public static class Value {
@@ -506,7 +511,8 @@ public class Seq2SeqTokenizer {
     if (applyHeuristics) {
       if (entity.equals("uber") || entity.equals("wall street journal") || entity.startsWith("uber pool")
           || entity.startsWith("sunset time") || entity.startsWith("sunrise time") ||
-          entity.startsWith("lg ") || entity.equals("pool"))
+          entity.startsWith("lg ") || entity.equals("pool") ||
+          entity.equals("washington post") || entity.equals("new york times"))
         return null;
       if (entity.equals("warriors"))
         return new Pair<>("GENERIC_ENTITY_sportradar:nba_team",

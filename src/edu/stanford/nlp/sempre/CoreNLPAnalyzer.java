@@ -43,7 +43,7 @@ public class CoreNLPAnalyzer {
     case "en_US":
       props.put("pos.model", "edu/stanford/nlp/models/pos-tagger/english-caseless-left3words-distsim.tagger");
       props.put("ner.model",
-          "edu/stanford/nlp/models/ner/english.all.3class.caseless.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.conll.4class.caseless.distsim.crf.ser.gz");
+          "edu/stanford/nlp/models/ner/english.all.3class.caseless.distsim.crf.ser.gz");
       break;
 
     case "de":
@@ -79,6 +79,7 @@ public class CoreNLPAnalyzer {
     // enable regexner
     props.put("regexner.mapping", "./data/regexner_gazette");
     props.put("regexner.ignorecase", "true");
+    props.put("regexner.backgroundSymbol", "O,MISC,ORGANIZATION");
 
     // move quotes to a NER tag
     props.put("customAnnotatorClass.quote2", QuotedStringAnnotator.class.getCanonicalName());
