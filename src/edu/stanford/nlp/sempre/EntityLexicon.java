@@ -54,7 +54,7 @@ public class EntityLexicon extends AbstractLexicon<EntityValue> {
       e.clear();
   }
 
-  private static final String URL_TEMPLATE = "https://crowdie.stanford.edu/thingpedia/api/entities/lookup?locale=%s&q=%s";
+  private static final String URL_TEMPLATE = "https://thingpedia.stanford.edu/thingpedia/api/entities/lookup?locale=%s&q=%s";
 
   private static <E1, E2> Collection<E2> map(Collection<E1> from, Function<E1, E2> f) {
     Collection<E2> to = new ArrayList<>();
