@@ -26,7 +26,8 @@ IGNORABLE_TOKENS = {
     'sportradar': { 'fc', 'ac', 'us', 'if', 'as', 'rc', 'rb', 'il', 'fk', 'cd', 'cf' },
     'imgflip:meme_id': { 'the', },
     'tt:currency_code': { 'us' },
-    'tt:stock_id': { 'l.p.', 's.a.', 'plc', 'n.v', 's.a.b', 'c.v.' }
+    'tt:stock_id': { 'l.p.', 's.a.', 'plc', 'n.v', 's.a.b', 'c.v.' },
+    'org:freedesktop:app_id': { 'gnome' }
 }
 PRIORITY = {
     'tt:country': 2
@@ -91,7 +92,7 @@ def main():
                            charset='utf8mb4',
                            ssl=dict(ca=os.path.join(os.path.dirname(__file__), '../data/thingpedia-db-ca-bundle.pem')))
     cursor = conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-    cursor.execute("select distinct entity_id, entity_name from entity_lexicon where language = %s", [sys.argv[1]])
+    cursor.execute("select distinct entity_id, entity_name from entity_lexicon where language = %s and entity_id = %s", [sys.argv[1], sys.argv[2]])
     
     with socket.create_connection(('127.0.0.1', 8888)) as tokenizer:
         tokenizerfile = tokenizer.makefile()

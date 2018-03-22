@@ -5212,3 +5212,87 @@
 ( "fc"? "zurich" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "zygo" ( "corp" | "corp." | "corporation" )? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "zynga" ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
+( "aisleriot" "solitaire" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "archive" "mounter" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "backups" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "baobab" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "boxes" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "icon" "browser" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "libreoffice" "calc" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "calculator" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "evolution" "calendar" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "calendar" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "characters" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "cheese" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "chkrootkit" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "google" "chrome" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "clocks" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "cockpit" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "color" "profile" "viewer" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "corebird" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "d-feet" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "dconf" "editor" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "debugger" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gtk" "demo" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "devhelp" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "disks" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "documents" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "dosbox" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "libreoffice" "draw" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "dropbox" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "eclipse" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "emacs" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "empathy" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "epiphany" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "evince" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "evolution" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "eye" "of" "gnome" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "widget" "factory" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "fedora" "media" "writer" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "file" "roller" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "firefox" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "fonts" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gedit" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "ghex" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gimp" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gitg" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "glade" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "logs" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "maps" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "music" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "photos" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "software" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "sound" "recorder" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "terminal" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "weather" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gpick" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "libreoffice" "impress" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "inkscape" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "keybase" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "latexila" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "libreoffice" "math" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "libreoffice" "writer" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "liferea" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "nautilus" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "nemiver" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "nibbles" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "notes" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "pdfmod" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "pithos" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "pitivi" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "polari" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "rhythmbox" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "simple" "scan" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "seahorse" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "skype" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "slack" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "steam" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "sudoku" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "sysprof" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "system" "monitor" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "totem" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "transcoder" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "transmageddon" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "transmission" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "tweaks" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "wireshark" )	GENERIC_ENTITY_org.freedesktop:app_id		0
