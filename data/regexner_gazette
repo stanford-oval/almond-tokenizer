@@ -120,6 +120,7 @@
 ( "charlotte" "49ers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "charlotte" "49ers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "long" "beach" "state" "49ers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "sf" "49ers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "san" "francisco" "49ers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "bldrs" "asia" "50" "adr" "index" "fund" )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "bldrs" "emerging" "markets" "50" "adr" "index" "fund" )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
@@ -2368,6 +2369,7 @@
 ( "fc"? "shakhtar" "donetsk" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "r.r." "donnelley" ( "&" | "and" )? "sons" "company" )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "milton" "keynes" "dons" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "sf" "dons" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "san" "francisco" "dons" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "dont" "you" "squidward" )	GENERIC_ENTITY_imgflip:meme_id		0
 ( "dorchester" "minerals" ","? "l.p."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
@@ -2860,7 +2862,9 @@
 ( "france" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "francesca" "&#39;" "s" "holdings" ( "corp" | "corp." | "corporation" )? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "francis" "marion" "patriots" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "sf" "giants" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "san" "francisco" "giants" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "sf" "state" "gators" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "san" "francisco" "state" "gators" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "fsv" "frankfurt" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "franklin" "pierce" "ravens" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
