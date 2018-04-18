@@ -4121,7 +4121,6 @@
 ( "western" "state" "mountaineers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "west" "virginia" "mountaineers" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "royal" "mouscron" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
-( "move" ","? ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "msb" "financial" ( "corp" | "corp." | "corporation" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "mts" "systems" ( "corp" | "corp." | "corporation" )? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "fc"? "mulhouse" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
@@ -5218,32 +5217,28 @@
 ( "zynga" ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "aisleriot" "solitaire" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "archive" "mounter" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "backups" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "baobab" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gnome" "boxes" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "icon" "browser" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "libreoffice" "calc" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "gnome" "calculator" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome"? "calculator" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "evolution" "calendar" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gnome" "calendar" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gnome" "characters" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "cheese" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "chkrootkit" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "google" "chrome" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "google"? "chrome" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gnome" "clocks" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "cockpit" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "color" "profile" "viewer" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "corebird" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "d-feet" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "dconf" "editor" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "debugger" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gtk" "demo" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "devhelp" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gnome" "disks" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gnome" "documents" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "dosbox" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "libreoffice" "draw" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "dropbox" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "eclipse" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "emacs" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "empathy" )	GENERIC_ENTITY_org.freedesktop:app_id		0
@@ -5262,12 +5257,12 @@
 ( "gitg" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "glade" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gnome" "logs" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "gnome" "maps" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome"? "maps" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gnome" "music" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gnome" "photos" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gnome" "software" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "gnome" "sound" "recorder" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "gnome" "terminal" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome"? "sound" "recorder" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome"? "terminal" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gnome" "weather" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "gpick" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "libreoffice" "impress" )	GENERIC_ENTITY_org.freedesktop:app_id		0
@@ -5280,7 +5275,7 @@
 ( "nautilus" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "nemiver" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "nibbles" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "notes" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome" "notes" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "pdfmod" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "pithos" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "pitivi" )	GENERIC_ENTITY_org.freedesktop:app_id		0
@@ -5289,14 +5284,867 @@
 ( "simple" "scan" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "seahorse" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "skype" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "slack" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "steam" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "sudoku" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "sysprof" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "system" "monitor" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome"? "system" "monitor" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "totem" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "transcoder" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "transmageddon" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "transmission" )	GENERIC_ENTITY_org.freedesktop:app_id		0
-( "tweaks" )	GENERIC_ENTITY_org.freedesktop:app_id		0
 ( "wireshark" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "gnome"? "builder" )	GENERIC_ENTITY_org.freedesktop:app_id		0
+( "paccoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "elite" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "2" "give" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "42-coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sixeleven" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "808" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "octocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "8" "bit" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "abjcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "artbyte" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "asiacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "acchain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "aces" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "avoncoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "acoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "anarchistsprime" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "achain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cardano" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "audiocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "asiadigicoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "aidos" "kuneen" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "adzcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "aeon" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "aerium" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "agrolifecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "akuya" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "allion" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "alqo" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sono" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ambercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ammo" "reloaded" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "amsterdamcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "anoncoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "animecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "antimatter" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "alpacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "arbit" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "arcticcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "aquariuscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ardor" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "argentum" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "argus" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "aricoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ark" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "allsafe" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "aseancoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "atbcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "arbitracoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "atmcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "atmos" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "atomic" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "artex" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "aurumcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "auroracoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "avatarcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "axiom" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "segwit2" "x" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "luckchain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "batcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitbay" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "biblepay" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "boolberry" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoin" "atom" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitconnect" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoin" "diamond" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoin" "fast" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoin" "cash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bytecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bridgecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoinx" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitdeal" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bela" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "benjirolls" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "berncash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bestchain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "betacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bigup" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "biocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "biobar" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bioscrypto" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bipcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "birds" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bismuth" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "first" "bitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bean" "cash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoin" "green" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitok" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitstar" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitz" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "blazercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "blakecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "blitzcash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "blackcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "blocknet" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "billarycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bluecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "blazecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bnrtxcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "boat" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bolivarcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "boscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "boostcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "blockpool" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "briacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "britcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "breakout" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitradio" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "breakout" "stake" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bowscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitsend" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitsum" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bastonet" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitsoar" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "blackstar" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "globalboost-y" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bt2" "-lsb-" "cst" "-rsb-" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bata" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitbar" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitbase" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoindark" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoin" "private" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcurrency" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoin" "scrypt" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoinz" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcloud" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitgem" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitmark" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoin" "planet" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitquark" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitshares" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitwhite" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcore" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bubble" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "swagbucks" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bumbacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bunnycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "burst" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "buzzcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bulwark" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcedi" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bittokens" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bytecent" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "coin2" ".1" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cabbage" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cachecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "caliphcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cannabiscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "carboncoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cashcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "catcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bullion" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cybercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cannacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cryptocarbon" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "canada" "ecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cryptoescudo" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "californium" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "coffeecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "chancoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "chatcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "chaincoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cheapcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "chesscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "chips" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cryptojacks" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ck" "usd" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "clams" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cloakcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "clubcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cashme" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "compcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "campuscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "comet" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cannation" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "centurion" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cryptonex" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoal" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "colossusxt" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "paycon" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "concoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "coupecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "capricoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "compucoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "crave" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "crowdcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "credence" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "creativecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "crevacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cream" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "crtcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "crown" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "chronos" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cryptcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "casinocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "crypto" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "digicube" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "curecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cryptoworldx" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "coinonat" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cycling" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cyder" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cypher" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dashs" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "davorcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "daxxcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dubaicoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "debitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "decred" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "deltacredits" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "decent" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dinastycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "deutsche" "emark" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "destiny" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "deuscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "deviantcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dfscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "draftcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "digibyte" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "digitalcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "digital" "credits" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dimecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "darklisk" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dollarcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dappster" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dynamiccoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "diamond" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "denarius" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dogecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dollar" "online" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "donationcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dopecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "digitalprice" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dreamcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "digital" "rupees" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "droxne" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dashcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "desire" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "datacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "parallelcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dutch" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dynamic" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "earthcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ea" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "eboost" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ebittree" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "electra" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ecc" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "e-coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ecocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "e-dinar" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "edrcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "e-gulden" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "evergreencoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "eggcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "elcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "elastos" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "elacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "elementrem" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ellaism" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "elysium" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "embercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "emercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "einsteinium" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "emerald" "crypto" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "energycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "entcash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "equitrader" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "era" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "europecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "eryllium" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "espers" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ethereum" "classic" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ethereum" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ethereum" "dark" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "electroneum" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "metaverse" "etp" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "eurocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "evil" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "evotion" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "exclusivecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "expanse" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "faircoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "fazzcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "fantomcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "factom" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitfid" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "firecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "fujicoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "flappycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "flash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "flaxscript" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "florincoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "fluttercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "flycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "fincoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "fonziecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "force" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "freicoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "farstcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "fargocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "francs" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "firstcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "frankywillcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "fastcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "feathercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "the" "cypherfunks" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "futcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "fuzzballs" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gaia" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ugain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gambit" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gamecredits" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gapcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gay" "money" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "goldblocks" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gbcgoldcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "golos" "gold" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gobyte" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "byteball" "bytes" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "guccionecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gcn" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "grandcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "geertcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "globalcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "goldcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "glasscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "globaltoken" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gameleaguecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "goldmaxcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoin" "god" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "golfcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "golos" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "goldpieces" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gpu" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gridcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "greencoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "graft" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "grimcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "garlicoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "granite" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "groestlcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "geysercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "global" "tour" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "guncoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gxchain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "halcyon" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "halloween" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "homeblockcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "hobonickels" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "heat" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "high" "gain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "harmonycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "hempcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "huncoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "hodlcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "honey" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "happycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "hshare" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "huobi" "token" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "hitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "htmlcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "huntercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "hush" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "high" "voltage" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "hollywoodcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "hexx" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "hyperstake" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "hyper" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "i0" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ibank" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ignition" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "icoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "icobid" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "iconic" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "infinitecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "inflationcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "impulsecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "impact" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "india" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "influxcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "innova" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "insanecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "i/o" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ion" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "irishcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "islacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "iticoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "intensecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "interzone" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ixcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "joincoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "shekel" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "jin" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "jiyo" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "jobscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "jewels" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "karmacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "kashhcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "kayicoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "b3" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "klondikecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "darsek" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "kekcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "kilocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "komodo" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "kingn" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "kobocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "kore" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "karbo" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "kronecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "kurrent" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "kushcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "kzcash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "lanacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "lazaruscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "lbry" "credits" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "litecoin" "cash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "litecoin" "plus" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "landcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "litedoge" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "leacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "leafcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "leocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "lepen" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "linkeye" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "levocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "linda" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "linx" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "letitride" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "linkedcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "lykke" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "lomocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "woodcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "lisk" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "litebar" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "litecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "litecred" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "litecoin" "ultra" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "luna" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "luxcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "levoplus" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "machinecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "satoshimadness" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "magnet" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "magiccoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "magnetcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "manna" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "mao" "zedong" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "marijuanacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "marscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "marxcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "maxcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "theresa" "may" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "mobilecash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "macron" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "madcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "megacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "mediccoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "metalcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "mergecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "magnum" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "milocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "mintcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "iota" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "mktcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "mincoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "mindcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "mineum" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "goldmint" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "minexcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "moin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "mojocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "monacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "moneta" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "monkey" "project" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "mooncoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "motocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ganjacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "master" "swiscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "msd" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "mustangcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "metal" "music" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "masternodecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "monetaryunit" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "muse" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "musicoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "martexcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "maza" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "namocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "nano" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "project-x" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "navcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "netbit" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "neblio" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "neo" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "neoscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "netcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "netko" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "nevacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "incakoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "nolimitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gulden" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "namecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "numus" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "noblecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "nodecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "dnotes" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "neuro" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "neutron" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "nekonium" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "numuscash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "novacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "nexus" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "nxt" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "nyancoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "newyorkcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "oceanchain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "octoin" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "obsidian" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ofcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "okcash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "omicron" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "omni" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "deeponion" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "onix" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "operand" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "opal" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "op" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "opescoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "orbitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "galactrum" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "osmiumcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "oxycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "p7" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pakcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "particl" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pascal" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pascal" "lite" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "paypeer" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "peepcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pioneer" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "posex" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "photon" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "phore" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "piecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "piggycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pinkcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pirl" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pivx" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pizzacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "parkbyte" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "playercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "polcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "plncoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pandacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "phantomx" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "poa" "network" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pokecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "polis" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ponzicoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "popularcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "postcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "posw" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "potcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "peercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "peerplays" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "prototanium" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "prcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "primulon" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "prismchain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ironcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "procurrency" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "printerium" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "psilocybin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pesetacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pulse" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pura" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pure" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "putincoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "px" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "phoenixcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "prime-xi" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "prizm" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "qubitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "quebecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "qbic" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cubits" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "quazarcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "qora" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "quark" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "quatloo" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "qtum" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "radium" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "condensate" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "rabbitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "rubies" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "rimbit" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "rubycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "russiacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "rcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "reddcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "regalcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "redcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "reecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "regacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "rhfcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "riecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "richcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ride" "my" "car" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "rise" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "renos" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "roofs" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "royalcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ronpaulcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "rsgpcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "rublebit" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "runners" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "rupee" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "rupaya" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ravencoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "revolutionvr" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sagacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sharkcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "save" ( "&" | "and" )? "gain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "strikebitclub" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "steem" "dollars" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "super" "bitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "siacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "scorecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "secretcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "speedcash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "shadowcash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sydpak" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "social" "send" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sequence" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "solarflarecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "safecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "shilling" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "shacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "shellcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "shift" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "stronghands" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "shorty" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sibcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "swisscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sigmacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "signatum" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sjwcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "skeincoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sakuracoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "pirate" "blocks" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "skycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "slevin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "selfiecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sterlingcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "slothcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "solarcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "salus" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "smartcash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "smartcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "smileycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "synergy" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "socialcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "soilcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sojourn" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "songcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sooncoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "spacecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "stipend" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sproutsextreme" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sphere" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sparks" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sportscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "spreadcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sprouts" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "spots" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "securecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "straks" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "starcash" "network" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "startcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "steem" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "steneum" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "stratis" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sativacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sumokoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "superior" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "supercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "swing" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "jingtum" "tech" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "sexcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "syndicate" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "syscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "tagcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "tagrcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "tajcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "btctalkcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "the" "champcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "t-coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "thecreed" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "tekcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "tellurion" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "terranova" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "teslacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "tigercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "techshares" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "fedoracoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "titcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "timescoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "toacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "todaycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "tokugawa" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "tokyo" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "topcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "topaz" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "torcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "tokenpay" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "terracoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "travelflex" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "triangles" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "trickycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "truckcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "trollcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "trumpcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "trustplus" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "tristar" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "tittiecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "trinity" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "turbocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "transfercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "trezarcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ubiq" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "united" "bitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "unitus" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ulatech" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "unbreakablecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "uncoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "universe" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "unicoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "unify" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "gameunits" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ur" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "uro" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "nubits" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ultracoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "version" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "valorbit" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "vpncoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "virtualcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "vectorai" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "viacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "purevidz" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "vip" "tokens" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "visio" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "vivo" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "veltor" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "vault" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitvolt" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "votecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "vaperscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "vericoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "veriumreserve" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "vsync" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "virtacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "vertcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "vtorrent" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "vulcano" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "w3" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "wa" "space" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "wanchain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "warp" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "waves" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "wild" "beast" "block" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "wincoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "worldcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "whalecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "waykichain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "wink" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "womencoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "healthywormcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "wearesatoshi" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "x2" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "asch" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoin" "plus" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitcoin" "21" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "beatcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "xtrabytes" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "cryptonite" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "x-coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "counterparty" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "copico" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "creatio" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "c-bit" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "coinonatx" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "digitalnote" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "elastic" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "nem" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "footy" "cash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "xgox" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "hicoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "xios" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "joulecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "leviarcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "stellar" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "solaris" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "monoeci" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "magi" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "monero" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "myriad" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "enigma" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "petrodollar" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "primecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "platinumbar" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "paycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "quotient" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ratecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "rawcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "revolvercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "ripple" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "royalties" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "shield" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "stakenet" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "spectrecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "stealthcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "safe" "trade" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "xtd" "coin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "stellite" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "tao" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "vcash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "verge" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "virtacoinplus" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "whitecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "yacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "yashcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "yocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "yenten" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zilbercoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zclassic" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zcash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zeitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zencash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zennies" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zephyr" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zero" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zetacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zetamicron" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zonecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "bitzeny" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zsecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zurcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zayedcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "zozocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
