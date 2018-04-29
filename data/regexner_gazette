@@ -4604,7 +4604,7 @@
 ( "rb"? "salzburg" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "rcm" "technologies" ","? ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "reachlocal" ","? ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
-( "reading" "fc"? )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "reading" "fc" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "reading" "international" ( "inc." | "inc" | "incorporated" )? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "real" "valladolid" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "real" "sociedad" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
@@ -6047,3 +6047,4 @@
 ( "zayedcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "zozocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "stanford" ","? ("ca" | "california") )	LOCATION	0
+( "walmart" ( "inc." | "inc" | "incorporated" )? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
