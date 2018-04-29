@@ -15,11 +15,13 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 import info.faljse.SDNotify.SDNotify;
 
-public class TokenizerServer implements Runnable {
+public class TokenizerServer {
+  private static final int DEFAULT_PORT = 8888;
+
   private final List<String> languages;
 
   private final ObjectMapper object = new ObjectMapper();
-  private ServerSocket server;
+  private final ServerSocket server;
   private final Map<String, CoreNLPAnalyzer> analyzers = new HashMap<>();
   private final Map<String, Seq2SeqTokenizer> tokenizers = new HashMap<>();
   private final Executor threadPool = Executors.newFixedThreadPool(2 * Runtime.getRuntime().availableProcessors());
@@ -76,8 +78,27 @@ public class TokenizerServer implements Runnable {
     }
   }
 
-  private TokenizerServer(String[] languages) {
+  private TokenizerServer(int port, String[] languages) throws IOException {
     this.languages = Arrays.asList(languages);
+
+    for (String lang : languages) {
+      analyzers.put(lang, new CoreNLPAnalyzer(lang));
+      tokenizers.put(lang, new Seq2SeqTokenizer(lang, true));
+    }
+
+    object.getFactory()
+        .disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
+        .disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
+
+    server = new ServerSocket(port);
+    SDNotify.sendNotify();
+  }
+
+  public void run() throws IOException {
+    while (true) {
+      Socket socket = server.accept();
+      new Thread(() -> handleConnection(socket)).start();
+    }
   }
 
   private synchronized void writeOutput(Writer outputStream, Output output) {
@@ -163,32 +184,18 @@ public class TokenizerServer implements Runnable {
     }
   }
 
-  @Override
-  public void run() {
-    for (String lang : languages) {
-      analyzers.put(lang, new CoreNLPAnalyzer(lang));
-      tokenizers.put(lang, new Seq2SeqTokenizer(lang, true));
+  public static void main(String[] args) {
+    int port = DEFAULT_PORT;
+    if (args.length >= 2 && "--port".equals(args[0])) {
+      port = Integer.parseInt(args[1]);
+      args = Arrays.copyOfRange(args, 2, args.length);
     }
 
-    object.getFactory()
-        .disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET)
-        .disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
-
     try {
-      server = new ServerSocket(8888);
-      SDNotify.sendNotify();
-
-      while (true) {
-        Socket socket = server.accept();
-        new Thread(() -> handleConnection(socket)).start();
-      }
+      TokenizerServer server = new TokenizerServer(port, args);
+      server.run();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  public static void main(String[] args) {
-    TokenizerServer server = new TokenizerServer(args);
-    server.run();
   }
 }
