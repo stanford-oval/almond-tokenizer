@@ -1413,7 +1413,6 @@
 ( "ca" "cirbonero" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "ca" "pontarlier" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "ca" "osasuna" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
-( "ca" ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "rick" "&#39;" "s" "cabaret" "international" ","? ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "coleman" "cable" ","? ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "houston" "wire" ( "&" | "and" )? "cable" "company" )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
@@ -6148,3 +6147,4 @@
 ( "zurcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "zayedcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "zozocoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
+( "stanford" ","? ("ca" | "california") )	LOCATION	0
