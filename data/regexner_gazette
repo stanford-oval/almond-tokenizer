@@ -5822,15 +5822,11 @@
 ( "qubitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "quebecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "qbic" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "cubits" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "quazarcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "quark" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "quatloo" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "qtum" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "radium" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "condensate" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "rabbitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "rubies" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "rimbit" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "rubycoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "russiacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
@@ -5843,20 +5839,15 @@
 ( "rhfcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "riecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "richcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "renos" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "roofs" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "royalcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "ronpaulcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "rsgpcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "rublebit" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "runners" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "rupee" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "rupaya" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "ravencoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "revolutionvr" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "sagacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "sharkcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "save" ( "&" | "and" )? "gain" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "strikebitclub" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "steem" "dollars" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "super" "bitcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
@@ -5866,13 +5857,11 @@
 ( "speedcash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "shadowcash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "sydpak" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "sequence" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "solarflarecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "safecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "shilling" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "shacoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "shellcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "shift" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "stronghands" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "shorty" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "sibcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
@@ -5901,7 +5890,6 @@
 ( "sooncoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "spacecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "sproutsextreme" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "sphere" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "sportscoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "spreadcoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "securecoin" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
@@ -6001,7 +5989,6 @@
 ( "c-bit" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "coinonatx" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "digitalnote" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
-( "elastic" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "nem" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "footy" "cash" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
 ( "xgox" )	GENERIC_ENTITY_tt:cryptocurrency_code		0
