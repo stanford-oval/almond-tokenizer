@@ -7,4 +7,4 @@ JAVA=${JAVA:-java}
 LANGUAGES=${LANGUAGES:-en}
 PORT=${PORT:-8888}
 
-exec ${JAVA} -ea ${JAVA_ARGS} -Djava.library.path=${SEMPREDIR}/jni -cp ${SEMPREDIR}/libsempre/*:${SEMPREDIR}/lib/* edu.stanford.nlp.sempre.TokenizerServer --port ${PORT} ${LANGUAGES}
+exec ${JAVA} -ea ${JAVA_ARGS} -Djava.library.path=${SEMPREDIR}/jni -Dalmond.mapQuestKey=${MAPQUEST_KEY} -cp ${SEMPREDIR}/libsempre/*:${SEMPREDIR}/lib/* edu.stanford.nlp.sempre.TokenizerServer --port ${PORT} ${LANGUAGES}
