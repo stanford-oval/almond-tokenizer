@@ -25,3 +25,8 @@ The tokenizer listens on port 8888 by default.
 
 An example systemd unit service is provided as `almond-tokenizer.service`.
 The service supports socket activation as well.
+
+## Using the Location lexicon
+
+If you plan to include location queries (as default in Almond), you must obtain a MapQuest
+API key, and set it as the `MAPQUEST_KEY` environment variable.

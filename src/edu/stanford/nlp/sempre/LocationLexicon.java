@@ -44,7 +44,7 @@ public class LocationLexicon extends AbstractLexicon<LocationValue> {
     public String type;
   }
 
-  private static final String URL_TEMPLATE = "http://nominatim.openstreetmap.org/search/?format=jsonv2&accept-language=%s&limit=5&q=%s";
+  private static final String URL_TEMPLATE = "http://open.mapquestapi.com/nominatim/v1/search.php?key=%s&format=jsonv2&accept-language=%s&limit=5&q=%s";
   private static final Map<String, LocationLexicon> instances = new HashMap<>();
 
   private final String languageTag;
@@ -72,7 +72,8 @@ public class LocationLexicon extends AbstractLexicon<LocationValue> {
   @Override
   protected Collection<Entry<LocationValue>> doLookup(String rawPhrase) {
     try {
-      URL url = new URL(String.format(URL_TEMPLATE, languageTag, URLEncoder.encode(rawPhrase, "utf-8")));
+      String mapQuestKey = System.getProperty("almond.mapQuestKey");
+      URL url = new URL(String.format(URL_TEMPLATE, mapQuestKey, languageTag, URLEncoder.encode(rawPhrase, "utf-8")));
       if (verbose >= 3)
         log.debugf("LocationLexicon HTTP call to %s", url);
 
