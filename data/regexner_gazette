@@ -1819,8 +1819,8 @@
 ( "oakland" "city" "mighty" "oaks" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "valley" "city" "state" "vikings" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "hamilton" "city" "sc" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
-( "fc"? "kansas" "city" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
-( "new" "york" "city" "fc"? )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "fc" "kansas" "city" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "new" "york" "city" "fc" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "orlando" "city" "sc" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "sporting" "kansas" "city" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "city" "holding" "company" )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
