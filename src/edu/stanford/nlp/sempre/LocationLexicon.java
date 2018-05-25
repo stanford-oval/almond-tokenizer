@@ -81,8 +81,8 @@ public class LocationLexicon extends AbstractLexicon<LocationValue> {
       connection.setUseCaches(true);
 
       try (Reader reader = new InputStreamReader(connection.getInputStream())) {
-        return map(Json.readValueHard(reader, new TypeReference<List<NominatimEntry>>() {
-        }), (NominatimEntry entry) -> {
+        return map(Json.getMapper().reader().withType(new TypeReference<List<NominatimEntry>>() {
+        }).readValue(reader), (NominatimEntry entry) -> {
           String canonical = entry.display_name.toLowerCase().replaceAll("[,\\s+]", " ");
           return new Entry<>("LOCATION", new LocationValue(entry.lat, entry.lon, entry.display_name),
               canonical);
