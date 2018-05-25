@@ -22,34 +22,57 @@ public class Example {
   // Input utterance
   public final String utterance;
 
+  // Expected type/context
+  public final String expected;
+
   //// Information after preprocessing (e.g., tokenization, POS tagging, NER, syntactic parsing, etc.).
   public LanguageInfo languageInfo = null;
 
   public static class Builder {
     private String id;
     private String utterance;
+    private String expected;
     private LanguageInfo languageInfo;
 
-    public Builder setId(String id) { this.id = id; return this; }
-    public Builder setUtterance(String utterance) { this.utterance = utterance; return this; }
+    public Builder setId(String id) {
+      this.id = id;
+      return this;
+    }
 
-    public Builder setLanguageInfo(LanguageInfo languageInfo) { this.languageInfo = languageInfo; return this; }
+    public Builder setUtterance(String utterance) {
+      this.utterance = utterance;
+      return this;
+    }
+
+    public Builder setExpected(String expect) {
+      this.expected = expect;
+      return this;
+    }
+
+    public Builder setLanguageInfo(LanguageInfo languageInfo) {
+      this.languageInfo = languageInfo;
+      return this;
+    }
+
     public Builder withExample(Example ex) {
       setId(ex.id);
       setUtterance(ex.utterance);
       return this;
     }
+
     public Example createExample() {
-      return new Example(id, utterance, languageInfo);
+      return new Example(id, utterance, expected, languageInfo);
     }
   }
 
   @JsonCreator
   public Example(@JsonProperty("id") String id,
-                 @JsonProperty("utterance") String utterance,
-                 @JsonProperty("languageInfo") LanguageInfo languageInfo) {
+      @JsonProperty("utterance") String utterance,
+      @JsonProperty("expected") String expected,
+      @JsonProperty("languageInfo") LanguageInfo languageInfo) {
     this.id = id;
     this.utterance = utterance;
+    this.expected = expected;
     this.languageInfo = languageInfo;
   }
 
@@ -72,6 +95,6 @@ public class Example {
   public String posTag(int i) { return languageInfo.posTags.get(i); }
 
   public void preprocess(CoreNLPAnalyzer analyzer) {
-    this.languageInfo = analyzer.analyze(this.utterance);
+    this.languageInfo = analyzer.analyze(this.utterance, this.expected);
   }
 }

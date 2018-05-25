@@ -27,3 +27,6 @@ nba team la lakers
 nba team los angeles lakers
 monitor nba team los angeles lakers
 open gnome builder
+expect:Location 353 serra mall stanford
+expect:MultipleChoice washington dc
+expect:MultipleChoice gnome builder

@@ -35,6 +35,9 @@ public class TokenizerServer {
 
     @JsonProperty
     String utterance;
+
+    @JsonProperty
+    String expect;
   }
 
   public static class Output {
@@ -133,7 +136,7 @@ public class TokenizerServer {
     CoreNLPAnalyzer analyzer = analyzers.get(input.languageTag);
     Seq2SeqTokenizer tokenizer = tokenizers.get(input.languageTag);
 
-    Example ex = new Example.Builder().setUtterance(input.utterance).createExample();
+    Example ex = new Example.Builder().setUtterance(input.utterance).setExpected(input.expect).createExample();
     ex.preprocess(analyzer);
 
     Seq2SeqTokenizer.Result result = tokenizer.process(ex);

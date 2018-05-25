@@ -115,7 +115,7 @@ public class CoreNLPAnalyzer {
     QuantifiableEntityNormalizer.applySpecializedNER(words);
   }
 
-  public LanguageInfo analyze(String utterance) {
+  public LanguageInfo analyze(String utterance, String expected) {
     LanguageInfo languageInfo = new LanguageInfo();
 
     // Clear these so that analyze can hypothetically be called
@@ -271,6 +271,23 @@ public class CoreNLPAnalyzer {
       }
     }
 
+    if ("Location".equals(expected)) {
+      // override all entity tags if we expect a location
+      // that will just throw everything at MapQuest
+      for (int i = 0; i < n; i++) {
+        languageInfo.nerTags.set(i, "LOCATION");
+        languageInfo.nerValues.set(i, null);
+      }
+    } else if ("MultipleChoice".equals(expected)) {
+      // remove all entity tags if we expect a multiple choice
+      // this will allow the NN parser to pick the closest choice, by passing the semantic
+      // parser
+      for (int i = 0; i < n; i++) {
+        languageInfo.nerTags.set(i, "O");
+        languageInfo.nerValues.set(i, null);
+      }
+    }
+
     return languageInfo;
   }
 
@@ -284,7 +301,7 @@ public class CoreNLPAnalyzer {
         String text = reader.readLine();
         if (text == null)
           break;
-        LanguageInfo langInfo = analyzer.analyze(text);
+        LanguageInfo langInfo = analyzer.analyze(text, null);
         Redwood.startTrack();
         log.logf("Analyzing \"%s\"", text);
         log.logf("tokens: %s", langInfo.tokens);
