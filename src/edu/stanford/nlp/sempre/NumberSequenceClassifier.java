@@ -110,7 +110,7 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
   private static final Pattern ORDINAL_PATTERN = Pattern.compile(
       "(?i)[2-9]?1st|[2-9]?2nd|[2-9]?3rd|1[0-9]th|[2-9]?[04-9]th|100+th|zeroth|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteenth|nineteenth|twentieth|twenty-first|twenty-second|twenty-third|twenty-fourth|twenty-fifth|twenty-sixth|twenty-seventh|twenty-eighth|twenty-ninth|thirtieth|thirty-first|fortieth|fiftieth|sixtieth|seventieth|eightieth|ninetieth|hundredth|thousandth|millionth");
 
-  private static final Pattern ORDINAL_SUFFIX_PATTERN = Pattern.compile("st|nd|th", Pattern.CASE_INSENSITIVE);
+  private static final Pattern ORDINAL_SUFFIX_PATTERN = Pattern.compile("st|nd|rd|th", Pattern.CASE_INSENSITIVE);
 
   private static final Pattern ARMY_TIME_MORNING = Pattern.compile("0([0-9])([0-9]){2}");
 
@@ -247,7 +247,8 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
       } else if (me.getString(CoreAnnotations.PartOfSpeechAnnotation.class) != null &&
           (me.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("NN") ||
               me.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("NNS") ||
-              me.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("NNP"))) {
+              me.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("NNP") ||
+              me.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("JJ"))) {
         if (CURRENCY_WORD_PATTERN.matcher(me.word()).matches()) {
           if (prev.getString(CoreAnnotations.PartOfSpeechAnnotation.class).equals("CD") &&
               prev.getString(CoreAnnotations.AnswerAnnotation.class).equals("NUMBER")) {

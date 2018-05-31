@@ -138,4 +138,10 @@ public class DateValue extends Value {
     if (this.second != that.second) return false;
     return true;
   }
+
+  @Override
+  public String toString() {
+    return String.format("%04d-%02d-%02dT%02d:%02d:%02fZ", this.year, this.month, this.day, this.hour, this.minute,
+        this.second);
+  }
 }

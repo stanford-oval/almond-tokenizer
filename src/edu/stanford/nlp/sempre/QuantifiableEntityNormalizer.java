@@ -11,8 +11,6 @@ import edu.stanford.nlp.ie.pascal.ISODateInstance;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.stats.ClassicCounter;
-import edu.stanford.nlp.time.TimeAnnotations;
-import edu.stanford.nlp.time.Timex;
 import edu.stanford.nlp.util.*;
 
 /**
@@ -281,6 +279,11 @@ public class QuantifiableEntityNormalizer {
    * @return A yyyymmdd format normalized date
    */
   static String normalizedDateString(String s, String openRangeMarker) {
+    if (s.endsWith(" at "))
+      s = s.substring(0, s.length() - 4);
+    else if (s.endsWith(" , "))
+      s = s.substring(0, s.length() - 3);
+
     ISODateInstance d = new ISODateInstance(s, openRangeMarker);
     if (DEBUG2)
       err.println("normalizeDate: " + s + " to " + d.getDateString());
@@ -301,40 +304,6 @@ public class QuantifiableEntityNormalizer {
     
     String number = normalizedNumberString(numword);
     return "P" + number + multiplier;
-  }
-
-  /**
-   * Concatenates separate words of a date or other numeric quantity into one
-   * node (e.g., 3 November -> 3_November)
-   * Tag is CD or NNP, and other words are added to the remove list
-   */
-  static <E extends CoreMap> void concatenateNumericString(List<E> words, List<E> toRemove) {
-    if (words.size() <= 1)
-      return;
-    boolean first = true;
-    StringBuilder newText = new StringBuilder();
-    E foundEntity = null;
-    for (E word : words) {
-      if (foundEntity == null && (word.get(CoreAnnotations.PartOfSpeechAnnotation.class).equals("CD")
-          || word.get(CoreAnnotations.PartOfSpeechAnnotation.class).equals("NNP"))) {
-        foundEntity = word;
-      }
-      if (first) {
-        first = false;
-      } else {
-        newText.append('_');
-      }
-      newText.append(word.get(CoreAnnotations.TextAnnotation.class));
-    }
-    if (foundEntity == null) {
-      foundEntity = words.get(0);//if we didn't find one with the appropriate tag, just take the first one
-    }
-    toRemove.addAll(words);
-    toRemove.remove(foundEntity);
-    foundEntity.set(CoreAnnotations.PartOfSpeechAnnotation.class, "CD");  // cdm 2008: is this actually good for dates??
-    String collapsed = newText.toString();
-    foundEntity.set(CoreAnnotations.TextAnnotation.class, collapsed);
-    foundEntity.set(CoreAnnotations.OriginalTextAnnotation.class, collapsed);
   }
 
   public static String normalizedTimeString(String s) {
@@ -836,7 +805,7 @@ public class QuantifiableEntityNormalizer {
       return "L";
     }
 
-    String longNext = next3 + ' ' + next2 + ' ' + next;
+    String longNext = next + ' ' + next2 + ' ' + next3;
     if (longNext.matches(pmThreeWords)) {
       return "pm";
     }
@@ -844,7 +813,7 @@ public class QuantifiableEntityNormalizer {
       return "am";
     }
 
-    longNext = next2 + ' ' + next;
+    longNext = next + ' ' + next2;
     if (longNext.matches(pmTwoWords)) {
       return "pm";
     }
@@ -865,64 +834,6 @@ public class QuantifiableEntityNormalizer {
    * Identifies contiguous MONEY, TIME, DATE, or PERCENT entities
    * and tags each of their constituents with a "normalizedQuantity"
    * label which contains the appropriate normalized string corresponding to
-   * the full quantity. Quantities are not concatenated
-   *
-   * @param l
-   *          A list of {@link CoreMap}s representing a single
-   *          document. Note: the Labels are updated in place.
-   */
-  public static <E extends CoreMap> void addNormalizedQuantitiesToEntities(List<E> l) {
-    addNormalizedQuantitiesToEntities(l, false, false);
-  }
-
-  public static <E extends CoreMap> void addNormalizedQuantitiesToEntities(List<E> l, boolean concatenate) {
-    addNormalizedQuantitiesToEntities(l, concatenate, false);
-  }
-
-  private static boolean checkStrings(String s1, String s2) {
-    if (s1 == null || s2 == null) {
-      return s1 == s2;
-    } else {
-      return s1.equals(s2);
-    }
-  }
-
-  private static boolean checkNumbers(Number n1, Number n2) {
-    if (n1 == null || n2 == null) {
-      return n1 == n2;
-    } else {
-      return n1.equals(n2);
-    }
-  }
-
-  public static <E extends CoreMap> boolean isCompatible(String tag, E prev, E cur) {
-    if ("NUMBER".equals(tag) || "ORDINAL".equals(tag)) {
-      // Get NumericCompositeValueAnnotation and say two entities are incompatible if they are different
-      Number n1 = cur.get(CoreAnnotations.NumericCompositeValueAnnotation.class);
-      Number n2 = prev.get(CoreAnnotations.NumericCompositeValueAnnotation.class);
-      boolean compatible = checkNumbers(n1, n2);
-      if (!compatible)
-        return compatible;
-    }
-
-    if ("TIME".equals(tag) || "SET".equals(tag) || "DATE".equals(tag) || "DURATION".equals(tag)) {
-      // Check timex...
-      Timex timex1 = cur.get(TimeAnnotations.TimexAnnotation.class);
-      Timex timex2 = prev.get(TimeAnnotations.TimexAnnotation.class);
-      String tid1 = (timex1 != null) ? timex1.tid() : null;
-      String tid2 = (timex2 != null) ? timex2.tid() : null;
-      boolean compatible = checkStrings(tid1, tid2);
-      if (!compatible)
-        return compatible;
-    }
-
-    return true;
-  }
-
-  /**
-   * Identifies contiguous MONEY, TIME, DATE, or PERCENT entities
-   * and tags each of their constituents with a "normalizedQuantity"
-   * label which contains the appropriate normalized string corresponding to
    * the full quantity.
    *
    * @param list
@@ -932,10 +843,7 @@ public class QuantifiableEntityNormalizer {
    *          true if quantities should be concatenated into one label, false
    *          otherwise
    */
-  public static <E extends CoreMap> void addNormalizedQuantitiesToEntities(List<E> list, boolean concatenate,
-      boolean usesSUTime) {
-    List<E> toRemove = new ArrayList<>(); // list for storing those objects we're going to remove at the end (e.g., if concatenate, we replace 3 November with 3_November, have to remove one of the originals)
-
+  private static <E extends CoreMap> void addNormalizedQuantitiesToEntities(List<E> list) {
     // Goes through tokens and tries to fix up NER annotations
     fixupNerBeforeNormalization(list);
 
@@ -963,31 +871,23 @@ public class QuantifiableEntityNormalizer {
       E wprev = (i > 0) ? list.get(i - 1) : null;
       // if the current wi is a non-continuation and the last one was a
       // quantity, we close and process the last segment.
-      if ((currNerTag == null || !currNerTag.equals(prevNerTag) || !isCompatible(prevNerTag, wprev, wi))
+      if ((currNerTag == null || !currNerTag.equals(prevNerTag))
           && quantifiable.contains(prevNerTag)) {
         // special handling of TIME
         switch (prevNerTag) {
         case "TIME":
           processEntity(collector, prevNerTag, timeModifier);
+          timeModifier = "";
           break;
         case "DATE":
           processEntity(collector, prevNerTag, null);
-          //now repair this date if it's more than one word
-          //doesn't really matter which one we keep ideally we should be doing lemma/etc matching anyway
-          //but we vaguely try to deal with this by choosing the NNP or the CD
-          if (concatenate)
-            concatenateNumericString(collector, toRemove);
           break;
         default:
           processEntity(collector, prevNerTag, null);
-          if (concatenate) {
-            concatenateNumericString(collector, toRemove);
-          }
           break;
         }
 
         collector = new ArrayList<>();
-        timeModifier = "";
       }
 
       // if the current wi is a quantity, we add it to the collector.
@@ -997,16 +897,37 @@ public class QuantifiableEntityNormalizer {
       }
       prevNerTag = currNerTag;
     }
-    if (concatenate) {
-      list.removeAll(toRemove);
+
+    // finally, we do one last pass to join times and dates together
+    for (int i = 1, sz = list.size(); i < sz; i++) {
+      E wi = list.get(i);
+      String currNerTag = wi.get(CoreAnnotations.NamedEntityTagAnnotation.class);
+      E wprev = list.get(i-1);
+      prevNerTag = wprev.get(CoreAnnotations.NamedEntityTagAnnotation.class);
+      String currNerValue = wi.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class);
+      String prevNerValue = wprev.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class);
+      
+      if ("TIME".equals(currNerTag) && currNerValue != null && currNerValue.charAt(0) == 'T'
+          && "DATE".equals(prevNerTag)) {
+        if (prevNerValue == null || prevNerValue.indexOf('T') < 0) {
+          for (int j = i - 1; j >= 0; j--) {
+            E wj = list.get(j);
+            if (!"DATE".equals(wj.get(CoreAnnotations.NamedEntityTagAnnotation.class)) ||
+                !prevNerValue.equals(wj.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class)))
+              break;
+            wj.set(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class, prevNerValue + currNerValue);
+          }
+          prevNerValue = prevNerValue + currNerValue;
+        }
+        wi.set(CoreAnnotations.NamedEntityTagAnnotation.class, "DATE");
+        wi.set(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class, prevNerValue);
+      }
     }
   }
 
   public static <E extends CoreMap> void fixupNerBeforeNormalization(List<E> list) {
     // Goes through tokens and tries to fix up NER annotations
     String prevNerTag = BACKGROUND_SYMBOL;
-    String prevNumericType = null;
-    Timex prevTimex = null;
     for (int i = 0, sz = list.size(); i < sz; i++) {
       E wi = list.get(i);
 
@@ -1017,15 +938,13 @@ public class QuantifiableEntityNormalizer {
       if (DEBUG) {
         System.err.println("fixupNerBeforeNormalization: wi is " + wi);
       }
-      // repairs commas in between dates...  String constant first in equals() in case key has null value....
-      if ((i + 1) < sz && ",".equals(wi.get(CoreAnnotations.TextAnnotation.class)) && "DATE".equals(prevNerTag)) {
-        if (prevTimex == null && prevNumericType == null) {
-          E nextToken = list.get(i + 1);
-          String nextNER = nextToken.get(CoreAnnotations.NamedEntityTagAnnotation.class);
-          if (nextNER != null && nextNER.equals("DATE")) {
-            wi.set(CoreAnnotations.NamedEntityTagAnnotation.class, "DATE");
-          }
-        }
+
+      // repairs comma, "at" between DATE and TIME
+      if ((i + 1) < sz &&
+          (",".equals(curWord) || "at".equals(curWord))
+          && "DATE".equals(prevNerTag)
+          && "TIME".equals(list.get(i + 1).get(CoreAnnotations.NamedEntityTagAnnotation.class))) {
+        wi.set(CoreAnnotations.NamedEntityTagAnnotation.class, "DATE");
       }
 
       //repairs mistagged multipliers after a numeric quantity
@@ -1033,32 +952,6 @@ public class QuantifiableEntityNormalizer {
           (getOneSubstitutionMatch(curWord, moneyMultipliers.keySet()) != null)) &&
           prevNerTag != null && (prevNerTag.equals("MONEY") || prevNerTag.equals("NUMBER"))) {
         wi.set(CoreAnnotations.NamedEntityTagAnnotation.class, prevNerTag);
-      }
-
-      //repairs four digit ranges (2002-2004) that have not been tagged as years - maybe bad? (empirically useful)
-      if (curWord.contains("-")) {
-        String[] sides = curWord.split("-");
-        if (sides.length == 2) {
-          try {
-            int first = Integer.parseInt(sides[0]);
-            int second = Integer.parseInt(sides[1]);
-            //they're both integers, see if they're both between 1000-3000 (likely years)
-            if (1000 <= first && first <= 3000 && 1000 <= second && second <= 3000) {
-              wi.set(CoreAnnotations.NamedEntityTagAnnotation.class, "DATE");
-              String dateStr = new ISODateInstance(new ISODateInstance(sides[0]), new ISODateInstance(sides[1]))
-                  .getDateString();
-              if (DEBUG) {
-                System.err.println("#5: Changing normalized NER from " +
-                    wi.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class) + " to " + dateStr + " at index "
-                    + i);
-              }
-              wi.set(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class, dateStr);
-              continue;
-            }
-          } catch (Exception e) {
-            // they weren't numbers.
-          }
-        }
       }
 
       // Marks time units as DURATION if they are preceded by a NUMBER tag.  e.g. "two years" or "5 minutes"
