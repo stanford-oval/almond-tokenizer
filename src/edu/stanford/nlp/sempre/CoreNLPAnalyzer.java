@@ -28,7 +28,7 @@ public class CoreNLPAnalyzer {
   // after spellcheck so that new spaces and slash-splitting that spellcheck does
   // are reflected in the lemma tokens and POS tags
   private static final String annotators = "tokenize,quote2,ssplit,pos,lemma," +
-      "ner,quote_ner,regexner,custom_regexp_ner,phone_ner,url_ner";
+      "ner,quote_ner,custom_regexp_ner,phone_ner,url_ner";
 
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
 
@@ -76,7 +76,7 @@ public class CoreNLPAnalyzer {
     props.put("ner.useSUTime", "false");
 
     // enable regexner
-    props.put("regexner.mapping", "./data/regexner_gazette");
+    //props.put("regexner.mapping", "./data/regexner_gazette");
     props.put("regexner.ignorecase", "true");
     props.put("regexner.backgroundSymbol", "O,MISC,ORGANIZATION");
 

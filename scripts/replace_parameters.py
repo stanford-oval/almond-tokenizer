@@ -53,7 +53,13 @@ def is_replace_token(tok):
 def replace_tokens_in_sentence(sentence, parameters, replacements):
     for token in sentence:
         if token in replacements:
+            yield '"'
             yield replacements[token]
+            yield '"'
+            if token.startswith('HASHTAG_'):
+                yield '^^tt:hashtag'
+            elif token.startswith('USERNAME_'):
+                yield '^^tt:username'
         elif is_replace_token(token):
             replace = get_param_values(parameters[token])
             if not replace:
