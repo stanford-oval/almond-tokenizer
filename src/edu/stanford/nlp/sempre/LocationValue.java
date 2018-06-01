@@ -2,7 +2,7 @@ package edu.stanford.nlp.sempre;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class LocationValue extends Value {
+public class LocationValue {
   @JsonProperty
   private final double latitude;
   @JsonProperty

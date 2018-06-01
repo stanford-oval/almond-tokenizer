@@ -4,11 +4,11 @@ import java.util.Collection;
 
 import edu.stanford.nlp.util.logging.Redwood;
 
-public abstract class AbstractLexicon<E extends Value> {
+public abstract class AbstractLexicon<E> {
   static final int verbose = 0;
   private static final Redwood.RedwoodChannels log = Redwood.channels(AbstractLexicon.class);
 
-  public static class Entry<E extends Value> {
+  public static class Entry<E> {
     public final String nerTag;
     public final E value;
     public final String rawPhrase;

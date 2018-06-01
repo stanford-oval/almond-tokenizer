@@ -48,6 +48,9 @@ public class TokenizerServer {
     final List<String> tokens;
 
     @JsonProperty
+    final List<String> tokensNoQuotes;
+
+    @JsonProperty
     final List<String> rawTokens;
 
     @JsonProperty
@@ -63,6 +66,7 @@ public class TokenizerServer {
       this.req = req;
       this.tokens = tokenizerResult.tokens;
       this.rawTokens = tokenizerResult.rawTokens;
+      this.tokensNoQuotes = tokenizerResult.tokensNoQuotes;
       this.pos = tokenizerResult.posTags;
       this.constituencyParse = tokenizerResult.constituencyParse;
     }
@@ -142,8 +146,8 @@ public class TokenizerServer {
     Seq2SeqTokenizer.Result result = tokenizer.process(ex);
     Output output = new Output(input.req, result);
 
-    for (Map.Entry<Seq2SeqTokenizer.Value, List<Integer>> entry : result.entities.entrySet()) {
-      Seq2SeqTokenizer.Value entity = entry.getKey();
+    for (Map.Entry<Value, List<Integer>> entry : result.entities.entrySet()) {
+      Value entity = entry.getKey();
       String entityType = entity.type;
       for (int entityNum : entry.getValue()) {
         String entityToken = entityType + "_" + entityNum;

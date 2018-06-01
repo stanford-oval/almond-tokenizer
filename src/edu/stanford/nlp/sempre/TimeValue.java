@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by joberant on 1/23/15.
  * Value for representing time
  */
-public class TimeValue extends Value {
+public class TimeValue {
   @JsonProperty
   public final int hour;
   @JsonProperty
