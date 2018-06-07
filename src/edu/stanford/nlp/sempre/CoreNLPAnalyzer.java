@@ -115,16 +115,22 @@ public class CoreNLPAnalyzer {
     QuantifiableEntityNormalizer.applySpecializedNER(words);
   }
 
+  private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\p{IsWhite_Space}*");
+
   public LanguageInfo analyze(String utterance, String expected) {
     LanguageInfo languageInfo = new LanguageInfo();
 
-    // Clear these so that analyze can hypothetically be called
-    // multiple times.
     languageInfo.tokens.clear();
     languageInfo.posTags.clear();
     languageInfo.nerTags.clear();
     languageInfo.nerValues.clear();
     languageInfo.lemmaTokens.clear();
+
+    if (WHITE_SPACE_PATTERN.matcher(utterance).matches()) {
+        // CoreNLP chokes on sentences that are composed exclusively of blanks
+        // return early in that case, the tokenization has 0 tokens
+        return languageInfo;
+    }
 
     utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
 

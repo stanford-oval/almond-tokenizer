@@ -3572,7 +3572,7 @@
 ( "jpeg" )	GENERIC_ENTITY_tt:mime_type		0
 ( "spartaks" "jurmala" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "juve" "stabia" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
-( "juventus" "turin" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
+( "juventus" "turin"? )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "k-swiss" ( "inc." | "inc" | "incorporated" )? "."? )	GENERIC_ENTITY_tt:stock_id	ORGANIZATION	0
 ( "1"? "fc"? "kaiserslautern" )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
 ( "nomme" "kalju" "fc"? )	GENERIC_ENTITY_sportradar	ORGANIZATION	0
