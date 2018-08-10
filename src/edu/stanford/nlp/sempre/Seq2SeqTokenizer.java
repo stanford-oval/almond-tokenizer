@@ -481,7 +481,8 @@ public class Seq2SeqTokenizer {
     case "LOCATION":
       LocationValue loc = findLocation(entity);
       if (loc == null)
-        return findEntity(ex, entity, "tt:country", nerType);
+        //return findEntity(ex, entity, "tt:country", nerType);
+        return null;
       return new Pair<>(nerType, loc);
 
     //case "ORGANIZATION":
