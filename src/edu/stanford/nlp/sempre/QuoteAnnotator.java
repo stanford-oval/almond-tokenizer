@@ -548,7 +548,7 @@ public class QuoteAnnotator implements Annotator {
         if (!quotesMap.containsKey(quote)) {
           quotesMap.put(quote, new ArrayList<>());
         }
-        quotesMap.get(quote).add(new Pair(start, end));
+        quotesMap.get(quote).add(new Pair<>(start, end));
         start = -1;
         end = -1;
         quote = null;
@@ -589,19 +589,19 @@ public class QuoteAnnotator implements Annotator {
     // really this test should be whether or not start is mapped to in quotesMap
     if (!isAQuoteMapStarter(start, quotesMap) && start >= 0 && start < text.length() - 3) {
       if (EXTRACT_UNCLOSED) {
-        unclosedQuotes.add(new Pair(start, text.length()));
+        unclosedQuotes.add(new Pair<>(start, text.length()));
       }
       String toPass = text.substring(start + quote.length(), text.length());
       Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> embedded = recursiveQuotes(toPass, offset, null);
       // these are the good quotes
       for (Pair<Integer, Integer> e : embedded.first()) {
-        quotes.add(new Pair(e.first() + start + quote.length(),
+        quotes.add(new Pair<>(e.first() + start + quote.length(),
             e.second() + start + 1));
       }
       if (EXTRACT_UNCLOSED) {
         // these are the unclosed quotes
         for (Pair<Integer, Integer> e : embedded.second()) {
-          unclosedQuotes.add(new Pair(e.first() + start + quote.length(),
+          unclosedQuotes.add(new Pair<>(e.first() + start + quote.length(),
               e.second() + start + 1));
         }
       }
@@ -625,22 +625,22 @@ public class QuoteAnnotator implements Annotator {
             // don't add offset here because the
             // recursive method already added it
             if (e.second() - e.first() > 2) {
-              quotes.add(new Pair(e.first(), e.second()));
+              quotes.add(new Pair<>(e.first(), e.second()));
             }
           }
           // unclosed quotes
           if (EXTRACT_UNCLOSED) {
             // these are the unclosed quotes
             for (Pair<Integer, Integer> e : embedded.second()) {
-              unclosedQuotes.add(new Pair(e.first(), e.second()));
+              unclosedQuotes.add(new Pair<>(e.first(), e.second()));
             }
           }
         }
-        quotes.add(new Pair(q.first() + offset, q.second() + offset));
+        quotes.add(new Pair<>(q.first() + offset, q.second() + offset));
       }
     }
 
-    return new Pair(quotes, unclosedQuotes);
+    return new Pair<>(quotes, unclosedQuotes);
   }
 
   private boolean isAQuoteMapStarter(int target, Map<String, List<Pair<Integer, Integer>>> quotesMap) {

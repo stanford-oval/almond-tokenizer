@@ -2,7 +2,7 @@ package edu.stanford.nlp.sempre;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class EntityValue extends Value {
+public class EntityValue {
   @JsonProperty
   public final String value;
   @JsonProperty

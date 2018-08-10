@@ -1,5 +1,11 @@
 post on twitter
 tweet "hello"
+tweet " " "
+tweet "foo" "
+tweet " "foo"
+get a #cat gif
+follow @alice on twitter
+ask @bob for his linkedin profile
 call +123456789
 call 1-800-almond
 monitor scores of barcelona

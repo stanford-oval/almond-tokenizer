@@ -14,7 +14,7 @@ import edu.stanford.nlp.util.logging.Redwood;
  *
  * @author Percy Liang
  */
-public class NumberValue extends Value {
+public class NumberValue {
   private static final Redwood.RedwoodChannels log = Redwood.channels(NumberValue.class);
 
   @JsonProperty

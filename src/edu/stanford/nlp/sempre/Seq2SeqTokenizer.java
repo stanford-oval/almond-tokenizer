@@ -12,82 +12,15 @@ import edu.stanford.nlp.pipeline.ParserAnnotator;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.Pair;
 
 public class Seq2SeqTokenizer {
   private static final boolean INCLUDE_CONSTITUENCY_PARSE = false;
 
-  private static class Pair<E1, E2> {
-    private final E1 e1;
-    private final E2 e2;
-
-    public Pair(E1 e1, E2 e2) {
-      this.e1 = e1;
-      this.e2 = e2;
-    }
-
-    public E1 getFirst() {
-      return e1;
-    }
-
-    public E2 getSecond() {
-      return e2;
-    }
-
-    @Override
-    public String toString() {
-      return "(" + e1 + ", " + e2 + ")";
-    }
-  }
-
-  public static class Value {
-    public final String type;
-    public final Object value;
-
-    Value(String type, Object value) {
-      this.type = type;
-      this.value = value;
-    }
-
-    @Override
-    public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((type == null) ? 0 : type.hashCode());
-      result = prime * result + ((value == null) ? 0 : value.hashCode());
-      return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj)
-        return true;
-      if (obj == null)
-        return false;
-      if (getClass() != obj.getClass())
-        return false;
-      Value other = (Value) obj;
-      if (type == null) {
-        if (other.type != null)
-          return false;
-      } else if (!type.equals(other.type))
-        return false;
-      if (value == null) {
-        if (other.value != null)
-          return false;
-      } else if (!value.equals(other.value))
-        return false;
-      return true;
-    }
-
-    @Override
-    public String toString() {
-      return "(" + type + ": " + value + ")";
-    }
-  }
-
   public static class Result {
     public final List<String> rawTokens = new ArrayList<>();
     public final List<String> tokens = new ArrayList<>();
+    public final List<String> tokensNoQuotes = new ArrayList<>();
     public final List<String> posTags = new ArrayList<>();
     public final Map<Value, List<Integer>> entities = new HashMap<>();
     public final List<String> constituencyParse = new ArrayList<>();
@@ -124,233 +57,13 @@ public class Seq2SeqTokenizer {
     }
   }
 
-  private void adjustNerTags(LanguageInfo utteranceInfo) {
-    // adjust the NER tag where the model fails
-
-    for (int i = 0; i < utteranceInfo.tokens.size(); i++) {
-      String token, tag;
-
-      tag = utteranceInfo.nerTags.get(i);
-      if ("O".equals(tag))
-        tag = null;
-      token = utteranceInfo.tokens.get(i);
-
-      if (token.equals("san") && i < utteranceInfo.tokens.size() - 2
-          && utteranceInfo.tokens.get(i + 1).equals("jose")
-          && utteranceInfo.tokens.get(i + 2).startsWith("earthquake")) {
-        tag = "ORGANIZATION";
-        utteranceInfo.nerTags.set(i + 1, tag);
-        utteranceInfo.nerTags.set(i + 2, tag);
-      }
-      if (token.equals("nevada") && i < utteranceInfo.tokens.size() - 2
-          && utteranceInfo.tokens.get(i + 1).equals("wolf")
-          && utteranceInfo.tokens.get(i + 2).startsWith("pack")) {
-        tag = "ORGANIZATION";
-        utteranceInfo.nerTags.set(i + 1, tag);
-        utteranceInfo.nerTags.set(i + 2, tag);
-      }
-      if (token.equals("miami") && i < utteranceInfo.tokens.size() - 1
-          && utteranceInfo.tokens.get(i + 1).equals("heat")) {
-        tag = "ORGANIZATION";
-        utteranceInfo.nerTags.set(i + 1, tag);
-      }
-
-      // unsurprisingly, "wolf pack", "red hat" and "california bears" are fairly generic
-      // words on their own, and corenlp does not tag them
-      if (token.equals("wolf") && i < utteranceInfo.tokens.size() - 1
-          && utteranceInfo.tokens.get(i + 1).startsWith("pack")) {
-        tag = "ORGANIZATION";
-        utteranceInfo.nerTags.set(i + 1, tag);
-      }
-      if (token.equals("red") && i < utteranceInfo.tokens.size() - 1
-          && utteranceInfo.tokens.get(i + 1).equals("hat")) {
-        tag = "ORGANIZATION";
-        utteranceInfo.nerTags.set(i + 1, tag);
-      }
-      if (token.equals("california") && i < utteranceInfo.tokens.size() - 1
-          && utteranceInfo.tokens.get(i + 1).equals("bears")) {
-        tag = "ORGANIZATION";
-        utteranceInfo.nerTags.set(i + 1, tag);
-      }
-      if (token.equals("golden") && i < utteranceInfo.tokens.size() - 1
-          && utteranceInfo.tokens.get(i + 1).equals("state")) {
-        tag = "ORGANIZATION";
-        utteranceInfo.nerTags.set(i + 1, tag);
-      }
-      if (token.equals("mast") && i < utteranceInfo.tokens.size() - 1
-          && utteranceInfo.tokens.get(i + 1).equals("camera")) {
-        tag = "NASA_ROVER_CAMERA";
-        utteranceInfo.nerTags.set(i + 1, tag);
-      }
-      if (token.equals("word") && i < utteranceInfo.tokens.size() - 1
-          && (utteranceInfo.tokens.get(i + 1).equals("document")
-              || utteranceInfo.tokens.get(i + 1).equals("documents"))) {
-        tag = "MIME_TYPE";
-        utteranceInfo.nerTags.set(i + 1, tag);
-      }
-      if (token.equals("ancient") && i < utteranceInfo.tokens.size() - 1
-          && utteranceInfo.tokens.get(i + 1).equals("aliens")) {
-        tag = "MEME";
-        utteranceInfo.nerTags.set(i + 1, tag);
-      }
-      if (token.equals("futurama") && i < utteranceInfo.tokens.size() - 1
-          && utteranceInfo.tokens.get(i + 1).equals("fry")) {
-        tag = "MEME";
-        utteranceInfo.nerTags.set(i + 1, tag);
-      }
-      if (token.equals("fry") && i < utteranceInfo.tokens.size() - 1
-          && utteranceInfo.tokens.get(i + 1).equals("futurama")) {
-        tag = "MEME";
-        utteranceInfo.nerTags.set(i + 1, tag);
-      }
-      if (token.equals("brace") && i < utteranceInfo.tokens.size() - 1
-          && (utteranceInfo.tokens.get(i + 1).equals("yourselves")
-              || utteranceInfo.tokens.get(i + 1).equals("yourself"))) {
-        tag = "MEME";
-        utteranceInfo.nerTags.set(i + 1, tag);
-      }
-      if (token.equals("fry") && i < utteranceInfo.tokens.size() - 2 &&
-          utteranceInfo.tokens.get(i + 1).equals("from") &&
-          utteranceInfo.tokens.get(i + 2).equals("futurama")) {
-        tag = "MEME";
-        utteranceInfo.nerTags.set(i + 1, tag);
-        utteranceInfo.nerTags.set(i + 2, tag);
-      }
-      if (token.equals("futurama") && i < utteranceInfo.tokens.size() - 2 &&
-          (utteranceInfo.tokens.get(i + 1).equals("from") || utteranceInfo.tokens.get(i + 1).equals("'s")) &&
-          utteranceInfo.tokens.get(i + 2).equals("fry")) {
-        tag = "MEME";
-        utteranceInfo.nerTags.set(i + 1, tag);
-        utteranceInfo.nerTags.set(i + 2, tag);
-      }
-      if ((token.equals("la") || token.equals("l.a.")) && i < utteranceInfo.tokens.size() - 2 &&
-          utteranceInfo.tokens.get(i + 1).equals(",") &&
-          (utteranceInfo.tokens.get(i + 2).equals("california") || utteranceInfo.tokens.get(i + 2).equals("ca") ||
-              utteranceInfo.tokens.get(i + 2).equals("cali"))) {
-        tag = "LOCATION";
-        utteranceInfo.nerTags.set(i + 1, tag);
-        utteranceInfo.nerTags.set(i + 2, tag);
-      }
-      if ((token.equals("la") || token.equals("l.a.")) && i < utteranceInfo.tokens.size() - 1 &&
-          (utteranceInfo.tokens.get(i + 1).equals("california") || utteranceInfo.tokens.get(i + 1).equals("ca") ||
-              utteranceInfo.tokens.get(i + 1).equals("cali"))) {
-        tag = "LOCATION";
-        utteranceInfo.nerTags.set(i + 1, tag);
-      }
-      if ((token.equals("front") || token.equals("rear")) && i < utteranceInfo.tokens.size() - 3 &&
-          utteranceInfo.tokens.get(i + 1).equals("hazard") &&
-          utteranceInfo.tokens.get(i + 2).equals("avoidance") &&
-          (utteranceInfo.tokens.get(i + 3).equals("camera") || utteranceInfo.tokens.get(i + 3).equals("cam"))) {
-        tag = "NASA_ROVER_CAMERA";
-        utteranceInfo.nerTags.set(i + 1, tag);
-        utteranceInfo.nerTags.set(i + 2, tag);
-        utteranceInfo.nerTags.set(i + 3, tag);
-      }
-      if (token.equals("mars") && i < utteranceInfo.tokens.size() - 3 &&
-          utteranceInfo.tokens.get(i + 1).equals("hand") &&
-          utteranceInfo.tokens.get(i + 2).equals("lens") &&
-          utteranceInfo.tokens.get(i + 3).equals("imager")) {
-        tag = "NASA_ROVER_CAMERA";
-        utteranceInfo.nerTags.set(i + 1, tag);
-        utteranceInfo.nerTags.set(i + 2, tag);
-        utteranceInfo.nerTags.set(i + 3, tag);
-      }
-      // palo, alto, california
-      if (token.equals("palo") && i < utteranceInfo.tokens.size() - 4 &&
-          utteranceInfo.tokens.get(i + 1).equals(",") &&
-          utteranceInfo.tokens.get(i + 2).equals("alto") &&
-          utteranceInfo.tokens.get(i + 3).equals(",") &&
-          (utteranceInfo.tokens.get(i + 4).equals("california") || utteranceInfo.tokens.get(i + 4).equals("ca") ||
-              utteranceInfo.tokens.get(i + 4).equals("cali"))) {
-        tag = "LOCATION";
-        utteranceInfo.nerTags.set(i + 1, tag);
-        utteranceInfo.nerTags.set(i + 2, tag);
-        utteranceInfo.nerTags.set(i + 3, tag);
-        utteranceInfo.nerTags.set(i + 4, tag);
-      }
-      if (token.equals("los") && i < utteranceInfo.tokens.size() - 3 &&
-          utteranceInfo.tokens.get(i + 1).equals("angeles") &&
-          utteranceInfo.tokens.get(i + 2).equals(",") &&
-          (utteranceInfo.tokens.get(i + 3).equals("california") || utteranceInfo.tokens.get(i + 3).equals("ca") ||
-              utteranceInfo.tokens.get(i + 3).equals("cali") ||
-              utteranceInfo.tokens.get(i + 3).equals("ca."))) {
-        tag = "LOCATION";
-        utteranceInfo.nerTags.set(i + 1, tag);
-        utteranceInfo.nerTags.set(i + 2, tag);
-        utteranceInfo.nerTags.set(i + 3, tag);
-      }
-
-      switch (token) {
-      case "usa":
-        tag = "LOCATION";
-        break;
-
-      //case "google":
-      case "warriors":
-      case "stanford":
-      case "giants":
-      case "cavaliers":
-      case "sta":
-      case "stan":
-      case "cubs":
-      case "lakers":
-        tag = "GENERIC_ENTITY_sportradar";
-        break;
-
-      case "aapl":
-      case "msft":
-      case "goog":
-      case "apple":
-      case "walmart":
-        tag = "GENERIC_ENTITY_tt:stock_id";
-        break;
-
-      case "italian":
-      case "french":
-      case "spanish":
-      case "chinese":
-      case "english":
-      case "german":
-      case "swedish":
-        tag = "LANGUAGE";
-        break;
-        
-      case "inkwell":
-      case "lo-fi":
-      case "sierra":
-        tag = "INSTAGRAM_FILTER";
-        break;
-
-      case "pdf":
-      case "excel":
-      case "jpeg":
-      case "jpg":
-      case "png":
-        tag = "MIME_TYPE";
-        break;
-        
-      case "document":
-      case "documents":
-      case "spreadsheet":
-      case "spreadsheets":
-      case "picture":
-      case "pictures":
-      case "image":
-      case "images":
-        if (i > 0 && "MIME_TYPE".equals(utteranceInfo.nerTags.get(i-1)))
-          tag = "MIME_TYPE";
-        break;
-
-      }
-      
-      if (tag != null && !utteranceInfo.nerTags.get(i).equals("QUOTED_STRING"))
-        utteranceInfo.nerTags.set(i, tag);
-    }
+  private static void addEntity(Result result, String tag, int id, Object value) {
+    result.entities.computeIfAbsent(new Value(tag, value), (key) -> new LinkedList<>()).add(id);
   }
 
   private void computeTokens(Example ex, LanguageInfo utteranceInfo, Result result) {
     Map<String, Integer> nextInt = new HashMap<>();
-    StringBuilder fullEntity = new StringBuilder();
+    List<String> fullEntity = new ArrayList<>();
     result.rawTokens.addAll(utteranceInfo.tokens);
     result.posTags.addAll(utteranceInfo.posTags);
 
@@ -361,40 +74,63 @@ public class Seq2SeqTokenizer {
       token = utteranceInfo.tokens.get(i);
 
       if (!"O".equals(tag)) {
-        if (fullEntity.length() != 0)
-          fullEntity.append(" ");
-        fullEntity.append(token);
+        fullEntity.add(token);
         if (i < utteranceInfo.tokens.size() - 1 &&
             utteranceInfo.nerTags.get(i + 1).equals(tag) &&
             Objects.equals(utteranceInfo.nerValues.get(i), utteranceInfo.nerValues.get(i + 1)))
           continue;
 
         Pair<String, Object> value = nerValueToThingTalkValue(ex, tag, utteranceInfo.nerValues.get(i),
-            fullEntity.toString());
+            Joiner.on(' ').join(fullEntity));
         // ignore tt:device entities
-        if (value != null && "GENERIC_ENTITY_tt:device".equals(value.getFirst()))
+        if (value != null && "GENERIC_ENTITY_tt:device".equals(value.first()))
           value = null;
         if (value != null) {
-          if (applyHeuristics && value.getSecond().equals(2.0) && token.equals("two")) {
+          if (applyHeuristics && value.second().equals(2.0) && token.equals("two")) {
             current = token;
           } else {
-            tag = value.getFirst();
+            tag = value.first();
             int id = nextInt.compute(tag, (oldKey, oldValue) -> {
               if (oldValue == null)
                 oldValue = -1;
               return oldValue + 1;
             });
-            result.entities.computeIfAbsent(new Value(tag, value.getSecond()), (key) -> new LinkedList<>()).add(id);
-            current = tag + "_" + id;
+            addEntity(result, tag, id, value.second());
+            current = tag + "_" + id + '*' + ("QUOTED_STRING".equals(tag) ? fullEntity.size() - 2 : fullEntity.size());
+
+            switch (tag) {
+            case "QUOTED_STRING":
+              addEntity(result, "STRING", id, Joiner.on(' ').join(fullEntity));
+              result.tokensNoQuotes.addAll(fullEntity.subList(1, fullEntity.size() - 1));
+              break;
+            case "HASHTAG":
+              addEntity(result, "TAG", id, value.second());
+              result.tokensNoQuotes.add((String) value.second());
+              break;
+            case "USERNAME":
+              addEntity(result, "NAME", id, value.second());
+              result.tokensNoQuotes.add((String) value.second());
+              break;
+            default:
+              if (tag.startsWith("GENERIC_ENTITY_")) {
+                addEntity(result, tag.substring("GENERIC_".length()), id, Joiner.on(' ').join(fullEntity));
+                result.tokensNoQuotes.addAll(fullEntity);
+              } else {
+                result.tokensNoQuotes.add(current);
+              }
+              break;
+            }
           }
         } else {
-          result.tokens.addAll(Arrays.asList(fullEntity.toString().split(" ")));
+          result.tokens.addAll(fullEntity);
+          result.tokensNoQuotes.addAll(fullEntity);
           current = null;
         }
       } else {
         current = token;
+        result.tokensNoQuotes.add(current);
       }
-      fullEntity.setLength(0);
+      fullEntity.clear();
       if (current != null)
         result.tokens.add(current);
     }
@@ -404,10 +140,6 @@ public class Seq2SeqTokenizer {
 
     LanguageInfo utteranceInfo = ex.languageInfo;
     Result result = new Result();
-
-    /*if (applyHeuristics) {
-      adjustNerTags(utteranceInfo);
-    }*/
 
     computeTokens(ex, utteranceInfo, result);
     computeConstituencyParse(result);
@@ -651,8 +383,8 @@ public class Seq2SeqTokenizer {
       return null;
 
     weights.sort((one, two) -> {
-      double w1 = one.getSecond();
-      double w2 = two.getSecond();
+      double w1 = one.second();
+      double w2 = two.second();
 
       if (w1 == w2)
         return 0;
@@ -663,13 +395,13 @@ public class Seq2SeqTokenizer {
         return -1;
     });
 
-    double maxWeight = weights.get(0).getSecond();
-    if (weights.size() > 1 && weights.get(1).getSecond() == maxWeight) {
+    double maxWeight = weights.get(0).second();
+    if (weights.size() > 1 && weights.get(1).second() == maxWeight) {
       System.out.println("Ambiguous entity " + entity + ", could be any of " + weights);
       return null;
     }
 
-    return weights.get(0).getFirst();
+    return weights.get(0).first();
   }
 
   private static TimeValue parseTimeValue(String nerValue) {
@@ -749,7 +481,8 @@ public class Seq2SeqTokenizer {
     case "LOCATION":
       LocationValue loc = findLocation(entity);
       if (loc == null)
-        return findEntity(ex, entity, "tt:country", nerType);
+        //return findEntity(ex, entity, "tt:country", nerType);
+        return null;
       return new Pair<>(nerType, loc);
 
     //case "ORGANIZATION":
@@ -759,6 +492,8 @@ public class Seq2SeqTokenizer {
     case "DURATION":
       if (nerValue != null) {
         NumberValue v = NumberValue.parseDurationValue(nerValue);
+        if (v == null)
+          return null;
         if (v.value == 1 && v.unit.equals("day"))
           return null;
         return new Pair<>(nerType, v);

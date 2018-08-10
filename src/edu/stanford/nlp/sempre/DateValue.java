@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DateValue extends Value {
+public class DateValue {
   @JsonProperty
   public final int year;
   @JsonProperty
