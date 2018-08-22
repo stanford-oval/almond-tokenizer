@@ -9,17 +9,31 @@ public class LocationValue {
   private final double longitude;
   @JsonProperty
   private final String display;
+  private final int rank;
 
   public LocationValue(double latitude, double longitude) {
     this.latitude = latitude;
     this.longitude = longitude;
     this.display = null;
+    this.rank = 30;
   }
 
   public LocationValue(double latitude, double longitude, String display) {
     this.latitude = latitude;
     this.longitude = longitude;
     this.display = display;
+    this.rank = 30;
+  }
+
+  public LocationValue(double latitude, double longitude, String display, int rank) {
+    this.latitude = latitude;
+    this.longitude = longitude;
+    this.display = display;
+    this.rank = rank;
+  }
+
+  public int getRank() {
+    return this.rank;
   }
 
   @Override
