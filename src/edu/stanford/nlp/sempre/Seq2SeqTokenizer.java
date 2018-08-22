@@ -230,6 +230,8 @@ public class Seq2SeqTokenizer {
       return null;
 
     LocationLexicon.Entry<LocationValue> first = entries.iterator().next();
+    if (first.value.getRank() < 16) // larger than a city
+        return null;
     return first.value;
   }
 

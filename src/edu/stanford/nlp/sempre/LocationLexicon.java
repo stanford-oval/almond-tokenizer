@@ -64,8 +64,10 @@ public class LocationLexicon extends AbstractLexicon<LocationValue> {
 
   private static <E1, E2> Collection<E2> map(Collection<E1> from, Function<E1, E2> f) {
     Collection<E2> to = new ArrayList<>();
-    for (E1 e : from)
-      to.add(f.apply(e));
+    for (E1 e1 : from) {
+      E2 e2 = f.apply(e1);
+      to.add(e2);
+    }
     return to;
   }
 
@@ -84,8 +86,9 @@ public class LocationLexicon extends AbstractLexicon<LocationValue> {
       try (Reader reader = new InputStreamReader(connection.getInputStream())) {
         return map(Json.getMapper().reader().withType(new TypeReference<List<NominatimEntry>>() {
         }).readValue(reader), (NominatimEntry entry) -> {
+          int rank = Integer.parseInt(entry.place_rank);
           String canonical = entry.display_name.toLowerCase().replaceAll("[,\\s+]", " ");
-          return new Entry<>("LOCATION", new LocationValue(entry.lat, entry.lon, entry.display_name),
+          return new Entry<>("LOCATION", new LocationValue(entry.lat, entry.lon, entry.display_name, rank),
               canonical);
         });
       }
