@@ -100,20 +100,16 @@ public class Seq2SeqTokenizer {
 
             switch (tag) {
             case "QUOTED_STRING":
-              addEntity(result, "STRING", id, Joiner.on(' ').join(fullEntity));
               result.tokensNoQuotes.addAll(fullEntity.subList(1, fullEntity.size() - 1));
               break;
             case "HASHTAG":
-              addEntity(result, "TAG", id, value.second());
               result.tokensNoQuotes.add((String) value.second());
               break;
             case "USERNAME":
-              addEntity(result, "NAME", id, value.second());
               result.tokensNoQuotes.add((String) value.second());
               break;
             default:
               if (tag.startsWith("GENERIC_ENTITY_")) {
-                addEntity(result, tag.substring("GENERIC_".length()), id, Joiner.on(' ').join(fullEntity));
                 result.tokensNoQuotes.addAll(fullEntity);
               } else {
                 result.tokensNoQuotes.add(current);
