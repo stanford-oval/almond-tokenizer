@@ -62,6 +62,9 @@ public class TokenizerServer {
     @JsonProperty
     final List<String> constituencyParse;
 
+    @JsonProperty
+    final String sentiment;
+
     Output(int req, Seq2SeqTokenizer.Result tokenizerResult) {
       this.req = req;
       this.tokens = tokenizerResult.tokens;
@@ -69,6 +72,7 @@ public class TokenizerServer {
       this.tokensNoQuotes = tokenizerResult.tokensNoQuotes;
       this.pos = tokenizerResult.posTags;
       this.constituencyParse = tokenizerResult.constituencyParse;
+      this.sentiment = tokenizerResult.sentiment;
     }
   }
   

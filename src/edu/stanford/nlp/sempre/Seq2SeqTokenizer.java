@@ -24,6 +24,7 @@ public class Seq2SeqTokenizer {
     public final List<String> posTags = new ArrayList<>();
     public final Map<Value, List<Integer>> entities = new HashMap<>();
     public final List<String> constituencyParse = new ArrayList<>();
+    public String sentiment = "neutral";
   }
 
   private static final Map<String, String> CURRENCY_CODES = new HashMap<>();
@@ -139,6 +140,7 @@ public class Seq2SeqTokenizer {
 
     computeTokens(ex, utteranceInfo, result);
     computeConstituencyParse(result);
+    result.sentiment = ex.languageInfo.sentiment;
 
     return result;
   }
