@@ -19,24 +19,30 @@ public class LanguageInfo {
   public final List<String> nerTags;  // NER tags
   public final List<String> nerValues;  // NER values (contains times, dates, etc.)
 
-  public LanguageInfo() {
+  // Sentiment info
+  public final String sentiment;
+
+  public LanguageInfo(String sentiment) {
     this(new ArrayList<String>(),
         new ArrayList<String>(),
         new ArrayList<String>(),
         new ArrayList<String>(),
-        new ArrayList<String>());
+        new ArrayList<String>(),
+        sentiment);
   }
 
   public LanguageInfo(List<String> tokens,
       List<String> lemmaTokens,
       List<String> posTags,
       List<String> nerTags,
-      List<String> nerValues) {
+      List<String> nerValues,
+      String sentiment) {
     this.tokens = tokens;
     this.lemmaTokens = lemmaTokens;
     this.posTags = posTags;
     this.nerTags = nerTags;
     this.nerValues = nerValues;
+    this.sentiment = sentiment;
   }
 
   public int numTokens() {

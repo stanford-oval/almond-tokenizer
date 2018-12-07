@@ -6,11 +6,12 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
+import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.logging.Redwood;
 
 /**
@@ -28,7 +29,7 @@ public class CoreNLPAnalyzer {
   // after spellcheck so that new spaces and slash-splitting that spellcheck does
   // are reflected in the lemma tokens and POS tags
   private static final String annotators = "tokenize,quote2,ssplit,pos,lemma," +
-      "ner,quote_ner,custom_regexp_ner,phone_ner,url_ner";
+      "ner,quote_ner,custom_regexp_ner,phone_ner,url_ner,parse,sentiment";
 
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
 
@@ -118,18 +119,10 @@ public class CoreNLPAnalyzer {
   private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\p{IsWhite_Space}*");
 
   public LanguageInfo analyze(String utterance, String expected) {
-    LanguageInfo languageInfo = new LanguageInfo();
-
-    languageInfo.tokens.clear();
-    languageInfo.posTags.clear();
-    languageInfo.nerTags.clear();
-    languageInfo.nerValues.clear();
-    languageInfo.lemmaTokens.clear();
-
     if (WHITE_SPACE_PATTERN.matcher(utterance).matches()) {
         // CoreNLP chokes on sentences that are composed exclusively of blanks
         // return early in that case, the tokenization has 0 tokens
-        return languageInfo;
+      return new LanguageInfo("neutral");
     }
 
     utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
@@ -139,10 +132,20 @@ public class CoreNLPAnalyzer {
     // Work around CoreNLP issue #622
     Annotation annotation = pipeline.process(utterance + " ");
 
-    // run numeric classifiers
-    recognizeNumberSequences(annotation.get(CoreAnnotations.TokensAnnotation.class));
+    CoreMap sentence = annotation.get(SentencesAnnotation.class).get(0);
+    String sentiment = sentence.get(SentimentCoreAnnotations.SentimentClass.class);
 
-    for (CoreLabel token : annotation.get(CoreAnnotations.TokensAnnotation.class)) {
+    if (sentiment == null)
+      sentiment = "neutral";
+    else
+      sentiment = sentiment.replaceAll("\\s+", "_").toLowerCase();
+
+    LanguageInfo languageInfo = new LanguageInfo(sentiment);
+
+    // run numeric classifiers
+    recognizeNumberSequences(annotation.get(TokensAnnotation.class));
+
+    for (CoreLabel token : annotation.get(TokensAnnotation.class)) {
       String word = token.get(TextAnnotation.class);
       String wordLower = word.toLowerCase();
       String nerTag = token.get(NamedEntityTagAnnotation.class);
@@ -315,6 +318,7 @@ public class CoreNLPAnalyzer {
         log.logf("posTags: %s", langInfo.posTags);
         log.logf("nerTags: %s", langInfo.nerTags);
         log.logf("nerValues: %s", langInfo.nerValues);
+        log.logf("sentiment: %s", langInfo.sentiment);
         Redwood.endTrack();
       }
     } catch (IOException e) {
