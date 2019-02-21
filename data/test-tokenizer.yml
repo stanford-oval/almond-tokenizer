@@ -1,0 +1,278 @@
+- lang: en
+  input: post on twitter
+  rawTokens: post on twitter
+  tokens: post on twitter
+  entities: {}
+- lang: en
+  input: 'tweet "hello"'
+  rawTokens: tweet `` hello ''
+  tokens: tweet QUOTED_STRING_0*1
+  entities:
+    QUOTED_STRING_0: hello
+- lang: en
+  input: 'tweet "hello world"'
+  rawTokens: tweet `` hello world ''
+  tokens: tweet QUOTED_STRING_0*2
+  entities:
+    QUOTED_STRING_0: hello world
+- lang: en
+  input: 'tweet " " "'
+  rawTokens: tweet '' '' ''
+  tokens: tweet QUOTED_STRING_0*0 ''
+  entities:
+    QUOTED_STRING_0: ' '
+- lang: en
+  input: 'tweet "foo" "'
+  rawTokens: tweet `` foo '' ''
+  tokens: tweet QUOTED_STRING_0*1 ''
+  entities:
+    QUOTED_STRING_0: 'foo'
+- lang: en
+  input: 'tweet " "foo"'
+  rawTokens: tweet '' `` foo ''
+  tokens: tweet QUOTED_STRING_0*0 foo ''
+  entities:
+    QUOTED_STRING_0: ' '
+- lang: en
+  input: 'get a #cat gif'
+  rawTokens: 'get a #cat gif'
+  tokens: get a HASHTAG_0*1 gif
+  entities:
+    HASHTAG_0: cat
+- lang: en
+  input: follow @alice on twitter
+  rawTokens: follow @alice on twitter
+  tokens: follow USERNAME_0*1 on twitter
+  entities:
+    USERNAME_0: alice
+- lang: en
+  input: ask @bob for his linkedin profile
+  rawTokens: ask @bob for his linkedin profile
+  tokens: ask USERNAME_0*1 for his linkedin profile
+  entities:
+    USERNAME_0: bob
+- lang: en
+  input: call +123456789
+  rawTokens: call +123456789
+  tokens: call PHONE_NUMBER_0*1
+  entities:
+    PHONE_NUMBER_0: '+123456789'
+- lang: en
+  input: call 1-800-almond
+  rawTokens: call 1-800-almond
+  tokens: call PHONE_NUMBER_0*1
+  entities:
+    PHONE_NUMBER_0: '+1800256663'
+# FIXME this does not look correct
+- lang: en
+  input: call 1 800 almond
+  rawTokens: call 1 800 almond
+  tokens: call NUMBER_0*2 almond
+  entities:
+    NUMBER_0: 801
+# FIXME the case with a space between area code and number is not tokenized correctly
+- lang: en
+  input: 'call 650123456'
+  rawTokens: 'call 650123456'
+  tokens: call PHONE_NUMBER_0*1
+  entities:
+    PHONE_NUMBER_0: '+1650123456'
+- lang: en
+  input: monitor scores of barcelona
+  rawTokens: monitor scores of barcelona
+  tokens: monitor scores of barcelona
+  entities: {}
+
+# FIXME this should be recognized as LOCATION
+- lang: en
+  input: "what's the weather in barcelona"
+  rawTokens: "what 's the weather in barcelona"
+  tokens: "what 's the weather in barcelona"
+  entities: {}
+- lang: en
+  input: monitor warriors
+  rawTokens: monitor warriors
+  tokens: monitor warriors
+  entities: {}
+- lang: en
+  input: give me washington post
+  rawTokens: give me washington post
+  tokens: give me washington post
+  entities: {}
+- lang: en
+  input: as fitbit steps update post "i'm happy" on facebook
+  rawTokens: as fitbit steps update post `` i 'm happy '' on facebook
+  tokens: as fitbit steps update post QUOTED_STRING_0*3 on facebook
+  entities:
+    QUOTED_STRING_0: i'm happy
+- lang: en
+  input: alert me any time youtube channels that match "super bowl" with the description "christmas" update
+  rawTokens: alert me any time youtube channels that match `` super bowl '' with the description `` christmas '' update
+  tokens: alert me any time youtube channels that match QUOTED_STRING_0*2 with the description QUOTED_STRING_1*1 update
+  entities:
+    QUOTED_STRING_0: super bowl
+    QUOTED_STRING_1: christmas
+- lang: en
+  input: help me make a facebook post
+  rawTokens: help me make a facebook post
+  tokens: help me make a facebook post
+  entities: {}
+- lang: en
+  input: if dropbox quota changes anytime and the used space is at least 3gb notify me
+  rawTokens: if dropbox quota changes anytime and the used space is at least 3 gb notify me
+  tokens: if dropbox quota changes anytime and the used space is at least NUMBER_0*1 gb notify me
+  entities:
+    NUMBER_0: 3.0
+- lang: en
+  input: wake me up at 7am
+  rawTokens: wake me up at 7am
+  tokens: wake me up at TIME_0*1
+  entities:
+    TIME_0:
+      hour: 7
+      minute: 0
+- lang: en
+  input: wake me up at 7am in the morning
+  rawTokens: wake me up at 7am in the morning
+  tokens: wake me up at TIME_0*1 in the morning
+  entities:
+    TIME_0:
+      hour: 7
+      minute: 0
+- lang: en
+  input: when nba team la lakers plays
+  rawTokens: when nba team la lakers plays
+  tokens: when nba team la lakers plays
+  entities: {}
+- lang: en
+  input: monitor nba team los angeles lakers
+  rawTokens: monitor nba team los angeles lakers
+  tokens: monitor nba team los angeles lakers
+  entities: {}
+- lang: en
+  input: what is the weather in los angeles
+  rawTokens: what is the weather in los angeles
+  tokens: what is the weather in LOCATION_0*2
+  entities:
+    LOCATION_0:
+      latitude: 34.0543942
+      longitude: -118.2439408
+      display: null
+      rank: 30
+- lang: en
+  input: open gnome builder
+  rawTokens: open gnome builder
+  tokens: open gnome builder
+  entities: {}
+
+# FIXME this one will not work without the right key
+#- lang: en
+#  expect: Location
+#  input: 353 serra mall stanford
+#  rawTokens: 353 serra mall stanford
+#  tokens: LOCATION_0*4
+#  entities: {}
+
+- lang: en
+  expect: MultipleChoice
+  input: washington dc
+  rawTokens: washington dc
+  tokens: washington dc
+  entities: {}
+- lang: en
+  input: june 1st at 7:15pm
+  rawTokens: june 1 st at 7:15 pm
+  tokens: DATE_0*6
+  entities:
+    DATE_0:
+      year: -1
+      month: 6
+      day: 1
+      hour: 19
+      minute: 15
+      second: 0
+- lang: en
+  input: may 30th at 8am
+  rawTokens: may 30 th at 8am
+  tokens: DATE_0*5
+  entities:
+    DATE_0:
+      year: -1
+      month: 5
+      day: 30
+      hour: 8
+      minute: 0
+      second: 0
+- lang: en
+  input: 2018/05/18 11:15
+  rawTokens: 2018/05/18 11:15
+  tokens: DATE_0*2
+  entities:
+    DATE_0:
+      year: 2018
+      month: 5
+      day: 18
+      hour: 11
+      minute: 15
+      second: 0
+- lang: en
+  input: 2018/05/18 11:15pm
+  rawTokens: 2018/05/18 11:15 pm
+  tokens: DATE_0*3
+  entities:
+    DATE_0:
+      year: 2018
+      month: 5
+      day: 18
+      hour: 23
+      minute: 15
+      second: 0
+- lang: en
+  input: 12/12/12 12:12
+  rawTokens: 12/12/12 12:12
+  tokens: DATE_0*2
+  entities:
+    DATE_0:
+      year: 2012
+      month: 12
+      day: 12
+      hour: 12
+      minute: 12
+      second: 0
+- lang: en
+  input: 01/02/03 04:05
+  rawTokens: 01/02/03 04:05
+  tokens: DATE_0*2
+  entities:
+    DATE_0:
+      year: 2003
+      # note how the date is interpreted in American style (month first)
+      month: 1
+      day: 2
+      hour: 4
+      minute: 5
+      second: 0
+- lang: en
+  input: 5/30/2018, 5:26:28 PM
+  rawTokens: 5/30/2018 , 5:26:28 pm
+  tokens: DATE_0*4
+  entities:
+    DATE_0:
+      year: 2018
+      month: 5
+      day: 30
+      hour: 17
+      minute: 26
+      second: 28
+- lang: en
+  input: jan 1st 2018 at midnight
+  rawTokens: jan 1 st 2018 at midnight
+  tokens: DATE_0*6
+  entities:
+    DATE_0:
+      year: 2018
+      month: 1
+      day: 1
+      hour: 0
+      minute: 0
+      second: 0
