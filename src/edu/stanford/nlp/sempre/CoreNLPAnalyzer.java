@@ -34,16 +34,24 @@ public class CoreNLPAnalyzer {
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
 
   private final StanfordCoreNLP pipeline;
+  private final String languageTag;
+  private final boolean applyOurOwnNumericClassifier;
 
   public CoreNLPAnalyzer(String languageTag) {
     Properties props = new Properties();
     
+    this.languageTag = languageTag;
+    applyOurOwnNumericClassifier = languageTag.equals("en");
+
     switch (languageTag) {
     case "en":
-    case "en_US":
       props.put("pos.model", "edu/stanford/nlp/models/pos-tagger/english-caseless-left3words-distsim.tagger");
       props.put("ner.model",
           "edu/stanford/nlp/models/ner/english.all.3class.caseless.distsim.crf.ser.gz");
+
+      // disable all the builtin numeric classifiers, we have our own
+      props.put("ner.applyNumericClassifiers", "false");
+      props.put("ner.useSUTime", "false");
       break;
 
     case "de":
@@ -71,10 +79,6 @@ public class CoreNLPAnalyzer {
 
     // disable ssplit (even though we need it to run the rest of the annotators)
     props.put("ssplit.isOneSentence", "true");
-
-    // disable all the builtin numeric classifiers, we have our own
-    props.put("ner.applyNumericClassifiers", "false");
-    props.put("ner.useSUTime", "false");
 
     // enable regexner
     //props.put("regexner.mapping", "./data/regexner_gazette");
@@ -125,7 +129,9 @@ public class CoreNLPAnalyzer {
       return new LanguageInfo("neutral");
     }
 
-    utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
+    // Fix wrong tokenization of "<number>am" without a space
+    if (languageTag.equals("en"))
+      utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
 
     // Run Stanford CoreNLP
 
@@ -143,7 +149,8 @@ public class CoreNLPAnalyzer {
     LanguageInfo languageInfo = new LanguageInfo(sentiment);
 
     // run numeric classifiers
-    recognizeNumberSequences(annotation.get(TokensAnnotation.class));
+    if (applyOurOwnNumericClassifier)
+      recognizeNumberSequences(annotation.get(TokensAnnotation.class));
 
     for (CoreLabel token : annotation.get(TokensAnnotation.class)) {
       String word = token.get(TextAnnotation.class);
