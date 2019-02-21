@@ -76,3 +76,16 @@
     CURRENCY_0:
       value: 500
       unit: usd
+ 
+# FIXME: durations are not recognized     
+#- lang: zh
+#  input: 三小时十五分钟
+#  rawTokens: 三 小时 十五 分钟
+#  tokens: DURATION_0*2 DURATION_1*2
+#  entities:
+#    DURATION_0:
+#      value: 3
+#      unit: h
+#    DURATION_1:
+#      value: 15
+#      unit: min
