@@ -276,3 +276,9 @@
       hour: 0
       minute: 0
       second: 0
+- lang: en
+  input: show me the 3rd result
+  rawTokens: show me the 3 rd result
+  tokens: show me the NUMBER_0*2 result
+  entities:
+    NUMBER_0: 3

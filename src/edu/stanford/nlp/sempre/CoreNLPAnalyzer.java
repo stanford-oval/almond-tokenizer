@@ -129,7 +129,7 @@ public class CoreNLPAnalyzer {
       return new LanguageInfo("neutral");
     }
 
-    // Fix wrong tokenization of "<number>am" without a space
+    // Fix wrong tokenization of "<number>gb" without a space
     if (languageTag.equals("en"))
       utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
 
