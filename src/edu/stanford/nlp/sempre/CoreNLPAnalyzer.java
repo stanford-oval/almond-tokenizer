@@ -309,7 +309,7 @@ public class CoreNLPAnalyzer {
 
   // Test on example sentence.
   public static void main(String[] args) {
-    CoreNLPAnalyzer analyzer = new CoreNLPAnalyzer("en");
+    CoreNLPAnalyzer analyzer = new CoreNLPAnalyzer(args.length > 0 ? args[0] : "en");
 
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
       while (true) {

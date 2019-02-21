@@ -34,6 +34,7 @@ pullparmesan 'slf4j-api.jar'
 pullparmesan 'slf4j-simple.jar'
 pullparmesan 'xom.jar'
 pullparmesan 'stanford-english-corenlp-2017-06-09-models.jar'
+pullparmesan 'stanford-chinese-corenlp-2017-06-09-models.jar'
 pullparmesan 'trove4j-3.0.3.jar'
 pullparmesan 'trove4j-3.0.3-javadoc.jar'
 wget -c 'http://search.maven.org/remotecontent?filepath=info/faljse/SDNotify/1.1/SDNotify-1.1.jar' -O lib/SDNotify-1.1.jar
