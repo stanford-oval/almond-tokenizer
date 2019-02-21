@@ -143,6 +143,10 @@ public class TokenizerServer {
     }
     CoreNLPAnalyzer analyzer = analyzers.get(input.languageTag);
     Seq2SeqTokenizer tokenizer = tokenizers.get(input.languageTag);
+    if (analyzer == null || tokenizer == null) {
+      writeError(outputStream, new Error(input.req, "Unsupported language tag"));
+      return;
+    }
 
     Example ex = new Example.Builder().setUtterance(input.utterance).setExpected(input.expect).createExample();
     ex.preprocess(analyzer);
