@@ -13,6 +13,7 @@ pullparmesan() {
 }
 
 cd $SEMPREDIR
+mkdir -p lib
 pullsempre '/u/nlp/data/semparse/resources/guava-14.0.1.jar'
 # TestNG -- testing framework
 pullsempre '/u/nlp/data/semparse/resources/testng-6.8.5.jar'
