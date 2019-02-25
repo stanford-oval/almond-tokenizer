@@ -26,8 +26,8 @@
 # FIXME: CoreNLP for Chinese does not normalize times
 # see the TODO at https://github.com/stanfordnlp/CoreNLP/blob/9bcebf80930403476543f32dc20d3b875b58fd16/src/edu/stanford/nlp/ie/ChineseQuantifiableEntityNormalizer.java#L239
 #- lang: zh
-#  input: 今天四点下午我很忙
-#  rawTokens: 今天 四点 下午 我 很忙
+#  input: 今天下午四点我很忙
+#  rawTokens: 今天 下午 四点 我 很忙
 #  tokens: 今天 TIME_0*2 我 很忙
 #  entities:
 #    TIME_0:
@@ -67,7 +67,8 @@
     CURRENCY_0:
       value: 500
       unit: cny
-      
+
+# FIXME : 五百美金 is not recognized as currency 
 - lang: zh
   input: 这五百美元
   rawTokens: 这 五百 美元
@@ -89,3 +90,8 @@
 #    DURATION_1:
 #      value: 15
 #      unit: min
+
+- lang: zh
+  input: 我的血压
+  rawTokens: 我 的 血压
+  tokens: 我 的 血压
