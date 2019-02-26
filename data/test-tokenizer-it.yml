@@ -1,0 +1,11 @@
+- locale: it-it
+  input: mostrami una foto di gatti
+  rawTokens: mostrami una foto di gatti
+  tokens: mostrami una foto di gatti
+  entities: {}
+- locale: it-IT
+  input: mostrami 3 foto di gatti
+  rawTokens: mostrami 3 foto di gatti
+  tokens: mostrami NUMBER_0*1 foto di gatti
+  entities:
+    NUMBER_0: 3

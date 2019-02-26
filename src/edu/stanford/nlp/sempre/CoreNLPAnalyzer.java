@@ -25,7 +25,7 @@ import opencc.OpenCC;
 public class CoreNLPAnalyzer {
   private static final Redwood.RedwoodChannels log = Redwood.channels(CoreNLPAnalyzer.class);
 
-  private static final String annotators = "tokenize,quote2,ssplit,pos,lemma," +
+  private static final String default_annotators = "tokenize,quote2,ssplit,pos,lemma," +
       "ner,quote_ner,custom_regexp_ner,phone_ner,url_ner,parse,sentiment";
 
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
@@ -39,6 +39,7 @@ public class CoreNLPAnalyzer {
 
   public CoreNLPAnalyzer(LocaleTag localeTag) {
     Properties props = new Properties();
+    String annotators = default_annotators;
 
     isEnglish = localeTag.getLanguage().equals("en");
     applyOurOwnNumericClassifier = isEnglish;
@@ -53,6 +54,11 @@ public class CoreNLPAnalyzer {
       // disable all the builtin numeric classifiers, we have our own
       props.put("ner.applyNumericClassifiers", "false");
       props.put("ner.useSUTime", "false");
+      break;
+
+    case "it":
+      loadResource("StanfordCoreNLP-italian.properties", props);
+      annotators = "ita_toksent,quote2,pos,ita_morpho,ita_lemma,ner,quote_ner,custom_regexp_ner,phone_ner,url_ner,parse,sentiment";
       break;
 
     case "de":
