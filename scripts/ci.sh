@@ -24,7 +24,7 @@ if test "$1" = "--interactive" ; then
     sleep 84600
 else
     # sleep until the process is settled
-    sleep 45
+    sleep 240
     
     ./scripts/test-tokenizer.py < $srcdir/data/test-tokenizer-en.yml
     ./scripts/test-tokenizer.py < $srcdir/data/test-tokenizer-zh.yml
