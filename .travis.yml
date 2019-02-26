@@ -1,3 +1,4 @@
+dist: xenial
 branches:
   except:
   - "/^wip/"
@@ -9,7 +10,7 @@ cache:
   - lib/
 install:
   - sudo apt-get update -q -y
-  - sudo apt-get install -y realpath
+  - sudo apt-get install -y realpath libhunspell-dev
   - ./pull-dependencies.sh
 script:
   - ant
