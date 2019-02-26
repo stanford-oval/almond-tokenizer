@@ -10,7 +10,7 @@ cache:
   - lib/
 install:
   - sudo apt-get update -q -y
-  - sudo apt-get install -y realpath libhunspell-dev python3-yaml
+  - sudo apt-get install -y realpath libhunspell-dev python3-yaml ant
   - ./pull-dependencies.sh
 script:
   - ant
