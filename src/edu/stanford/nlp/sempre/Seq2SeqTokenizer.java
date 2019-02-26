@@ -428,6 +428,7 @@ public class Seq2SeqTokenizer {
       // fallthrough
 
     case "NUMBER":
+    case "ORDINAL":
       if (nerValue == null)
         return null;
       try {
@@ -442,7 +443,7 @@ public class Seq2SeqTokenizer {
         if ("MONEY".equals(nerType))
           return new Pair<>("CURRENCY", new NumberValue(v, CURRENCY_CODES.getOrDefault(unit, unit)));
         else
-          return new Pair<>(nerType, v);
+          return new Pair<>("NUMBER", v);
       } catch (NumberFormatException e) {
         return null;
       }

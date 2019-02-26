@@ -1,0 +1,97 @@
+- lang: zh
+  input: 我很高兴
+  rawTokens: 我 很 高兴
+  tokens: 我 很 高兴
+  entities: {}
+  
+- lang: zh
+  input: 今天是二〇一九年二月二十号
+  rawTokens: 今天 是 二〇一九年 二月 二十号
+  tokens: 今天 是 DATE_0*3
+  entities:
+    DATE_0:
+      year: 2019
+      month: 2
+      day: 20
+      hour: 0
+      minute: 0
+      second: 0
+
+- lang: zh
+  input: 今天下午我很忙
+  rawTokens: 今天 下午 我 很忙
+  tokens: 今天 下午 我 很忙
+  entities: {}
+
+# FIXME: CoreNLP for Chinese does not normalize times
+# see the TODO at https://github.com/stanfordnlp/CoreNLP/blob/9bcebf80930403476543f32dc20d3b875b58fd16/src/edu/stanford/nlp/ie/ChineseQuantifiableEntityNormalizer.java#L239
+#- lang: zh
+#  input: 今天下午四点我很忙
+#  rawTokens: 今天 下午 四点 我 很忙
+#  tokens: 今天 TIME_0*2 我 很忙
+#  entities:
+#    TIME_0:
+#      hour: 16
+#      minute: 0
+
+- lang: zh
+  input: 我的手机是650123456
+  rawTokens: 我的 手机 是 650123456
+  tokens: 我的 手机 是 PHONE_NUMBER_0*1
+  entities:
+    # FIXME should probably default to a locale specific international prefix?
+    PHONE_NUMBER_0: '+1650123456'
+    
+- lang: zh
+  input: 我想预订二人
+  rawTokens: 我 想 预订 二 人
+  tokens: 我 想 预订 NUMBER_0*1 人
+  entities:
+    NUMBER_0: 2
+
+- lang: zh
+  input: 三个人
+  rawTokens: 三 个 人
+  tokens: NUMBER_0*1 个 人
+  entities:
+    NUMBER_0: 3
+
+# FIXME 1: fractional values are not correct, neither 分 nor 毛 are recognized
+# FIXME 2: 块 (colloquial form of 元) is not recognized as currency, and also prevents the number
+#          from being recognized as such
+- lang: zh
+  input: 这五百元
+  rawTokens: 这 五百 元
+  tokens: 这 CURRENCY_0*2
+  entities:
+    CURRENCY_0:
+      value: 500
+      unit: cny
+
+# FIXME : 五百美金 is not recognized as currency 
+- lang: zh
+  input: 这五百美元
+  rawTokens: 这 五百 美元
+  tokens: 这 CURRENCY_0*2
+  entities:
+    CURRENCY_0:
+      value: 500
+      unit: usd
+ 
+# FIXME: durations are not recognized     
+#- lang: zh
+#  input: 三小时十五分钟
+#  rawTokens: 三 小时 十五 分钟
+#  tokens: DURATION_0*2 DURATION_1*2
+#  entities:
+#    DURATION_0:
+#      value: 3
+#      unit: h
+#    DURATION_1:
+#      value: 15
+#      unit: min
+
+- lang: zh
+  input: 我的血压
+  rawTokens: 我 的 血压
+  tokens: 我 的 血压

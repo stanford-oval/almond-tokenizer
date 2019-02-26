@@ -1,21 +1,36 @@
 #!/usr/bin/python3
 
 import json
+import yaml
 import sys
 import socket
 
 with socket.create_connection(('127.0.0.1', 8888)) as conn:
     i = 0
     connfile = conn.makefile()
-    for line in sys.stdin:
-        if line.startswith('expect:'):
-            expect, line = line.split(' ', maxsplit=1)
-            expect = expect[len('expect:'):]
-            msg = json.dumps(dict(languageTag='en', utterance=line.strip(), expect=expect, req=i))
+    loaded = yaml.load(sys.stdin)
+    for line in loaded:
+        if 'expect' in line:
+            msg = json.dumps(dict(languageTag=line['lang'], utterance=line['input'], expect=line['expect'], req=i))
         else:
-            msg = json.dumps(dict(languageTag='en', utterance=line.strip(), req=i))
-        print(msg)
+            msg = json.dumps(dict(languageTag=line['lang'], utterance=line['input'], req=i))
+        #print(msg, file=sys.stderr)
         conn.send((msg + '\n').encode('utf-8'))
-        result = connfile.readline()
-        print(result)
+        result = json.loads(connfile.readline())
+        if 'error' in result:
+            print('Returned error', file=sys.stderr)
+            print(result, file=sys.stderr)
+            sys.exit(1)
+        if ' '.join(result['tokens']) != line['tokens']:
+            print('Failed, wrong tokens', file=sys.stderr)
+            print(result, file=sys.stderr)
+            sys.exit(1)
+        if ' '.join(result['rawTokens']) != line['rawTokens']:
+            print('Failed, wrong raw tokens', file=sys.stderr)
+            print(result, file=sys.stderr)
+            sys.exit(1)
+        if line['entities'] != result['values']:
+            print('Failed, wrong entities', file=sys.stderr)
+            print(result, file=sys.stderr)
+            sys.exit(1)
         i += 1

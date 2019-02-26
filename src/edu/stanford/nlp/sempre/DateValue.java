@@ -1,6 +1,5 @@
 package edu.stanford.nlp.sempre;
 
-import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +26,8 @@ public class DateValue {
   // Format: YYYY-MM-DD (from Freebase).
   // Return null if it's not a valid date string.
   public static DateValue parseDateValue(String dateStr) {
-    if (dateStr.equals("PRESENT_REF")) return now();
+    if (dateStr.equals("PRESENT_REF") || dateStr.equals("XXXX-XX-XX"))
+      return null;
 
     Matcher matcher = PATTERN.matcher(dateStr);
     if (!matcher.matches())
@@ -84,17 +84,6 @@ public class DateValue {
     } catch (NumberFormatException ex) {
       return 0;
     }
-  }
-
-  public static DateValue now() {
-    Calendar cal = Calendar.getInstance();
-    int year = cal.get(Calendar.YEAR);
-    int month = cal.get(Calendar.MONTH)+1;
-    int day = cal.get(Calendar.DAY_OF_MONTH);
-    int hour = cal.get(Calendar.HOUR_OF_DAY);
-    int minute = cal.get(Calendar.MINUTE);
-    double second = cal.get(Calendar.SECOND) + 0.001 * cal.get(Calendar.MILLISECOND);
-    return new DateValue(year, month, day, hour, minute, second);
   }
 
   public DateValue(int year, int month, int day) {
