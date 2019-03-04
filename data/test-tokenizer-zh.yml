@@ -96,3 +96,11 @@
   rawTokens: 我 的 血压
   tokens: 我 的 血压
   entities: {}
+
+# FIXME: organization is not recognized
+#- lang: zh
+#  input: 当脸书更新时
+#  rawTokens : 当 脸书 更新 时
+#  tokens: 当 ORGANIZATION_0 更新 时
+#  entities:
+#      ORGANIZATIONS_0: '脸书' 
