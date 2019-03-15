@@ -26,7 +26,7 @@ public class DateValue {
   // Format: YYYY-MM-DD (from Freebase).
   // Return null if it's not a valid date string.
   public static DateValue parseDateValue(String dateStr) {
-    if (dateStr.equals("PRESENT_REF") || dateStr.equals("XXXX-XX-XX"))
+    if (dateStr == null || dateStr.equals("PRESENT_REF") || dateStr.equals("XXXX-XX-XX"))
       return null;
 
     Matcher matcher = PATTERN.matcher(dateStr);

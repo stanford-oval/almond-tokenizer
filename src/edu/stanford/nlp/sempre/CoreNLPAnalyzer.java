@@ -168,8 +168,12 @@ public class CoreNLPAnalyzer {
         addComma = true;
       }
 
-      if (nerTag.equals("DATE") && INTEGER_PATTERN.matcher(nerValue).matches()) {
-        nerTag = "NUMBER";
+      if (nerTag.equals("DATE")) {
+        if (nerValue == null) {
+          nerTag = "O";
+        } else if (INTEGER_PATTERN.matcher(nerValue).matches()) {
+          nerTag = "NUMBER";
+        }
       }
 
       if (wordLower.equals("9-11") || wordLower.equals("911")) {
