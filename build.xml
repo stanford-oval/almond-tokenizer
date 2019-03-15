@@ -31,7 +31,7 @@
   <target name="core" depends="init">
     <echo message="Compiling ${ant.project.name}: core"/>
     <mkdir dir="${classes}"/>
-    <javac srcdir="${src}" destdir="${classes}" classpathref="lib.path" debug="true" includeantruntime="false" source="${source}" target="${target}">
+    <javac encoding="utf-8" srcdir="${src}" destdir="${classes}" classpathref="lib.path" debug="true" includeantruntime="false" source="${source}" target="${target}">
       <include name="edu/stanford/nlp/sempre/"/>
     </javac>
     <jar destfile="${libsempre}/sempre-core.jar" basedir="${classes}" includes="edu/**"/>
