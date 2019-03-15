@@ -12,9 +12,9 @@ Download dependencies:
 
 Build the core:
 
-    JAVA_HOME=<path to java> ant
+    JAVAHOME=<path to java> ant
 
-`JAVA_HOME` should be set to the path to your Java installation, eg. `/usr/lib/jvm/openjdk-1.8.0`.
+`JAVAHOME` should be set to the path to your Java installation, eg. `/usr/lib/jvm/openjdk-1.8.0`.
 Java 1.8 is required. A working C compiler must also be installed.
 
 ## Run the tokenizer service
