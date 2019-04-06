@@ -245,9 +245,10 @@ public class CoreNLPAnalyzer {
     }
 
     // fix corenlp sometimes tagging Washington as location in "washington post"
-    for (int i = 0; i < n - 1; i++) {
+    for (int i = 0; i < n; i++) {
       String token = languageInfo.tokens.get(i);
-      String next = languageInfo.tokens.get(i + 1);
+      String next = i < n - 1 ? languageInfo.tokens.get(i + 1) : null;
+      String nextnext = i < n - 2 ? languageInfo.tokens.get(i + 2) : null;
 
       if (!("O".equals(languageInfo.nerTags.get(i)) ||
           "ORGANIZATION".equals(languageInfo.nerTags.get(i)) ||
@@ -260,6 +261,13 @@ public class CoreNLPAnalyzer {
 
         languageInfo.nerTags.set(i + 1, "ORGANIZATION");
         languageInfo.nerValues.set(i + 1, null);
+      }
+
+      if ("stanford".equals(token) && !(
+          ("ca".equals(next) || "california".equals(next)) ||
+          (",".equals(next) && ("ca".equals(nextnext) || "california".equals(nextnext))))) {
+        languageInfo.nerTags.set(i, "O");
+        languageInfo.nerValues.set(i, null);
       }
 
       if ("us".equals(token) && "business".equals(next)) {
