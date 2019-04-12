@@ -176,7 +176,7 @@ public class CoreNLPAnalyzer {
         }
       }
 
-      if (wordLower.equals("9-11") || wordLower.equals("911")) {
+      if (wordLower.equals("9-11") || wordLower.equals("911") || wordLower.equals("110") || wordLower.equals("119")) {
         nerTag = "O";
       } else {
         Matcher twoNumbers = BETWEEN_PATTERN.matcher(wordLower);
