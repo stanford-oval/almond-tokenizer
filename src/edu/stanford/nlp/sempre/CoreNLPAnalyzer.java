@@ -14,6 +14,8 @@ import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.logging.Redwood;
 
+import opencc.OpenCC;
+
 /**
  * CoreNLPAnalyzer uses Stanford CoreNLP pipeline to analyze an input string utterance
  * and return a LanguageInfo object
@@ -36,6 +38,8 @@ public class CoreNLPAnalyzer {
   private final StanfordCoreNLP pipeline;
   private final String languageTag;
   private final boolean applyOurOwnNumericClassifier;
+  private final OpenCC openCC_t2s = new OpenCC("t2s");
+  private final OpenCC openCC_s2t = new OpenCC("s2t");
 
   public CoreNLPAnalyzer(String languageTag) {
     Properties props = new Properties();
@@ -132,6 +136,14 @@ public class CoreNLPAnalyzer {
     // Fix wrong tokenization of "<number>gb" without a space
     if (languageTag.equals("en"))
       utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
+
+    // Convert Traditional Chinese to Simplified Chinese
+    Boolean converted = false;
+    if (languageTag.equals("zh")) {
+      String raw_utterance = utterance;
+      utterance = openCC_t2s.convert(utterance);
+      converted = !utterance.equals(raw_utterance);
+    }
 
     // Run Stanford CoreNLP
 
@@ -314,6 +326,14 @@ public class CoreNLPAnalyzer {
         languageInfo.nerTags.set(i, "O");
         languageInfo.nerValues.set(i, null);
       }
+    }
+
+    // Convert Simplified Chinese back to Traditional Chinese if needed
+    if (languageTag.equals("zh") && converted == true) {
+      for (int i = 0; i < languageInfo.tokens.size(); i++)
+        languageInfo.tokens.set(i, openCC_s2t.convert(languageInfo.tokens.get(i)));
+      for (int i = 0; i < languageInfo.lemmaTokens.size(); i++)
+        languageInfo.lemmaTokens.set(i, openCC_s2t.convert(languageInfo.lemmaTokens.get(i)));
     }
 
     return languageInfo;
