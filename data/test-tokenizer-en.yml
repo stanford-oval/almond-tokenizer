@@ -82,13 +82,16 @@
   rawTokens: monitor scores of barcelona
   tokens: monitor scores of barcelona
   entities: {}
-
-# FIXME this should be recognized as LOCATION
 - lang: en
   input: "what's the weather in barcelona"
   rawTokens: "what 's the weather in barcelona"
-  tokens: "what 's the weather in barcelona"
-  entities: {}
+  tokens: "what 's the weather in LOCATION_0*1"
+  entities:
+    LOCATION_0:
+      latitude: 41.3828939
+      longitude: 2.1774322
+      display: "Barcelona, BCN, Catalonia, Spain"
+      rank: 16
 - lang: en
   input: monitor warriors
   rawTokens: monitor warriors
