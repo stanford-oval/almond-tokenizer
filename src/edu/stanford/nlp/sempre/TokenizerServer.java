@@ -31,7 +31,7 @@ public class TokenizerServer {
     int req;
 
     @JsonProperty
-    String languageTag;
+    String localeTag;
 
     @JsonProperty
     String utterance;
@@ -137,14 +137,15 @@ public class TokenizerServer {
   }
 
   private void processInput(Writer outputStream, Input input) {
-    if (input.languageTag == null) {
-      writeError(outputStream, new Error(input.req, "Missing language tag"));
+    if (input.localeTag == null) {
+      writeError(outputStream, new Error(input.req, "Missing locale tag"));
       return;
     }
-    CoreNLPAnalyzer analyzer = analyzers.get(input.languageTag);
-    Seq2SeqTokenizer tokenizer = tokenizers.get(input.languageTag);
+    String localeTag = input.localeTag.toLowerCase();
+    CoreNLPAnalyzer analyzer = analyzers.get(localeTag);
+    Seq2SeqTokenizer tokenizer = tokenizers.get(localeTag);
     if (analyzer == null || tokenizer == null) {
-      writeError(outputStream, new Error(input.req, "Unsupported language tag"));
+      writeError(outputStream, new Error(input.req, "Unsupported locale tag"));
       return;
     }
 

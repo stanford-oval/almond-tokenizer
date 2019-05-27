@@ -34,13 +34,25 @@ public class CoreNLPAnalyzer {
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
 
   private final StanfordCoreNLP pipeline;
+  private final String localeTag;
   private final String languageTag;
+  private final String locationTag;
   private final boolean applyOurOwnNumericClassifier;
 
-  public CoreNLPAnalyzer(String languageTag) {
+  public CoreNLPAnalyzer(String localeTag) {
     Properties props = new Properties();
+
+    if (!localeTag.matches("\\w{2}-\\w{2}"))
+      log.errf("Invalid locale %s, analysis will not work!", localeTag);
     
+    localeTag = localeTag.toLowerCase();
+    String[] parts = localeTag.split("-");
+    String languageTag = parts[0];
+    String locationTag = parts[1];
+
+    this.localeTag = localeTag;
     this.languageTag = languageTag;
+    this.locationTag = locationTag;
     applyOurOwnNumericClassifier = languageTag.equals("en");
 
     switch (languageTag) {
