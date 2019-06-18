@@ -37,14 +37,12 @@ public class Seq2SeqTokenizer {
   }
 
   private final boolean applyHeuristics;
-  private final LocationLexicon locationLexicon;
   private final EntityLexicon entityLexicon;
   private final ParserAnnotator constituencyParser;
 
   public Seq2SeqTokenizer(String languageTag, boolean applyHeuristics) {
     this.applyHeuristics = applyHeuristics;
 
-    locationLexicon = LocationLexicon.getForLanguage(languageTag);
     entityLexicon = EntityLexicon.getForLanguage(languageTag);
     
     if (INCLUDE_CONSTITUENCY_PARSE) {
@@ -187,71 +185,6 @@ public class Seq2SeqTokenizer {
       linearizeTree(tree.getChild(1), linear);
       linear.add(")");
     }
-  }
-
-  private LocationValue findLocation(String entity) {
-    // earth is not a location, and neiter is europe
-    switch (entity) {
-    case "earth":
-    case "europe":
-    case "uk":
-    case "us":
-    case "u.s.":
-    case "usa":
-    case "united states":
-    case "united states of america":
-    case "united kingdom":
-    case "america":
-    case "england":
-    case "germany":
-    case "italy":
-    case "california":
-
-      // how sabrina could be a location is beyond me
-    case "sabrina":
-
-      // or tumblr for what matters
-    case "tumblr":
-
-      // or wapo
-    case "wapo":
-      return null;
-    }
-    if ("la".equals(entity) || entity.startsWith("la , ca") || entity.startsWith("la ca"))
-      entity = "los angeles";
-
-    if (entity.startsWith("los angeles") || "l.a.".equals(entity))
-      return new LocationValue(34.0543942, -118.2439408);
-
-    Collection<LocationLexicon.Entry<LocationValue>> entries = locationLexicon.lookup(entity);
-    if (entries.isEmpty())
-      return null;
-
-    LocationLexicon.Entry<LocationValue> first = entries.iterator().next();
-    if (first.value.getRank() < 16) // larger than a city
-        return null;
-    return first.value;
-  }
-
-  // refuse to return anything for yahoo, because otherwise every yahoo finance sentence
-  // would have a very confusing two entities
-  private static final Set<String> NOT_ENTITIES = Sets.newHashSet("wsj world news", "yahoo", "capital weather gang",
-      "ac state", "ncaa mens");
-
-  private static boolean tokensEquals(String one, String two) {
-    if (one.equals(two))
-      return true;
-    if (Stemmer.stem(one).equals(Stemmer.stem(two)))
-      return true;
-    if (one.equals("cardinals") && two.equals("cardinal"))
-      return true;
-    if (one.equals("cardinal") && two.equals("cardinals"))
-      return true;
-    if (one.equals("yourself") && two.equals("yourselves"))
-      return true;
-    if (one.equals("yourselves") && two.equals("yourself"))
-      return true;
-    return false;
   }
 
   private static TimeValue parseTimeValue(String nerValue) {
