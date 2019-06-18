@@ -37,14 +37,11 @@ public class Seq2SeqTokenizer {
   }
 
   private final boolean applyHeuristics;
-  private final EntityLexicon entityLexicon;
   private final ParserAnnotator constituencyParser;
 
   public Seq2SeqTokenizer(String languageTag, boolean applyHeuristics) {
     this.applyHeuristics = applyHeuristics;
 
-    entityLexicon = EntityLexicon.getForLanguage(languageTag);
-    
     if (INCLUDE_CONSTITUENCY_PARSE) {
       Properties parseProperties = new Properties();
       parseProperties.put("parse.model", "edu/stanford/nlp/models/lexparser/englishPCFG.caseless.ser.gz");
