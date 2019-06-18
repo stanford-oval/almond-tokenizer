@@ -78,9 +78,6 @@ public class Seq2SeqTokenizer {
 
         Pair<String, Object> value = nerValueToThingTalkValue(ex, tag, utteranceInfo.nerValues.get(i),
             Joiner.on(' ').join(fullEntity));
-        // ignore tt:device entities
-        if (value != null && "GENERIC_ENTITY_tt:device".equals(value.first()))
-          value = null;
         if (value != null) {
           if (applyHeuristics && value.second().equals(2.0) && token.equals("two")) {
             current = token;
@@ -105,11 +102,7 @@ public class Seq2SeqTokenizer {
               result.tokensNoQuotes.add((String) value.second());
               break;
             default:
-              if (tag.startsWith("GENERIC_ENTITY_")) {
-                result.tokensNoQuotes.addAll(fullEntity);
-              } else {
-                result.tokensNoQuotes.add(current);
-              }
+              result.tokensNoQuotes.add(current);
               break;
             }
           }
