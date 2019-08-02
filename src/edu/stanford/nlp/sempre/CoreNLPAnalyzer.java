@@ -36,18 +36,18 @@ public class CoreNLPAnalyzer {
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
 
   private final StanfordCoreNLP pipeline;
-  private final String languageTag;
+  private final boolean isEnglish;
   private final boolean applyOurOwnNumericClassifier;
   private final OpenCC openCC_t2s = new OpenCC("t2s");
   private final OpenCC openCC_s2t = new OpenCC("s2t");
 
-  public CoreNLPAnalyzer(String languageTag) {
+  public CoreNLPAnalyzer(LocaleTag localeTag) {
     Properties props = new Properties();
-    
-    this.languageTag = languageTag;
-    applyOurOwnNumericClassifier = languageTag.equals("en");
 
-    switch (languageTag) {
+    isEnglish = localeTag.getLanguage().equals("en");
+    applyOurOwnNumericClassifier = isEnglish;
+
+    switch (localeTag.getLanguage()) {
     case "en":
       props.put("pos.model", "edu/stanford/nlp/models/pos-tagger/english-caseless-left3words-distsim.tagger");
       props.put("ner.model",
@@ -76,7 +76,7 @@ public class CoreNLPAnalyzer {
       break;
 
     default:
-      log.errf("Unrecognized language %s, analysis will not work!", languageTag);
+      log.errf("Unrecognized language %s, analysis will not work!", localeTag.getLanguage());
     }
 
     props.put("annotators", annotators);
@@ -99,7 +99,7 @@ public class CoreNLPAnalyzer {
 
     // enable spell checking with our custom annotator
     props.put("customAnnotatorClass.spellcheck", SpellCheckerAnnotator.class.getCanonicalName());
-    props.put("spellcheck.dictPath", languageTag);
+    props.put("spellcheck.dictPath", localeTag.getLanguage());
 
     // ask for binary tree parses
     props.put("parse.binaryTrees", "true");
@@ -134,7 +134,7 @@ public class CoreNLPAnalyzer {
     }
 
     // Fix wrong tokenization of "<number>gb" without a space
-    if (languageTag.equals("en"))
+    if (isEnglish)
       utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
 
     // Convert Traditional Chinese to Simplified Chinese
@@ -260,65 +260,7 @@ public class CoreNLPAnalyzer {
       }
     }
 
-    // fix corenlp sometimes tagging Washington as location in "washington post"
-    for (int i = 0; i < n; i++) {
-      String token = languageInfo.tokens.get(i);
-      String next = i < n - 1 ? languageInfo.tokens.get(i + 1) : null;
-      String nextnext = i < n - 2 ? languageInfo.tokens.get(i + 2) : null;
-
-      if (!("O".equals(languageInfo.nerTags.get(i)) ||
-          "ORGANIZATION".equals(languageInfo.nerTags.get(i)) ||
-          "LOCATION".equals(languageInfo.nerTags.get(i))))
-        continue;
-
-      if ("washington".equals(token) && ("post".equals(next) || "posts".equals(next))) {
-        languageInfo.nerTags.set(i, "ORGANIZATION");
-        languageInfo.nerValues.set(i, null);
-
-        languageInfo.nerTags.set(i + 1, "ORGANIZATION");
-        languageInfo.nerValues.set(i + 1, null);
-      }
-
-      if ("stanford".equals(token) && !(
-          ("ca".equals(next) || "california".equals(next)) ||
-          (",".equals(next) && ("ca".equals(nextnext) || "california".equals(nextnext))))) {
-        languageInfo.nerTags.set(i, "O");
-        languageInfo.nerValues.set(i, null);
-      }
-
-      if ("us".equals(token) && "business".equals(next)) {
-        languageInfo.nerTags.set(i, "O");
-        languageInfo.nerValues.set(i, null);
-      }
-
-      // apple post is not a f... newspaper
-      // stupid corenlp
-      if ("apple".equals(token) && "post".equals(next)) {
-        languageInfo.nerTags.set(i + 1, "O");
-        languageInfo.nerValues.set(i + 1, null);
-      }
-
-      // topic is not an organization
-      if ("topic".equals(token)) {
-        languageInfo.nerTags.set(i, "O");
-        languageInfo.nerValues.set(i, null);
-      }
-
-      // merge locations separated by a comma (eg Palo Alto, California)
-      if (",".equals(token) && i >0 && "LOCATION".equals(languageInfo.nerTags.get(i-1))
-          && "LOCATION".equals(languageInfo.nerTags.get(i+1))) {
-        languageInfo.nerTags.set(i, "LOCATION");
-      }
-    }
-
-    if ("Location".equals(expected)) {
-      // override all entity tags if we expect a location
-      // that will just throw everything at MapQuest
-      for (int i = 0; i < n; i++) {
-        languageInfo.nerTags.set(i, "LOCATION");
-        languageInfo.nerValues.set(i, null);
-      }
-    } else if ("MultipleChoice".equals(expected)) {
+    if ("MultipleChoice".equals(expected)) {
       // remove all entity tags if we expect a multiple choice
       // this will allow the NN parser to pick the closest choice, by passing the semantic
       // parser
@@ -341,7 +283,7 @@ public class CoreNLPAnalyzer {
 
   // Test on example sentence.
   public static void main(String[] args) {
-    CoreNLPAnalyzer analyzer = new CoreNLPAnalyzer(args.length > 0 ? args[0] : "en");
+    CoreNLPAnalyzer analyzer = new CoreNLPAnalyzer(new LocaleTag(args.length > 0 ? args[0] : "en"));
 
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
       while (true) {

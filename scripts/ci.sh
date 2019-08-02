@@ -26,8 +26,8 @@ else
     # sleep until the process is settled
     sleep 240
     
-    ./scripts/test-tokenizer.py < $srcdir/data/test-tokenizer-en.yml
-    ./scripts/test-tokenizer.py < $srcdir/data/test-tokenizer-zh.yml
+    ./scripts/test-tokenizer.py < $srcdir/data/test-tokenizer-en-us.yml
+    ./scripts/test-tokenizer.py < $srcdir/data/test-tokenizer-zh-cn.yml
 fi
 
 kill $serverpid

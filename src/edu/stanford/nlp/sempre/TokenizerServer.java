@@ -18,12 +18,10 @@ import info.faljse.SDNotify.SDNotify;
 public class TokenizerServer {
   private static final int DEFAULT_PORT = 8888;
 
-  private final List<String> languages;
-
   private final ObjectMapper object = new ObjectMapper();
   private final ServerSocket server;
-  private final Map<String, CoreNLPAnalyzer> analyzers = new HashMap<>();
-  private final Map<String, Seq2SeqTokenizer> tokenizers = new HashMap<>();
+  private final Map<LocaleTag, CoreNLPAnalyzer> analyzers = new HashMap<>();
+  private final Seq2SeqTokenizer tokenizer = new Seq2SeqTokenizer(true);
   private final Executor threadPool = Executors.newFixedThreadPool(2 * Runtime.getRuntime().availableProcessors());
 
   public static class Input {
@@ -31,7 +29,7 @@ public class TokenizerServer {
     int req;
 
     @JsonProperty
-    String languageTag;
+    String localeTag;
 
     @JsonProperty
     String utterance;
@@ -89,12 +87,12 @@ public class TokenizerServer {
     }
   }
 
-  private TokenizerServer(int port, String[] languages) throws IOException {
-    this.languages = Arrays.asList(languages);
-
-    for (String lang : languages) {
-      analyzers.put(lang, new CoreNLPAnalyzer(lang));
-      tokenizers.put(lang, new Seq2SeqTokenizer(lang, true));
+  private TokenizerServer(int port, String[] localeTags) throws IOException {
+    LocaleTag[] locales = new LocaleTag[localeTags.length];
+    for (int i = 0; i < localeTags.length; i++) {
+      String localeTag = localeTags[i];
+      locales[i] = new LocaleTag(localeTag);
+      analyzers.put(locales[i], new CoreNLPAnalyzer(locales[i]));
     }
 
     object.getFactory()
@@ -137,14 +135,19 @@ public class TokenizerServer {
   }
 
   private void processInput(Writer outputStream, Input input) {
-    if (input.languageTag == null) {
-      writeError(outputStream, new Error(input.req, "Missing language tag"));
+    if (input.localeTag == null) {
+      writeError(outputStream, new Error(input.req, "Missing locale tag"));
       return;
     }
-    CoreNLPAnalyzer analyzer = analyzers.get(input.languageTag);
-    Seq2SeqTokenizer tokenizer = tokenizers.get(input.languageTag);
-    if (analyzer == null || tokenizer == null) {
-      writeError(outputStream, new Error(input.req, "Unsupported language tag"));
+    LocaleTag localeTag = new LocaleTag(input.localeTag);
+    CoreNLPAnalyzer analyzer = null;
+    for (LocaleTag fallback : localeTag.getFallbacks()) {
+      analyzer = analyzers.get(fallback);
+      if (analyzer != null)
+        break;
+    }
+    if (analyzer == null) {
+      writeError(outputStream, new Error(input.req, "Unsupported locale tag"));
       return;
     }
 
