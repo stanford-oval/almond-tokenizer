@@ -39,7 +39,7 @@ public class Seq2SeqTokenizer {
   private final boolean applyHeuristics;
   private final ParserAnnotator constituencyParser;
 
-  public Seq2SeqTokenizer(String languageTag, boolean applyHeuristics) {
+  public Seq2SeqTokenizer(boolean applyHeuristics) {
     this.applyHeuristics = applyHeuristics;
 
     if (INCLUDE_CONSTITUENCY_PARSE) {

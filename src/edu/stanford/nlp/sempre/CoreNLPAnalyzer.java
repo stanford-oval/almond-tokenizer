@@ -34,28 +34,16 @@ public class CoreNLPAnalyzer {
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
 
   private final StanfordCoreNLP pipeline;
-  private final String localeTag;
-  private final String languageTag;
-  private final String locationTag;
+  private final boolean isEnglish;
   private final boolean applyOurOwnNumericClassifier;
 
-  public CoreNLPAnalyzer(String localeTag) {
+  public CoreNLPAnalyzer(LocaleTag localeTag) {
     Properties props = new Properties();
 
-    if (!localeTag.matches("\\w{2}-\\w{2}"))
-      log.errf("Invalid locale %s, analysis will not work!", localeTag);
-    
-    localeTag = localeTag.toLowerCase();
-    String[] parts = localeTag.split("-");
-    String languageTag = parts[0];
-    String locationTag = parts[1];
+    isEnglish = localeTag.getLanguage().equals("en");
+    applyOurOwnNumericClassifier = isEnglish;
 
-    this.localeTag = localeTag;
-    this.languageTag = languageTag;
-    this.locationTag = locationTag;
-    applyOurOwnNumericClassifier = languageTag.equals("en");
-
-    switch (languageTag) {
+    switch (localeTag.getLanguage()) {
     case "en":
       props.put("pos.model", "edu/stanford/nlp/models/pos-tagger/english-caseless-left3words-distsim.tagger");
       props.put("ner.model",
@@ -84,7 +72,7 @@ public class CoreNLPAnalyzer {
       break;
 
     default:
-      log.errf("Unrecognized language %s, analysis will not work!", languageTag);
+      log.errf("Unrecognized language %s, analysis will not work!", localeTag.getLanguage());
     }
 
     props.put("annotators", annotators);
@@ -107,7 +95,7 @@ public class CoreNLPAnalyzer {
 
     // enable spell checking with our custom annotator
     props.put("customAnnotatorClass.spellcheck", SpellCheckerAnnotator.class.getCanonicalName());
-    props.put("spellcheck.dictPath", languageTag);
+    props.put("spellcheck.dictPath", localeTag.getLanguage());
 
     // ask for binary tree parses
     props.put("parse.binaryTrees", "true");
@@ -142,7 +130,7 @@ public class CoreNLPAnalyzer {
     }
 
     // Fix wrong tokenization of "<number>gb" without a space
-    if (languageTag.equals("en"))
+    if (isEnglish)
       utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
 
     // Run Stanford CoreNLP
@@ -275,7 +263,7 @@ public class CoreNLPAnalyzer {
 
   // Test on example sentence.
   public static void main(String[] args) {
-    CoreNLPAnalyzer analyzer = new CoreNLPAnalyzer(args.length > 0 ? args[0] : "en");
+    CoreNLPAnalyzer analyzer = new CoreNLPAnalyzer(new LocaleTag(args.length > 0 ? args[0] : "en"));
 
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
       while (true) {
