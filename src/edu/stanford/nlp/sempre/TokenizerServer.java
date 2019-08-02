@@ -28,7 +28,7 @@ public class TokenizerServer {
     @JsonProperty
     int req;
 
-    @JsonProperty
+    @JsonProperty(value="languageTag")
     String localeTag;
 
     @JsonProperty
