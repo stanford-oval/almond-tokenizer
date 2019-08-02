@@ -11,9 +11,9 @@ with socket.create_connection(('127.0.0.1', 8888)) as conn:
     loaded = yaml.load(sys.stdin)
     for line in loaded:
         if 'expect' in line:
-            msg = json.dumps(dict(languageTag=line['lang'], utterance=line['input'], expect=line['expect'], req=i))
+            msg = json.dumps(dict(localeTag=line['locale'], utterance=line['input'], expect=line['expect'], req=i))
         else:
-            msg = json.dumps(dict(languageTag=line['lang'], utterance=line['input'], req=i))
+            msg = json.dumps(dict(localeTag=line['locale'], utterance=line['input'], req=i))
         #print(msg, file=sys.stderr)
         conn.send((msg + '\n').encode('utf-8'))
         result = json.loads(connfile.readline())
