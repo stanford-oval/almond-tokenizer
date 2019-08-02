@@ -12,6 +12,10 @@ pullparmesan() {
   wget -c 'https://parmesan.stanford.edu/corenlp/'$1 -O lib/$1
 }
 
+pullopencc() {
+  wget -c 'https://github.com/yichen0831/OpenCC-Java/releases/download/'$1 -O lib/`basename $1`
+}
+
 cd $SEMPREDIR
 mkdir -p lib
 pullsempre '/u/nlp/data/semparse/resources/guava-14.0.1.jar'
@@ -39,3 +43,6 @@ pullparmesan 'trove4j-3.0.3.jar'
 pullparmesan 'trove4j-3.0.3-javadoc.jar'
 pullparmesan 'jna.jar'
 wget -c 'http://search.maven.org/remotecontent?filepath=info/faljse/SDNotify/1.1/SDNotify-1.1.jar' -O lib/SDNotify-1.1.jar
+
+# OpenCC
+pullopencc 'v0.1/OpenCC-Java-all-0.1.jar'

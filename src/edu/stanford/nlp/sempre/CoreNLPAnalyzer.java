@@ -14,6 +14,8 @@ import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.logging.Redwood;
 
+import opencc.OpenCC;
+
 /**
  * CoreNLPAnalyzer uses Stanford CoreNLP pipeline to analyze an input string utterance
  * and return a LanguageInfo object
@@ -32,9 +34,12 @@ public class CoreNLPAnalyzer {
       "ner,quote_ner,custom_regexp_ner,phone_ner,url_ner,parse,sentiment";
 
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
+  private static final OpenCC openCC_t2s = new OpenCC("t2s");
+  private static final OpenCC openCC_s2t = new OpenCC("s2t");
 
   private final StanfordCoreNLP pipeline;
   private final boolean isEnglish;
+  private final boolean convertTraditionalChinese;
   private final boolean applyOurOwnNumericClassifier;
 
   public CoreNLPAnalyzer(LocaleTag localeTag) {
@@ -42,6 +47,7 @@ public class CoreNLPAnalyzer {
 
     isEnglish = localeTag.getLanguage().equals("en");
     applyOurOwnNumericClassifier = isEnglish;
+    convertTraditionalChinese = "hant".equals(localeTag.getScript());
 
     switch (localeTag.getLanguage()) {
     case "en":
@@ -132,6 +138,12 @@ public class CoreNLPAnalyzer {
     // Fix wrong tokenization of "<number>gb" without a space
     if (isEnglish)
       utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
+
+    // Convert Traditional Chinese to Simplified Chinese
+    if (convertTraditionalChinese) {
+      String raw_utterance = utterance;
+      utterance = openCC_t2s.convert(utterance);
+    }
 
     // Run Stanford CoreNLP
 
@@ -256,6 +268,14 @@ public class CoreNLPAnalyzer {
         languageInfo.nerTags.set(i, "O");
         languageInfo.nerValues.set(i, null);
       }
+    }
+
+    // Convert Simplified Chinese back to Traditional Chinese if needed
+    if (convertTraditionalChinese) {
+      for (int i = 0; i < languageInfo.tokens.size(); i++)
+        languageInfo.tokens.set(i, openCC_s2t.convert(languageInfo.tokens.get(i)));
+      for (int i = 0; i < languageInfo.lemmaTokens.size(); i++)
+        languageInfo.lemmaTokens.set(i, openCC_s2t.convert(languageInfo.lemmaTokens.get(i)));
     }
 
     return languageInfo;
