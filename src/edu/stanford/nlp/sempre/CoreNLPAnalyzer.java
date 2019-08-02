@@ -34,18 +34,20 @@ public class CoreNLPAnalyzer {
       "ner,quote_ner,custom_regexp_ner,phone_ner,url_ner,parse,sentiment";
 
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
+  private static final OpenCC openCC_t2s = new OpenCC("t2s");
+  private static final OpenCC openCC_s2t = new OpenCC("s2t");
 
   private final StanfordCoreNLP pipeline;
   private final boolean isEnglish;
+  private final boolean convertTraditionalChinese;
   private final boolean applyOurOwnNumericClassifier;
-  private final OpenCC openCC_t2s = new OpenCC("t2s");
-  private final OpenCC openCC_s2t = new OpenCC("s2t");
 
   public CoreNLPAnalyzer(LocaleTag localeTag) {
     Properties props = new Properties();
 
     isEnglish = localeTag.getLanguage().equals("en");
     applyOurOwnNumericClassifier = isEnglish;
+    convertTraditionalChinese = "hant".equals(localeTag.getScript());
 
     switch (localeTag.getLanguage()) {
     case "en":
@@ -138,11 +140,9 @@ public class CoreNLPAnalyzer {
       utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
 
     // Convert Traditional Chinese to Simplified Chinese
-    Boolean converted = false;
-    if (languageTag.equals("zh")) {
+    if (convertTraditionalChinese) {
       String raw_utterance = utterance;
       utterance = openCC_t2s.convert(utterance);
-      converted = !utterance.equals(raw_utterance);
     }
 
     // Run Stanford CoreNLP
@@ -271,7 +271,7 @@ public class CoreNLPAnalyzer {
     }
 
     // Convert Simplified Chinese back to Traditional Chinese if needed
-    if (languageTag.equals("zh") && converted == true) {
+    if (convertTraditionalChinese) {
       for (int i = 0; i < languageInfo.tokens.size(); i++)
         languageInfo.tokens.set(i, openCC_s2t.convert(languageInfo.tokens.get(i)));
       for (int i = 0; i < languageInfo.lemmaTokens.size(); i++)
