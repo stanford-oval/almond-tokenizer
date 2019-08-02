@@ -83,7 +83,6 @@
   tokens: monitor scores of barcelona
   entities: {}
 
-# FIXME this should be recognized as LOCATION
 - locale: en-us
   input: "what's the weather in barcelona"
   rawTokens: "what 's the weather in barcelona"
@@ -152,26 +151,13 @@
 - locale: en-us
   input: what is the weather in los angeles
   rawTokens: what is the weather in los angeles
-  tokens: what is the weather in LOCATION_0*2
-  entities:
-    LOCATION_0:
-      latitude: 34.0543942
-      longitude: -118.2439408
-      display: null
-      rank: 30
+  tokens: what is the weather in los angeles
+  entities: {}
 - locale: en-us
   input: open gnome builder
   rawTokens: open gnome builder
   tokens: open gnome builder
   entities: {}
-
-# FIXME this one will not work without the right key
-#- locale: en-us
-#  expect: Location
-#  input: 353 serra mall stanford
-#  rawTokens: 353 serra mall stanford
-#  tokens: LOCATION_0*4
-#  entities: {}
 
 - locale: en-us
   expect: MultipleChoice

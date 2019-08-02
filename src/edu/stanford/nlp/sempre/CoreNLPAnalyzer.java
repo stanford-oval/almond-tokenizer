@@ -260,65 +260,7 @@ public class CoreNLPAnalyzer {
       }
     }
 
-    // fix corenlp sometimes tagging Washington as location in "washington post"
-    for (int i = 0; i < n; i++) {
-      String token = languageInfo.tokens.get(i);
-      String next = i < n - 1 ? languageInfo.tokens.get(i + 1) : null;
-      String nextnext = i < n - 2 ? languageInfo.tokens.get(i + 2) : null;
-
-      if (!("O".equals(languageInfo.nerTags.get(i)) ||
-          "ORGANIZATION".equals(languageInfo.nerTags.get(i)) ||
-          "LOCATION".equals(languageInfo.nerTags.get(i))))
-        continue;
-
-      if ("washington".equals(token) && ("post".equals(next) || "posts".equals(next))) {
-        languageInfo.nerTags.set(i, "ORGANIZATION");
-        languageInfo.nerValues.set(i, null);
-
-        languageInfo.nerTags.set(i + 1, "ORGANIZATION");
-        languageInfo.nerValues.set(i + 1, null);
-      }
-
-      if ("stanford".equals(token) && !(
-          ("ca".equals(next) || "california".equals(next)) ||
-          (",".equals(next) && ("ca".equals(nextnext) || "california".equals(nextnext))))) {
-        languageInfo.nerTags.set(i, "O");
-        languageInfo.nerValues.set(i, null);
-      }
-
-      if ("us".equals(token) && "business".equals(next)) {
-        languageInfo.nerTags.set(i, "O");
-        languageInfo.nerValues.set(i, null);
-      }
-
-      // apple post is not a f... newspaper
-      // stupid corenlp
-      if ("apple".equals(token) && "post".equals(next)) {
-        languageInfo.nerTags.set(i + 1, "O");
-        languageInfo.nerValues.set(i + 1, null);
-      }
-
-      // topic is not an organization
-      if ("topic".equals(token)) {
-        languageInfo.nerTags.set(i, "O");
-        languageInfo.nerValues.set(i, null);
-      }
-
-      // merge locations separated by a comma (eg Palo Alto, California)
-      if (",".equals(token) && i >0 && "LOCATION".equals(languageInfo.nerTags.get(i-1))
-          && "LOCATION".equals(languageInfo.nerTags.get(i+1))) {
-        languageInfo.nerTags.set(i, "LOCATION");
-      }
-    }
-
-    if ("Location".equals(expected)) {
-      // override all entity tags if we expect a location
-      // that will just throw everything at MapQuest
-      for (int i = 0; i < n; i++) {
-        languageInfo.nerTags.set(i, "LOCATION");
-        languageInfo.nerValues.set(i, null);
-      }
-    } else if ("MultipleChoice".equals(expected)) {
+    if ("MultipleChoice".equals(expected)) {
       // remove all entity tags if we expect a multiple choice
       // this will allow the NN parser to pick the closest choice, by passing the semantic
       // parser
