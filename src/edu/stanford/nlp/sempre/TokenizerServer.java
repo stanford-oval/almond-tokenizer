@@ -22,7 +22,7 @@ public class TokenizerServer {
   private final ServerSocket server;
   private final Map<LocaleTag, CoreNLPAnalyzer> analyzers = new HashMap<>();
   private final Seq2SeqTokenizer tokenizer = new Seq2SeqTokenizer(true);
-  private final Executor threadPool = Executors.newFixedThreadPool(2 * Runtime.getRuntime().availableProcessors());
+  private final Executor threadPool = Executors.newWorkStealingPool();
 
   public static class Input {
     @JsonProperty
