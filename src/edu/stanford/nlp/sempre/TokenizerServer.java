@@ -151,19 +151,25 @@ public class TokenizerServer {
       return;
     }
 
-    Example ex = new Example.Builder().setUtterance(input.utterance).setExpected(input.expect).createExample();
-    ex.preprocess(analyzer);
+    Output output;
+    try {
+      Example ex = new Example.Builder().setUtterance(input.utterance).setExpected(input.expect).createExample();
+      ex.preprocess(analyzer);
 
-    Seq2SeqTokenizer.Result result = tokenizer.process(ex);
-    Output output = new Output(input.req, result);
+      Seq2SeqTokenizer.Result result = tokenizer.process(ex);
+      output = new Output(input.req, result);
 
-    for (Map.Entry<Value, List<Integer>> entry : result.entities.entrySet()) {
-      Value entity = entry.getKey();
-      String entityType = entity.type;
-      for (int entityNum : entry.getValue()) {
-        String entityToken = entityType + "_" + entityNum;
-        output.values.put(entityToken, entity.value);
+      for (Map.Entry<Value, List<Integer>> entry : result.entities.entrySet()) {
+        Value entity = entry.getKey();
+        String entityType = entity.type;
+        for (int entityNum : entry.getValue()) {
+          String entityToken = entityType + "_" + entityNum;
+          output.values.put(entityToken, entity.value);
+        }
       }
+    } catch(Throwable t) {
+      writeError(outputStream, new Error(input.req, t.getMessage()));
+      return;
     }
 
     writeOutput(outputStream, output);
