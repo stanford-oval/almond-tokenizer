@@ -1,0 +1,7 @@
+3.0.0
+=====
+
+* First tagged release of almond-tokenizer
+
+The version number starts at 3.0.0 to avoid conflicts with SEMPRE, which
+is part of the history of this codebase and uses versions 1.* and 2.*.
