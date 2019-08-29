@@ -25,7 +25,7 @@
     <antcall target="compile.released"/>
   </target>
 
-  <target name="compile.released" depends="init,core,jni"/>
+  <target name="compile.released" depends="init,core"/>
 
   <!-- Compile core -->
   <target name="core" depends="init">
@@ -35,14 +35,6 @@
       <include name="edu/stanford/nlp/sempre/"/>
     </javac>
     <jar destfile="${libsempre}/sempre-core.jar" basedir="${classes}" includes="edu/**"/>
-  </target>
-
-  <!-- Build JNI helpers -->
-  <target name="jni" depends="core">
-   <exec executable="/usr/bin/make">
-     <arg value="-C"/>
-     <arg value="${root}/jni"/>
-   </exec>
   </target>
 
   <!-- Clean up -->
