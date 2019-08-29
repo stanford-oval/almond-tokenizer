@@ -1,3 +1,9 @@
+3.0.1
+=====
+
+* Removed unused functionality and dependencies [#25]
+* Added official docker build instructions [#26]
+
 3.0.0
 =====
 
