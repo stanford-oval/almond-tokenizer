@@ -5,6 +5,8 @@ branches:
 language: java
 jdk:
   - openjdk8
+services:
+  - docker
 cache:
   directories:
   - lib/
@@ -15,3 +17,11 @@ install:
 script:
   - ant
   - ./scripts/ci.sh
+  - docker build -t stanfordoval/almond-tokenizer:$(git describe) .
+deploy:
+  provider: script
+  script: docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} && docker push stanfordoval/almond-tokenizer:$(git describe)
+  on:
+    tags: true
+    repo: stanford-oval/almond-tokenizer
+
