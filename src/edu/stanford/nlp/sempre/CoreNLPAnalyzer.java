@@ -25,11 +25,6 @@ import opencc.OpenCC;
 public class CoreNLPAnalyzer {
   private static final Redwood.RedwoodChannels log = Redwood.channels(CoreNLPAnalyzer.class);
 
-  // Observe that we run almost everything twice
-  // This is because NER and quote_ner have to run before spellcheck (so that spellcheck
-  // doesn't try to fix names and quotes), but we want to rerun lemmatization
-  // after spellcheck so that new spaces and slash-splitting that spellcheck does
-  // are reflected in the lemma tokens and POS tags
   private static final String annotators = "tokenize,quote2,ssplit,pos,lemma," +
       "ner,quote_ner,custom_regexp_ner,phone_ner,url_ner,parse,sentiment";
 
@@ -98,10 +93,6 @@ public class CoreNLPAnalyzer {
     props.put("customAnnotatorClass.url_ner", URLEntityAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.custom_regexp_ner", RegexpEntityAnnotator.class.getCanonicalName());
     props.put("custom_regexp_ner.patterns", "./data/regex_patterns");
-
-    // enable spell checking with our custom annotator
-    props.put("customAnnotatorClass.spellcheck", SpellCheckerAnnotator.class.getCanonicalName());
-    props.put("spellcheck.dictPath", localeTag.getLanguage());
 
     // ask for binary tree parses
     props.put("parse.binaryTrees", "true");
