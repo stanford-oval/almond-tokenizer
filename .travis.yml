@@ -18,10 +18,9 @@ script:
   - ant
   - ./scripts/ci.sh
   - docker build -t stanfordoval/almond-tokenizer:$(git describe) .
-  - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} || true
 deploy:
   provider: script
-  script: docker push stanfordoval/almond-tokenizer:$(git describe)
+  script: docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} && docker push stanfordoval/almond-tokenizer:$(git describe)
   on:
     tags: true
     repo: stanford-oval/almond-tokenizer
