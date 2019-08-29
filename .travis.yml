@@ -17,11 +17,11 @@ install:
 script:
   - ant
   - ./scripts/ci.sh
-  - docker build -t almond-tokenizer:$(git describe) docker/ --build-arg ALMOND_TOKENIZER_VERSION=$(git describe)
+  - docker build -t stanfordoval/almond-tokenizer:$(git describe) .
   - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} || true
 deploy:
   provider: script
-  script: docker push almond-tokenizer:$(git describe)
+  script: docker push stanfordoval/almond-tokenizer:$(git describe)
   on:
     tags: true
     repo: stanford-oval/almond-tokenizer

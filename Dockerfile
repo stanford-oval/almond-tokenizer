@@ -12,10 +12,8 @@ USER almond-tokenizer
 
 # downlod source and install packages
 WORKDIR /home/almond-tokenizer
-RUN git clone https://github.com/stanford-oval/almond-tokenizer.git
-ARG ALMOND_TOKENIZER_VERSION=master
+COPY . ./almond-tokenizer
 WORKDIR /home/almond-tokenizer/almond-tokenizer
-RUN git checkout ${ALMOND_TOKENIZER_VERSION}
 RUN ./pull-dependencies.sh 
 RUN ant
 
