@@ -1,22 +1,25 @@
-FROM ${REPO}/almond/base
+FROM ubuntu:18.04
 
-MAINTAINER Almond Admin <root@almond.stanford.edu>
+MAINTAINER Thingpedia Admins <thingpedia-admins@lists.stanford.edu>
 
 # install required dependencies
-RUN yum -y install \
-	java-1.8.0-openjdk-devel ant \
-	hunspell-devel
+RUN apt-get -y update
+RUN apt-get install -y wget git ant
+
+# add user almond-tokenizer
+RUN useradd -ms /bin/bash -r almond-tokenizer
+USER almond-tokenizer
 
 # downlod source and install packages
-USER almond-prod
-WORKDIR /home/almond-prod
-RUN mkdir -p src && cd src && \
-    git clone https://github.com/stanford-oval/almond-tokenizer.git
-WORKDIR /home/almond-prod/src/almond-tokenizer
+WORKDIR /home/almond-tokenizer
+RUN git clone https://github.com/stanford-oval/almond-tokenizer.git
+ARG ALMOND_TOKENIZER_VERSION=master
+WORKDIR /home/almond-tokenizer/almond-tokenizer
+RUN git checkout ${ALMOND_TOKENIZER_VERSION}
 RUN ./pull-dependencies.sh 
 RUN ant
 
 # entry point
 ENV PORT 8888
-ENV LANGUAGES en
+ENV LANGUAGES en zh-hans zh-hant
 CMD ["/bin/bash", "run.sh"]
