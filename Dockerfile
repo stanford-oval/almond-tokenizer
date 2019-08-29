@@ -8,11 +8,11 @@ RUN apt-get install -y wget git ant
 
 # add user almond-tokenizer
 RUN useradd -ms /bin/bash -r almond-tokenizer
-USER almond-tokenizer
 
-# downlod source and install packages
+# copy source and build
 WORKDIR /home/almond-tokenizer
 COPY . ./almond-tokenizer
+RUN chown -R root:root ./almond-tokenizer
 WORKDIR /home/almond-tokenizer/almond-tokenizer
 RUN ./pull-dependencies.sh 
 RUN ant
@@ -20,4 +20,5 @@ RUN ant
 # entry point
 ENV PORT 8888
 ENV LANGUAGES en zh-hans zh-hant
+USER almond-tokenizer
 CMD ["/bin/bash", "run.sh"]
