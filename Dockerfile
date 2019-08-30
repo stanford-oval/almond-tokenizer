@@ -20,5 +20,6 @@ RUN ant
 # entry point
 ENV PORT 8888
 ENV LANGUAGES en zh-hans zh-hant
+ENV LANG C.UTF-8
 USER almond-tokenizer
 CMD ["/bin/bash", "run.sh"]
