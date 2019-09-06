@@ -13,8 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-import info.faljse.SDNotify.SDNotify;
-
 public class TokenizerServer {
   private static final int DEFAULT_PORT = 8888;
 
@@ -100,7 +98,6 @@ public class TokenizerServer {
         .disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
 
     server = new ServerSocket(port);
-    SDNotify.sendNotify();
   }
 
   public void run() throws IOException {
