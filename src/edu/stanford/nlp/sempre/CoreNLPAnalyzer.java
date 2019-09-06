@@ -10,6 +10,7 @@ import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.sempre.english.QuantifiableEntityNormalizer;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.logging.Redwood;
@@ -35,14 +36,14 @@ public class CoreNLPAnalyzer {
   private final StanfordCoreNLP pipeline;
   private final boolean isEnglish;
   private final boolean convertTraditionalChinese;
-  private final boolean applyOurOwnNumericClassifier;
+  private final AbstractQuantifiableEntityNormalizer quantifiableEntityNormalizer;
 
   public CoreNLPAnalyzer(LocaleTag localeTag) {
     Properties props = new Properties();
     String annotators = default_annotators;
+    Class<? extends AbstractQuantifiableEntityNormalizer> normalizerClass = null;
 
     isEnglish = localeTag.getLanguage().equals("en");
-    applyOurOwnNumericClassifier = isEnglish;
     convertTraditionalChinese = "hant".equals(localeTag.getScript());
 
     switch (localeTag.getLanguage()) {
@@ -54,6 +55,7 @@ public class CoreNLPAnalyzer {
       // disable all the builtin numeric classifiers, we have our own
       props.put("ner.applyNumericClassifiers", "false");
       props.put("ner.useSUTime", "false");
+      normalizerClass = QuantifiableEntityNormalizer.class;
       break;
 
     case "it":
@@ -104,7 +106,15 @@ public class CoreNLPAnalyzer {
     props.put("parse.binaryTrees", "true");
 
     pipeline = new StanfordCoreNLP(props);
-
+    
+    if (normalizerClass != null) {
+    	try {
+			quantifiableEntityNormalizer = normalizerClass.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+    } else
+    	quantifiableEntityNormalizer = null;
   }
 
   private static void loadResource(String name, Properties into) {
@@ -120,7 +130,8 @@ public class CoreNLPAnalyzer {
   private static final Pattern BETWEEN_PATTERN = Pattern.compile("(-?[0-9]+(?:\\.[0-9]+)?)-(-?[0-9]+(?:\\.[0-9]+)?)");
 
   private void recognizeNumberSequences(List<CoreLabel> words) {
-    QuantifiableEntityNormalizer.applySpecializedNER(words);
+    if (quantifiableEntityNormalizer != null)
+    	quantifiableEntityNormalizer.applySpecializedNER(words);
   }
 
   private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\p{IsWhite_Space}*");
@@ -158,8 +169,7 @@ public class CoreNLPAnalyzer {
     LanguageInfo languageInfo = new LanguageInfo(sentiment);
 
     // run numeric classifiers
-    if (applyOurOwnNumericClassifier)
-      recognizeNumberSequences(annotation.get(TokensAnnotation.class));
+    recognizeNumberSequences(annotation.get(TokensAnnotation.class));
 
     for (CoreLabel token : annotation.get(TokensAnnotation.class)) {
       String word = token.get(TextAnnotation.class);
