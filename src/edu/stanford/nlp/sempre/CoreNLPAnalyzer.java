@@ -30,6 +30,13 @@ public class CoreNLPAnalyzer {
 
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]+");
   private static final Pattern YEAR_PATTERN = Pattern.compile("[0-9]{4}");
+
+  // recognize two numbers in one token, because CoreNLP's tokenizer will not split them
+  private static final Pattern BETWEEN_PATTERN = Pattern.compile("(-?[0-9]+(?:\\.[0-9]+)?)-(-?[0-9]+(?:\\.[0-9]+)?)");
+
+  // recognize a number followed by - and a word (as in "5-star hotel")
+  private static final Pattern NUMBER_WORD_PATTERN = Pattern.compile("([0-9]+(?:\\.[0-9]+)?)-([a-z]+)");
+
   private static final OpenCC openCC_t2s = new OpenCC("t2s");
   private static final OpenCC openCC_s2t = new OpenCC("s2t");
 
@@ -110,9 +117,6 @@ public class CoreNLPAnalyzer {
       throw new RuntimeException(e);
     }
   }
-
-  // recognize two numbers in one token, because CoreNLP's tokenizer will not split them
-  private static final Pattern BETWEEN_PATTERN = Pattern.compile("(-?[0-9]+(?:\\.[0-9]+)?)-(-?[0-9]+(?:\\.[0-9]+)?)");
 
   private void recognizeNumberSequences(List<CoreLabel> words) {
     QuantifiableEntityNormalizer.applySpecializedNER(words);
@@ -208,6 +212,26 @@ public class CoreNLPAnalyzer {
           languageInfo.posTags.add("CD");
           languageInfo.nerTags.add("NUMBER");
           languageInfo.nerValues.add(num2);
+          continue;
+        }
+
+        Matcher numberWord = NUMBER_WORD_PATTERN.matcher(wordLower);
+        if (numberWord.matches()) {
+          // split 5-star into "5 star"
+          String num = numberWord.group(1);
+          String newWord = numberWord.group(2);
+
+          languageInfo.tokens.add(num);
+          languageInfo.lemmaTokens.add(num);
+          languageInfo.posTags.add("CD");
+          languageInfo.nerTags.add("NUMBER");
+          languageInfo.nerValues.add(num);
+
+          languageInfo.tokens.add(newWord);
+          languageInfo.lemmaTokens.add(token.get(LemmaAnnotation.class));
+          languageInfo.posTags.add(token.get(PartOfSpeechAnnotation.class));
+          languageInfo.nerTags.add("O");
+          languageInfo.nerValues.add(null);
           continue;
         }
       }

@@ -268,3 +268,9 @@
   tokens: show me the NUMBER_0*2 result
   entities:
     NUMBER_0: 3
+- locale: en-us
+  input: show me 5-star restaurants
+  rawTokens: show me 5 star restaurants
+  tokens: show me NUMBER_0*1 star restaurants
+  entities:
+    NUMBER_0: 5
