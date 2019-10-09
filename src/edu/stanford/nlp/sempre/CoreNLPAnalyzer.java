@@ -28,7 +28,8 @@ public class CoreNLPAnalyzer {
   private static final String annotators = "tokenize,quote2,ssplit,pos,lemma," +
       "ner,quote_ner,custom_regexp_ner,phone_ner,url_ner,parse,sentiment";
 
-  private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
+  private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]+");
+  private static final Pattern YEAR_PATTERN = Pattern.compile("[0-9]{4}");
   private static final OpenCC openCC_t2s = new OpenCC("t2s");
   private static final OpenCC openCC_s2t = new OpenCC("s2t");
 
@@ -174,12 +175,13 @@ public class CoreNLPAnalyzer {
       if (nerTag.equals("DATE")) {
         if (nerValue == null) {
           nerTag = "O";
-        } else if (INTEGER_PATTERN.matcher(nerValue).matches()) {
+        } else if (YEAR_PATTERN.matcher(nerValue).matches()) {
           nerTag = "NUMBER";
         }
       }
 
-      if (wordLower.equals("9-11") || wordLower.equals("911") || wordLower.equals("110") || wordLower.equals("119")) {
+      if (wordLower.equals("9-11") || wordLower.equals("911") || wordLower.equals("110") || wordLower.equals("119") ||
+          (INTEGER_PATTERN.matcher(wordLower).matches() && wordLower.length() == 5)) {
         nerTag = "O";
       } else {
         Matcher twoNumbers = BETWEEN_PATTERN.matcher(wordLower);
