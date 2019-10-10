@@ -274,3 +274,9 @@
   tokens: show me NUMBER_0*1 star restaurants
   entities:
     NUMBER_0: 5
+- locale: en-us
+  input: Show me a picture of restaurants with more than two reviews.
+  rawTokens: show me a picture of restaurants with more than two reviews .
+  tokens: show me a picture of restaurants with more than NUMBER_0*1 reviews .
+  entities:
+    NUMBER_0: 2 

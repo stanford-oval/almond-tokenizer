@@ -79,32 +79,28 @@ public class Seq2SeqTokenizer {
         Pair<String, Object> value = nerValueToThingTalkValue(ex, tag, utteranceInfo.nerValues.get(i),
             Joiner.on(' ').join(fullEntity));
         if (value != null) {
-          if (applyHeuristics && value.second().equals(2.0) && token.equals("two")) {
-            current = token;
-          } else {
-            tag = value.first();
-            int id = nextInt.compute(tag, (oldKey, oldValue) -> {
-              if (oldValue == null)
-                oldValue = -1;
-              return oldValue + 1;
-            });
-            addEntity(result, tag, id, value.second());
-            current = tag + "_" + id + '*' + ("QUOTED_STRING".equals(tag) ? fullEntity.size() - 2 : fullEntity.size());
+          tag = value.first();
+          int id = nextInt.compute(tag, (oldKey, oldValue) -> {
+            if (oldValue == null)
+              oldValue = -1;
+            return oldValue + 1;
+          });
+          addEntity(result, tag, id, value.second());
+          current = tag + "_" + id + '*' + ("QUOTED_STRING".equals(tag) ? fullEntity.size() - 2 : fullEntity.size());
 
-            switch (tag) {
-            case "QUOTED_STRING":
-              result.tokensNoQuotes.addAll(fullEntity.subList(1, fullEntity.size() - 1));
-              break;
-            case "HASHTAG":
-              result.tokensNoQuotes.add((String) value.second());
-              break;
-            case "USERNAME":
-              result.tokensNoQuotes.add((String) value.second());
-              break;
-            default:
-              result.tokensNoQuotes.add(current);
-              break;
-            }
+          switch (tag) {
+          case "QUOTED_STRING":
+            result.tokensNoQuotes.addAll(fullEntity.subList(1, fullEntity.size() - 1));
+            break;
+          case "HASHTAG":
+            result.tokensNoQuotes.add((String) value.second());
+            break;
+          case "USERNAME":
+            result.tokensNoQuotes.add((String) value.second());
+            break;
+          default:
+            result.tokensNoQuotes.add(current);
+            break;
           }
         } else {
           result.tokens.addAll(fullEntity);

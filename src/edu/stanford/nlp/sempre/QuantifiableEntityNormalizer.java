@@ -490,8 +490,8 @@ public class QuantifiableEntityNormalizer {
       Matcher m = moneyPattern.matcher(part);
       if (m.matches()) {
         if (DEBUG2) {
-          err.println("Number matched with |" + m.group(2) + "| |" +
-              m.group(3) + '|');
+          err.println("Number matched with |" + m.group(1) + "| |" +
+              m.group(2) + '|');
         }
         String numStr = m.group(2).replace(",", "");
         double v = Double.parseDouble(numStr);

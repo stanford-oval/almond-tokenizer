@@ -69,6 +69,7 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
       Pattern.CASE_INSENSITIVE);
 
   private static final Pattern NUMBER_PATTERN = Pattern.compile("[0-9]+");
+  private static final Pattern WORD_NUMBER_PATTERN = Pattern.compile("two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen");
 
   private static final Pattern YEAR_PATTERN = Pattern.compile("[1-3][0-9]{3}|'?[0-9]{2}");
 
@@ -130,7 +131,7 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
 
     for (CoreLabel me : document) {
       // a thing made of numbers is a number, let's not be stupid about it
-      if (NUMBER_PATTERN.matcher(me.word()).matches())
+      if (NUMBER_PATTERN.matcher(me.word()).matches() || WORD_NUMBER_PATTERN.matcher(me.word()).matches())
         me.setTag("CD");
     }
 

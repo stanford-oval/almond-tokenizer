@@ -166,6 +166,7 @@ public class TokenizerServer {
       }
     } catch(Throwable t) {
       writeError(outputStream, new Error(input.req, t.toString()));
+      t.printStackTrace();
       return;
     }
 
