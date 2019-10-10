@@ -280,3 +280,9 @@
   tokens: show me a picture of restaurants with more than NUMBER_0*1 reviews .
   entities:
     NUMBER_0: 2 
+- locale: en-us
+  input: give me the telephone of the restaurant with “94305” as postal code closest to work.
+  rawTokens: give me the telephone of the restaurant with `` 94305 '' as postal code closest to work .
+  tokens: give me the telephone of the restaurant with QUOTED_STRING_0*1 as postal code closest to work .
+  entities:
+    QUOTED_STRING_0: "94305"

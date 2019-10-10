@@ -185,7 +185,8 @@ public class CoreNLPAnalyzer {
       }
 
       if (wordLower.equals("9-11") || wordLower.equals("911") || wordLower.equals("110") || wordLower.equals("119") ||
-          (INTEGER_PATTERN.matcher(wordLower).matches() && wordLower.length() == 5)) {
+          (INTEGER_PATTERN.matcher(wordLower).matches() && wordLower.length() == 5)
+          && !"QUOTED_STRING".equals(nerTag)) {
         nerTag = "O";
       } else {
         Matcher twoNumbers = BETWEEN_PATTERN.matcher(wordLower);

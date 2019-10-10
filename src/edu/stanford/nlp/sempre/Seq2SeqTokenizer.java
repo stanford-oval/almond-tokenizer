@@ -90,7 +90,8 @@ public class Seq2SeqTokenizer {
 
           switch (tag) {
           case "QUOTED_STRING":
-            result.tokensNoQuotes.addAll(fullEntity.subList(1, fullEntity.size() - 1));
+            if (fullEntity.size() >= 3)
+              result.tokensNoQuotes.addAll(fullEntity.subList(1, fullEntity.size() - 1));
             break;
           case "HASHTAG":
             result.tokensNoQuotes.add((String) value.second());
