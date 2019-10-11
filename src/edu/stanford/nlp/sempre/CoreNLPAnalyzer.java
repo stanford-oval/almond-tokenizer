@@ -26,7 +26,7 @@ public class CoreNLPAnalyzer {
   private static final Redwood.RedwoodChannels log = Redwood.channels(CoreNLPAnalyzer.class);
 
   private static final String annotators = "tokenize,quote2,ssplit,pos,lemma," +
-      "ner,quote_ner,custom_regexp_ner,phone_ner,url_ner,parse,sentiment";
+      "ner,quote_ner,custom_regexp_ner,custom_numeric_ner,phone_ner,url_ner,parse,sentiment";
 
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]+");
   private static final Pattern YEAR_PATTERN = Pattern.compile("[0-9]{4}");
@@ -43,13 +43,11 @@ public class CoreNLPAnalyzer {
   private final StanfordCoreNLP pipeline;
   private final boolean isEnglish;
   private final boolean convertTraditionalChinese;
-  private final boolean applyOurOwnNumericClassifier;
 
   public CoreNLPAnalyzer(LocaleTag localeTag) {
     Properties props = new Properties();
 
     isEnglish = localeTag.getLanguage().equals("en");
-    applyOurOwnNumericClassifier = isEnglish;
     convertTraditionalChinese = "hant".equals(localeTag.getScript());
 
     switch (localeTag.getLanguage()) {
@@ -100,6 +98,7 @@ public class CoreNLPAnalyzer {
     props.put("customAnnotatorClass.phone_ner", PhoneNumberEntityAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.url_ner", URLEntityAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.custom_regexp_ner", RegexpEntityAnnotator.class.getCanonicalName());
+    props.put("customAnnotatorClass.custom_numeric_ner", NumericEntityAnnotator.class.getCanonicalName());
     props.put("custom_regexp_ner.patterns", "./data/regex_patterns");
 
     // ask for binary tree parses
@@ -116,10 +115,6 @@ public class CoreNLPAnalyzer {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private void recognizeNumberSequences(List<CoreLabel> words) {
-    QuantifiableEntityNormalizer.applySpecializedNER(words);
   }
 
   private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\p{IsWhite_Space}*");
@@ -155,10 +150,6 @@ public class CoreNLPAnalyzer {
       sentiment = sentiment.replaceAll("\\s+", "_").toLowerCase();
 
     LanguageInfo languageInfo = new LanguageInfo(sentiment);
-
-    // run numeric classifiers
-    if (applyOurOwnNumericClassifier)
-      recognizeNumberSequences(annotation.get(TokensAnnotation.class));
 
     for (CoreLabel token : annotation.get(TokensAnnotation.class)) {
       String word = token.get(TextAnnotation.class);
