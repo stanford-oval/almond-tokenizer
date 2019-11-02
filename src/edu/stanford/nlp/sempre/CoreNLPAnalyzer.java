@@ -11,6 +11,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.sempre.english.QuantifiableEntityNormalizer;
+import edu.stanford.nlp.sempre.italian.ItalianQuantifiableEntityNormalizer;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.logging.Redwood;
@@ -61,6 +62,7 @@ public class CoreNLPAnalyzer {
     case "it":
       loadResource("StanfordCoreNLP-italian.properties", props);
       annotators = "ita_toksent,quote2,pos,ita_morpho,ita_lemma,ner,quote_ner,custom_regexp_ner,phone_ner,url_ner,parse,sentiment";
+      normalizerClass = ItalianQuantifiableEntityNormalizer.class;
       break;
 
     case "de":

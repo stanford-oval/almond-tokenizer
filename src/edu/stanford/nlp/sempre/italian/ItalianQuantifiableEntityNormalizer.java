@@ -1,8 +1,11 @@
-package edu.stanford.nlp.sempre.english;
+package edu.stanford.nlp.sempre.italian;
 
 import static java.lang.System.err;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,7 +15,10 @@ import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.sempre.AbstractQuantifiableEntityNormalizer;
 import edu.stanford.nlp.stats.ClassicCounter;
-import edu.stanford.nlp.util.*;
+import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.EditDistance;
+import edu.stanford.nlp.util.Generics;
+import edu.stanford.nlp.util.StringUtils;
 
 /**
  * A copy of edu.stanford.nlp.ie.regexp.QuantifiableEntityNormalizer, with
@@ -44,7 +50,7 @@ import edu.stanford.nlp.util.*;
  * @author Christopher Manning (extended for RTE)
  * @author Anna Rafferty
  */
-public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityNormalizer {
+public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiableEntityNormalizer {
 
   private static final boolean DEBUG = false;
   private static final boolean DEBUG2 = false;  // String normlz functions
@@ -52,10 +58,13 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
   public static final String BACKGROUND_SYMBOL = "O";
 
   private static final Pattern timePattern = Pattern
-      .compile("([0-2]?[0-9])((?::?[0-5][0-9]){0,2})([PpAa]\\.?[Mm]?\\.?)?");
+      .compile("([0-2]?[0-9])((?::?[0-5][0-9]){0,2})");
 
   private static final Pattern moneyPattern = Pattern
       .compile("([$\u00A3\u00A5\u20AC#]?)(-?[0-9,]+(?:\\.[0-9]*)?|\\.[0-9]+)[-a-zA-Z]*");
+  
+  // note: the pattern assumes the input is already Americanized
+  private static final Pattern decimalPattern = Pattern.compile("^[0-9]+(?:\\.[0-9]+)?");
 
   //Collections of entity types
   private static final Set<String> quantifiable;  //Entity types that are quantifiable
@@ -77,29 +86,33 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
     quantifiable.add("DURATION");
 
     timeUnitWords = Generics.newHashMap();
-    timeUnitWords.put("second", "S");
-    timeUnitWords.put("seconds", "S");
-    timeUnitWords.put("minute", "m");
-    timeUnitWords.put("minutes", "m");
-    timeUnitWords.put("hour", "H");
-    timeUnitWords.put("hours", "H");
-    timeUnitWords.put("day", "D");
-    timeUnitWords.put("days", "D");
-    timeUnitWords.put("week", "W");
-    timeUnitWords.put("weeks", "W");
-    timeUnitWords.put("month", "M");
-    timeUnitWords.put("months", "M");
-    timeUnitWords.put("year", "Y");
-    timeUnitWords.put("years", "Y");
+    timeUnitWords.put("secondo", "S");
+    timeUnitWords.put("secondi", "S");
+    timeUnitWords.put("minuto", "m");
+    timeUnitWords.put("minuti", "m");
+    timeUnitWords.put("ora", "H");
+    timeUnitWords.put("ore", "H");
+    timeUnitWords.put("giorno", "D");
+    timeUnitWords.put("giorni", "D");
+    timeUnitWords.put("settimana", "W");
+    timeUnitWords.put("settimane", "W");
+    timeUnitWords.put("mese", "M");
+    timeUnitWords.put("mesi", "M");
+    timeUnitWords.put("anno", "Y");
+    timeUnitWords.put("anni", "Y");
 
     currencyWords = Generics.newHashMap();
-    currencyWords.put("dollars?", '$');
-    currencyWords.put("bucks?", '$');
-    currencyWords.put("cents?", '$');
-    currencyWords.put("pounds?", '\u00A3');
-    currencyWords.put("pence|penny", '\u00A3');
+    currencyWords.put("dollar[oi]", '$');
+    currencyWords.put("cent", '$');
+    currencyWords.put("sterlin[ae]", '\u00A3');
+    currencyWords.put("penny", '\u00A3');
     currencyWords.put("yen", '\u00A5');
-    currencyWords.put("euros?", '\u20AC');
+    // "euri" is ungrammatical as a plural of "euro" but i've seen it in the wild
+    currencyWords.put("eur[oi]", '\u20AC');
+    
+    // an equivalent translation of "bucks" would be "sacchi"
+    // but it's regional and very colloquial so I'm not including it here
+    
     currencyWords.put("won", '\u20A9');
     currencyWords.put("\\$", '$');
     currencyWords.put("\u00A2", '$');  // cents
@@ -111,93 +124,94 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
     currencyWords.put("yuan", '\u5143');   // Yuan
 
     moneyMultipliers = Generics.newHashMap();
-    moneyMultipliers.put("trillion", 1000000000000.0);  // can't be an integer
-    moneyMultipliers.put("billion", 1000000000.0);
-    moneyMultipliers.put("bn", 1000000000.0);
-    moneyMultipliers.put("million", 1000000.0);
-    moneyMultipliers.put("thousand", 1000.0);
-    moneyMultipliers.put("hundred", 100.0);
-    moneyMultipliers.put("b.", 1000000000.0);
-    moneyMultipliers.put(" k ", 1000.0);
-    moneyMultipliers.put("dozen", 12.0);
+    moneyMultipliers.put("^miliard[io]", 1000000000.0);
+    moneyMultipliers.put("^milion[ie]", 1000000.0);
+    moneyMultipliers.put("^mila", 1000.0);
 
     wordsToValues = new ClassicCounter<>();
     wordsToValues.setCount("zero", 0.0);
-    wordsToValues.setCount("one", 1.0);
-    wordsToValues.setCount("two", 2.0);
-    wordsToValues.setCount("three", 3.0);
-    wordsToValues.setCount("four", 4.0);
-    wordsToValues.setCount("five", 5.0);
-    wordsToValues.setCount("six", 6.0);
-    wordsToValues.setCount("seven", 7.0);
-    wordsToValues.setCount("eight", 8.0);
-    wordsToValues.setCount("nine", 9.0);
-    wordsToValues.setCount("ten", 10.0);
-    wordsToValues.setCount("eleven", 11.0);
-    wordsToValues.setCount("twelve", 12.0);
-    wordsToValues.setCount("thirteen", 13.0);
-    wordsToValues.setCount("fourteen", 14.0);
-    wordsToValues.setCount("fifteen", 15.0);
-    wordsToValues.setCount("sixteen", 16.0);
-    wordsToValues.setCount("seventeen", 17.0);
-    wordsToValues.setCount("eighteen", 18.0);
-    wordsToValues.setCount("nineteen", 19.0);
-    wordsToValues.setCount("twenty", 20.0);
-    wordsToValues.setCount("thirty", 30.0);
-    wordsToValues.setCount("forty", 40.0);
-    wordsToValues.setCount("fifty", 50.0);
-    wordsToValues.setCount("sixty", 60.0);
-    wordsToValues.setCount("seventy", 70.0);
-    wordsToValues.setCount("eighty", 80.0);
-    wordsToValues.setCount("ninety", 90.0);
+    wordsToValues.setCount("uno", 1.0);
+    wordsToValues.setCount("due", 2.0);
+    wordsToValues.setCount("tre", 3.0);
+    wordsToValues.setCount("quattro", 4.0);
+    wordsToValues.setCount("cinque", 5.0);
+    wordsToValues.setCount("sei", 6.0);
+    wordsToValues.setCount("sette", 7.0);
+    wordsToValues.setCount("otto", 8.0);
+    wordsToValues.setCount("nove", 9.0);
+    wordsToValues.setCount("dieci", 10.0);
+    wordsToValues.setCount("undici", 11.0);
+    wordsToValues.setCount("dodici", 12.0);
+    wordsToValues.setCount("tredici", 13.0);
+    wordsToValues.setCount("quattordici", 14.0);
+    wordsToValues.setCount("quindici", 15.0);
+    wordsToValues.setCount("sedici", 16.0);
+    wordsToValues.setCount("diciassette", 17.0);
+    wordsToValues.setCount("diciotto", 18.0);
+    wordsToValues.setCount("diciannove", 19.0);
+    wordsToValues.setCount("ventuno", 21.0);
+    wordsToValues.setCount("trentuno", 31.0);
+    wordsToValues.setCount("quarantuno", 41.0);
+    wordsToValues.setCount("cinquantuno", 51.0);
+    wordsToValues.setCount("sessantuno", 61.0);
+    wordsToValues.setCount("settantuno", 71.0);
+    wordsToValues.setCount("ottantuno", 81.0);
+    wordsToValues.setCount("novantuno", 91.0);
+    wordsToValues.setCount("venti", 20.0);
+    wordsToValues.setCount("trenta", 30.0);
+    wordsToValues.setCount("quaranta", 40.0);
+    wordsToValues.setCount("cinquanta", 50.0);
+    wordsToValues.setCount("sessanta", 60.0);
+    wordsToValues.setCount("settanta", 70.0);
+    wordsToValues.setCount("ottanta", 80.0);
+    wordsToValues.setCount("novanta", 90.0);
+    wordsToValues.setCount("mille", 1000.0);
 
     ordinalsToValues = new ClassicCounter<>();
-    ordinalsToValues.setCount("zeroth", 0.0);
-    ordinalsToValues.setCount("first", 1.0);
+    ordinalsToValues.setCount("prim", 1.0);
     ordinalsToValues.setCount("second", 2.0);
-    ordinalsToValues.setCount("third", 3.0);
-    ordinalsToValues.setCount("fourth", 4.0);
-    ordinalsToValues.setCount("fifth", 5.0);
-    ordinalsToValues.setCount("sixth", 6.0);
-    ordinalsToValues.setCount("seventh", 7.0);
-    ordinalsToValues.setCount("eighth", 8.0);
-    ordinalsToValues.setCount("ninth", 9.0);
-    ordinalsToValues.setCount("tenth", 10.0);
-    ordinalsToValues.setCount("eleventh", 11.0);
-    ordinalsToValues.setCount("twelfth", 12.0);
-    ordinalsToValues.setCount("thirteenth", 13.0);
-    ordinalsToValues.setCount("fourteenth", 14.0);
-    ordinalsToValues.setCount("fifteenth", 15.0);
-    ordinalsToValues.setCount("sixteenth", 16.0);
-    ordinalsToValues.setCount("seventeenth", 17.0);
-    ordinalsToValues.setCount("eighteenth", 18.0);
-    ordinalsToValues.setCount("nineteenth", 19.0);
-    ordinalsToValues.setCount("twentieth", 20.0);
-    ordinalsToValues.setCount("twenty-first", 21.0);
-    ordinalsToValues.setCount("twenty-second", 22.0);
-    ordinalsToValues.setCount("twenty-third", 23.0);
-    ordinalsToValues.setCount("twenty-fourth", 24.0);
-    ordinalsToValues.setCount("twenty-fifth", 25.0);
-    ordinalsToValues.setCount("twenty-sixth", 26.0);
-    ordinalsToValues.setCount("twenty-seventh", 27.0);
-    ordinalsToValues.setCount("twenty-eighth", 28.0);
-    ordinalsToValues.setCount("twenty-ninth", 29.0);
-    ordinalsToValues.setCount("thirtieth", 30.0);
-    ordinalsToValues.setCount("thirty-first", 31.0);
-    ordinalsToValues.setCount("fortieth", 40.0);
-    ordinalsToValues.setCount("fiftieth", 50.0);
-    ordinalsToValues.setCount("sixtieth", 60.0);
-    ordinalsToValues.setCount("seventieth", 70.0);
-    ordinalsToValues.setCount("eightieth", 80.0);
-    ordinalsToValues.setCount("ninetieth", 90.0);
-    ordinalsToValues.setCount("hundredth", 100.0);
-    ordinalsToValues.setCount("thousandth", 1000.0);
-    ordinalsToValues.setCount("millionth", 1000000.0);
-    ordinalsToValues.setCount("billionth", 1000000000.0);
-    ordinalsToValues.setCount("trillionth", 1000000000000.0);
+    ordinalsToValues.setCount("terz", 3.0);
+    ordinalsToValues.setCount("quart", 4.0);
+    ordinalsToValues.setCount("quint", 5.0);
+    ordinalsToValues.setCount("sest", 6.0);
+    ordinalsToValues.setCount("settim", 7.0);
+    ordinalsToValues.setCount("ottav", 8.0);
+    ordinalsToValues.setCount("non", 9.0);
+    ordinalsToValues.setCount("decim", 10.0);
+    ordinalsToValues.setCount("undicesim", 11.0);
+    ordinalsToValues.setCount("dodicesim", 12.0);
+    ordinalsToValues.setCount("tredicesim", 13.0);
+    ordinalsToValues.setCount("quattordicesim", 14.0);
+    ordinalsToValues.setCount("quindicesim", 15.0);
+    ordinalsToValues.setCount("sedicesim", 16.0);
+    ordinalsToValues.setCount("diciasettesim", 17.0);
+    ordinalsToValues.setCount("diciottesim", 18.0);
+    ordinalsToValues.setCount("diciannovesim", 19.0);
+    ordinalsToValues.setCount("ventesim", 20.0);
+    ordinalsToValues.setCount("ventunesim", 21.0);
+    ordinalsToValues.setCount("ventiduesim", 22.0);
+    ordinalsToValues.setCount("ventitreesim", 23.0);
+    ordinalsToValues.setCount("ventiquattresim", 24.0);
+    ordinalsToValues.setCount("venticinquesim", 25.0);
+    ordinalsToValues.setCount("ventiseiesim", 26.0);
+    ordinalsToValues.setCount("ventisettesim", 27.0);
+    ordinalsToValues.setCount("ventottesim", 28.0);
+    ordinalsToValues.setCount("ventinovesim", 29.0);
+    ordinalsToValues.setCount("trentesim", 30.0);
+    ordinalsToValues.setCount("trentunesim", 31.0);
+    ordinalsToValues.setCount("quarantesim", 40.0);
+    ordinalsToValues.setCount("cinquantesim", 50.0);
+    ordinalsToValues.setCount("sessantesim", 60.0);
+    ordinalsToValues.setCount("settantesim", 70.0);
+    ordinalsToValues.setCount("ottanetesim", 80.0);
+    ordinalsToValues.setCount("novantesim", 90.0);
+    ordinalsToValues.setCount("centesim", 100.0);
+    ordinalsToValues.setCount("millesim", 1000.0);
+    ordinalsToValues.setCount("milionesim", 1000000.0);
+    ordinalsToValues.setCount("miliardesim", 1000000000.0);
   }
 
-  public QuantifiableEntityNormalizer() {
+  public ItalianQuantifiableEntityNormalizer() {
   }
 
   /**
@@ -274,9 +288,7 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
    * @return A yyyymmdd format normalized date
    */
   private static String normalizedDateString(String s, String openRangeMarker) {
-    if (s.endsWith(" at "))
-      s = s.substring(0, s.length() - 4);
-    else if (s.endsWith(" , "))
+    if (s.endsWith(" , "))
       s = s.substring(0, s.length() - 3);
 
     ISODateInstance d = new ISODateInstance(s, openRangeMarker);
@@ -308,64 +320,19 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
   private static String normalizedTimeString(String s, String ampm) {
     if (DEBUG2)
       err.println("normalizingTime: " + s);
-    if (s.startsWith("morning at "))
-      s = s.substring("morning at ".length()) + "am";
-    else if (s.startsWith("evening at "))
-      s = s.substring("evening at ".length()) + "pm";
     s = s.replaceAll("[ \t\n\0\f\r]", "");
     Matcher m = timePattern.matcher(s);
-    if (s.equalsIgnoreCase("noon") || s.equalsIgnoreCase("midday")) {
+    if (s.equalsIgnoreCase("mezzogiorno")) {
       return "T12:00";
-    } else if (s.equalsIgnoreCase("midnight")) {
+    } else if (s.equalsIgnoreCase("mezzanotte")) {
       return "T00:00";
-    } else if (s.equalsIgnoreCase("morning")) {
-      return "M";
-    } else if (s.equalsIgnoreCase("afternoon")) {
-      return "A";
-    } else if (s.equalsIgnoreCase("evening")) {
-      return "EN";
-    } else if (s.equalsIgnoreCase("night")) {
-      return "N";
-    } else if (s.equalsIgnoreCase("day")) {
-      return "D";
-    } else if (s.equalsIgnoreCase("suppertime")) {
-      return "EN";
-    } else if (s.equalsIgnoreCase("lunchtime")) {
-      return "MD";
-    } else if (s.equalsIgnoreCase("teatime")) {
-      return "A";
-    } else if (s.equalsIgnoreCase("dinnertime")) {
-      return "EN";
-    } else if (s.equalsIgnoreCase("dawn")) {
-      return "EM";
-    } else if (s.equalsIgnoreCase("dusk")) {
-      return "EN";
-    } else if (s.equalsIgnoreCase("sundown")) {
-      return "EN";
-    } else if (s.equalsIgnoreCase("sunup")) {
-      return "EM";
-    } else if (s.equalsIgnoreCase("daybreak")) {
-      return "EM";
     } else if (m.matches()) {
       if (DEBUG2) {
         err.printf("timePattern matched groups: |%s| |%s| |%s| |%s|\n", m.group(0), m.group(1), m.group(2), m.group(3));
       }
-      // group 1 is hours, group 2 is minutes and maybe seconds; group 3 is am/pm
+      // group 1 is hours, group 2 is minutes and maybe seconds
       StringBuilder sb = new StringBuilder();
-
-      if (m.group(3) != null) {
-        String suffix = m.group(3);
-        suffix = suffix.replaceAll("\\.", "");
-        suffix = suffix.toLowerCase();
-        ampm = suffix;
-      }
       int hour = Integer.valueOf(m.group(1));
-      if (ampm != null) {
-        if (ampm.equals("pm") && hour < 12)
-          hour += 12;
-        else if (ampm.equals("am") && hour == 12)
-          hour = 0;
-      }
       sb.append("T" + (hour < 10 ? "0" : "") + Integer.toString(hour));
       if (m.group(2) == null || "".equals(m.group(2))) {
         sb.append(":00");
@@ -383,29 +350,25 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
   }
 
   /**
-   * Heuristically decides if s is in American (42.33) or European (42,33)
-   * number format
-   * and tries to turn European version into American.
+   * Convert Italian number format (123.456,78) into International (123456.78).
    *
    */
   private static String convertToAmerican(String s) {
-    if (s.contains(",")) {
-      //turn all but the last into blanks - this isn't really correct, but it's close enough for now
-      while (s.indexOf(',') != s.lastIndexOf(','))
-        s = s.replaceFirst(",", "");
-      int place = s.lastIndexOf(',');
-      //if it's american, should have at least three characters after it
-      if (place >= s.length() - 3 && place != s.length() - 1) {
-        s = s.substring(0, place) + '.' + s.substring(place + 1);
-      } else {
-        s = s.replace(",", "");
-      }
-    }
+    // drop all periods
+    s = s.replace(".", "");
+    
+    //turn all but the last into blanks - this isn't really correct, but it's close enough for now
+    while (s.indexOf(',') != s.lastIndexOf(','))
+      s = s.replaceFirst(",", "");
+     
+    int place = s.lastIndexOf(',');
+    if (place < 0)
+      return s;
+    s = s.substring(0, place) + '.' + s.substring(place + 1);
     return s;
   }
 
   private static String normalizedMoneyString(String s) {
-    //first, see if it looks like european style
     s = convertToAmerican(s);
     // clean up string
     s = s.replaceAll("[ \t\n\0\f\r,]", " ");
@@ -417,13 +380,13 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
     double multiplier = 1.0;
 
     // do currency words
-    char currencySign = '$';
+    char currencySign = '€';
     for (String currencyWord : currencyWords.keySet()) {
       if (StringUtils.find(s, currencyWord)) {
         if (DEBUG2) {
           err.println("Found units: " + currencyWord);
         }
-        if (currencyWord.equals("pence|penny") || currencyWord.equals("cents?") || currencyWord.equals("\u00A2")) {
+        if (currencyWord.equals("penny") || currencyWord.equals("cent") || currencyWord.equals("\u00A2")) {
           multiplier *= 0.01;
         }
         // if(DEBUG){err.println("Quantifiable: Found "+ currencyWord);}
@@ -471,78 +434,73 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
     s = s.toLowerCase();
     
     // handle numbers written in words
-    String[] parts = s.split("[ -]");
+    
+    // concatenate everything together
+    s = s.replaceAll("[ -]", "");
     if (DEBUG2)
       err.println("Looking for number words in |" + s + "|; multiplier is " + multiplier);
     
-    double value = Double.NaN;
-    for (String part : parts) {
-      // check for hyphenated word like 4-Ghz: delete final -
-      if (part.endsWith("-")) {
-        part = part.substring(0, part.length() - 1);
-      }
-
-      Matcher m = moneyPattern.matcher(part);
-      if (m.matches()) {
-        if (DEBUG2) {
-          err.println("Number matched with |" + m.group(2) + "| |" +
-              m.group(3) + '|');
-        }
-        String numStr = m.group(2).replace(",", "");
-        double v = Double.parseDouble(numStr);
-        if (Double.isNaN(value))
-          value = v;
+    double value = 0;
+    double currentTerm = 0;
+    
+    boolean first = true;
+    while (s.length() > 0) {
+      if (s.startsWith("cento")) {
+        if (currentTerm == 0.0)
+          currentTerm = 100;
         else
-          value += v;
+          currentTerm *= 100;
+        s = s.substring("cento".length());
+        first = false;
         continue;
       }
-
-      // get multipliers like "billion"
+      
       boolean found = false;
-      for (String moneyTag : moneyMultipliers.keySet()) {
-        if (part.equals(moneyTag)) {
-          // if (DEBUG) {err.println("Quantifiable: Found "+ moneyTag);}
-          if (Double.isNaN(value))
-            value = moneyMultipliers.get(moneyTag);
-          else
-            value *= moneyMultipliers.get(moneyTag);
-          found = true;
-          break;
-        } else {
-          EditDistance ed = new EditDistance();
-          if (isOneSubstitutionMatch(part,
-              moneyTag, ed)) {
-            if (Double.isNaN(value))
-              value = moneyMultipliers.get(moneyTag);
+      if (!first) {
+        for (String mult : moneyMultipliers.keySet()) {
+          Matcher matcher = Pattern.compile(mult).matcher(s);
+          
+          if (matcher.find()) {
+            if (currentTerm == 0.0)
+              currentTerm = moneyMultipliers.get(mult);
             else
-              value *= moneyMultipliers.get(moneyTag);
+              currentTerm *= moneyMultipliers.get(mult);
             found = true;
+            s = s.substring(matcher.end());
+            value += currentTerm;
+            currentTerm = 0;
             break;
           }
         }
+        if (found)
+          continue;
       }
-      if (found)
-        continue;
       
-      if (wordsToValues.containsKey(part)) {
-        if (Double.isNaN(value))
-          value = wordsToValues.getCount(part);
-        else
-          value += wordsToValues.getCount(part);
-      } else {
-        String partMatch = getOneSubstitutionMatch(part, wordsToValues.keySet());
-        if (partMatch != null) {
-          if (Double.isNaN(value))
-            value = wordsToValues.getCount(part);
-          else
-            value += wordsToValues.getCount(part);
+      Matcher decimalMatcher = decimalPattern.matcher(s);
+      if (decimalMatcher.find()) {
+        currentTerm += Double.parseDouble(decimalMatcher.group());
+        s = s.substring(decimalMatcher.end());
+        first = false;
+        continue;
+      }
+      
+      for (String word : wordsToValues.keySet()) {
+        if (s.startsWith(word)) {
+          currentTerm += wordsToValues.getCount(word);
+          found = true;
+          s = s.substring(word.length());
+          break;
         }
       }
+      
+      if (!found)
+        break;
+
+      first = false;
     }
-    if (!Double.isNaN(value))
-      return Double.toString(value * multiplier);
-    else
-      return null;
+    
+    value += currentTerm;
+    return Double.toString(value);
   }
 
   private static String normalizedOrdinalString(String s) {
@@ -574,8 +532,8 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
       matcher.find();
       // just parse number part, assuming last two letters are st/nd/rd
       return normalizedNumberStringQuiet(matcher.group(), 1.0);
-    } else if (ordinalsToValues.containsKey(s)) {
-      return Double.toString(ordinalsToValues.getCount(s));
+    } else if (ordinalsToValues.containsKey(s.substring(0, s.length()-1))) {
+      return Double.toString(ordinalsToValues.getCount(s.substring(0, s.length()-1)));
     } else {
       String val = getOneSubstitutionMatch(s, ordinalsToValues.keySet());
       if (val != null)
@@ -655,9 +613,7 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
       break;
     case "TIME": {
       p = "";
-      if (compModifier != null && !compModifier.matches("am|pm")) {
-        p = compModifier;
-      }
+      assert compModifier == null || compModifier.equals("") || compModifier.matches("am|pm");
       String q = normalizedTimeString(s, compModifier != null ? compModifier : "");
       if (q != null && q.length() == 1 && !q.equals("D")) {
         p = p.concat(q);
@@ -738,20 +694,9 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
     return l;
   }
 
-  private static String earlyOneWord = "early";
-  private static String earlyTwoWords = "(?:dawn|eve|beginning) of";
-  private static String earlyThreeWords = "early in the";
-  private static String lateOneWord = "late";
-  private static String lateTwoWords = "late at|end of";
-  private static String lateThreeWords = "end of the";
-  private static String middleTwoWords = "(?:middle|midst) of";
-  private static String middleThreeWords = "(?:middle|midst) of the";
-
-  private static String amOneWord = "[Aa]\\.?[Mm]\\.?";
-  private static String pmOneWord = "[Pp]\\.?[Mm]\\.?";
-  private static String amThreeWords = "in the morning";
-  private static String pmTwoWords = "at night";
-  private static String pmThreeWords = "in the (?:afternoon|evening)";
+  // al mattino, alla mattina, della mattina, etc.
+  private static String amTwoWords = "(al|del)(la)? mattin[oa]";
+  private static String pmTwoWords = "(della|alla) sera|(del|al) pomeriggio";
 
   /**
    * Takes the strings of the three previous words to a quantity and detects a
@@ -773,55 +718,23 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
         ? list.get(afterIndex + 2).get(CoreAnnotations.TextAnnotation.class).toLowerCase() : "";
 
     String longPrev = prev3 + ' ' + prev2 + ' ' + prev;
-    if (longPrev.matches(earlyThreeWords)) {
-      return "E";
-    } else if (longPrev.matches(lateThreeWords)) {
-      return "L";
-    } else if (longPrev.matches(middleThreeWords)) {
-      return "M";
-    }
 
     longPrev = prev2 + ' ' + prev;
-    if (longPrev.matches(earlyTwoWords)) {
-      return "E";
-    } else if (longPrev.matches(lateTwoWords)) {
-      return "L";
-    } else if (longPrev.matches(middleTwoWords)) {
-      return "M";
-    } else if (longPrev.matches("morning (at|of)")) {
+    if (longPrev.matches("mattin[oa] (all'?|alle|alla)")) {
       return "am";
-    } else if (longPrev.matches("(evening|afternoon) (at|of)")) {
+    } else if (longPrev.matches("(sera|pomeriggio) (all'?|alle|alla)")) {
       return "pm";
     }
 
-    if (prev.matches(earlyOneWord) || prev2.matches(earlyOneWord)) {
-      return "E";
-    } else if (prev.matches(lateOneWord) || prev2.matches(lateOneWord)) {
-      return "L";
-    }
-
-    String longNext = next + ' ' + next2 + ' ' + next3;
-    if (longNext.matches(pmThreeWords)) {
-      return "pm";
-    }
-    if (longNext.matches(amThreeWords)) {
+    String longNext = next + ' ' + next2;
+    if (longNext.matches(amTwoWords)) {
       return "am";
     }
-
-    longNext = next + ' ' + next2;
+    
     if (longNext.matches(pmTwoWords)) {
       return "pm";
     }
-
-    if (next.matches(amOneWord) || next2.matches("morning") || next3.matches("morning")) {
-      return "am";
-    }
-    if (next.matches(pmOneWord) || next2.matches("afternoon") || next3.matches("afternoon")
-        || next2.matches("night") || next3.matches("night")
-        || next2.matches("evening") || next3.matches("evening")) {
-      return "pm";
-    }
-
+    
     return "";
   }
 
@@ -936,7 +849,7 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
 
       // repairs comma, "at" between DATE and TIME
       if ((i + 1) < sz &&
-          (",".equals(curWord) || "at".equals(curWord))
+          (",".equals(curWord) || curWord.matches("al|alle"))
           && "DATE".equals(prevNerTag)
           && "TIME".equals(list.get(i + 1).get(CoreAnnotations.NamedEntityTagAnnotation.class))) {
         wi.set(CoreAnnotations.NamedEntityTagAnnotation.class, "DATE");

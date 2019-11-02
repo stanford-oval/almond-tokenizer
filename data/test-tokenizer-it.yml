@@ -9,3 +9,42 @@
   tokens: mostrami NUMBER_0*1 foto di gatti
   entities:
     NUMBER_0: 3
+- locale: it-IT
+  input: mostrami 3.000 foto di gatti
+  rawTokens: mostrami 3.000 foto di gatti
+  tokens: mostrami NUMBER_0*1 foto di gatti
+  entities:
+    NUMBER_0: 3000
+- locale: it-IT
+  input: mostrami 3 mila foto di gatti
+  rawTokens: mostrami 3 mila foto di gatti
+  tokens: mostrami NUMBER_0*2 foto di gatti
+  entities:
+    NUMBER_0: 3000
+- locale: it-IT
+  input: mostrami tre foto di gatti
+  rawTokens: mostrami tre foto di gatti
+  tokens: mostrami NUMBER_0*1 foto di gatti
+  entities:
+    NUMBER_0: 3
+- locale: it-IT
+  input: mostrami ventidue foto di gatti
+  rawTokens: mostrami ventidue foto di gatti
+  tokens: mostrami NUMBER_0*1 foto di gatti
+  entities:
+    NUMBER_0: 22
+- locale: it-IT
+  input: mostrami quattrocento ventidue foto di gatti
+  rawTokens: mostrami quattrocento ventidue foto di gatti
+  tokens: mostrami NUMBER_0*2 foto di gatti
+  entities:
+    NUMBER_0: 422
+- locale: it-IT
+  input: tremila cinquecento sei più settemilioni duecentomila uno più settecento cinquantamila ventuno più ottocentomilioni duecentocinquantamila trecentoventitre
+  rawTokens: tremila cinquecento sei più settemilioni duecentomila uno più settecento cinquantamila ventuno più ottocentomilioni duecentocinquantamila trecentoventitre
+  tokens: NUMBER_0*3 più NUMBER_1*3 più NUMBER_2*3 più NUMBER_3*3
+  entities:
+    NUMBER_0: 3506
+    NUMBER_1: 7200001
+    NUMBER_2: 750021
+    NUMBER_3: 800250323
