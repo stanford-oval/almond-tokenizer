@@ -59,13 +59,12 @@ public class CoreNLPAnalyzer {
       // disable all the builtin numeric classifiers, we have our own
       props.put("ner.applyNumericClassifiers", "false");
       props.put("ner.useSUTime", "false");
-      props.put("custom_regexp_ner.locale", "en");
       break;
 
     case "it":
       loadResource("StanfordCoreNLP-italian.properties", props);
-      annotators = "ita_toksent,quote2,pos,ita_morpho,ita_lemma,ner,quote_ner,custom_regexp_ner,phone_ner,url_ner,parse,sentiment";
-      props.put("custom_regexp_ner.locale", "it");
+      props.put("ita_toksent.ssplitOnlyOnNewLine", "true");
+      annotators = "ita_toksent,mergesent,quote2,pos,ita_morpho,ita_lemma,ner,quote_ner,custom_regexp_ner,custom_numeric_ner,phone_ner,url_ner,parse,sentiment";
       break;
 
     case "de":
@@ -100,6 +99,7 @@ public class CoreNLPAnalyzer {
     props.put("regexner.backgroundSymbol", "O,MISC,ORGANIZATION");
 
     // move quotes to a NER tag
+    props.put("customAnnotatorClass.mergesent", MergeSentencesAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.quote2", QuotedStringAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.quote_ner", QuotedStringEntityAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.phone_ner", PhoneNumberEntityAnnotator.class.getCanonicalName());
@@ -107,6 +107,7 @@ public class CoreNLPAnalyzer {
     props.put("customAnnotatorClass.custom_regexp_ner", RegexpEntityAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.custom_numeric_ner", NumericEntityAnnotator.class.getCanonicalName());
     props.put("custom_regexp_ner.patterns", "./data/regex_patterns");
+    props.put("custom_numeric_ner.language", localeTag.getLanguage());
 
     // ask for binary tree parses
     props.put("parse.binaryTrees", "true");

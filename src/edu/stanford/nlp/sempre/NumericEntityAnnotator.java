@@ -22,13 +22,13 @@ public class NumericEntityAnnotator implements Annotator {
   private final AbstractQuantifiableEntityNormalizer normalizer;
   
   public NumericEntityAnnotator(Properties properties) {
-    String locale = properties.getProperty("custom_numeric_annotator.language");
+    String locale = properties.getProperty("custom_numeric_ner.language");
     
     if (locale == null || !normalizerClasses.containsKey(locale)) {
       normalizer = null;
     } else {
       try {
-        normalizer = normalizerClasses.get("locale").newInstance();
+        normalizer = normalizerClasses.get(locale).newInstance();
       } catch (InstantiationException | IllegalAccessException e) {
         throw new RuntimeException(e);
       }
