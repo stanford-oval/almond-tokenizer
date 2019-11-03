@@ -1,3 +1,14 @@
+3.0.3
+=====
+
+* Fixed tokenization of dates
+
+3.0.2
+=====
+
+* Improved tokenization of zip codes and numbers connected to a word with a -
+  (e.g. "5-star")
+
 3.0.1
 =====
 

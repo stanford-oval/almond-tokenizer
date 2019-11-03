@@ -44,7 +44,7 @@ import edu.stanford.nlp.util.*;
  * @author Christopher Manning (extended for RTE)
  * @author Anna Rafferty
  */
-public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityNormalizer {
+public class EnglishQuantifiableEntityNormalizer implements AbstractQuantifiableEntityNormalizer {
 
   private static final boolean DEBUG = false;
   private static final boolean DEBUG2 = false;  // String normlz functions
@@ -197,7 +197,7 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
     ordinalsToValues.setCount("trillionth", 1000000000000.0);
   }
 
-  public QuantifiableEntityNormalizer() {
+  public EnglishQuantifiableEntityNormalizer() {
   }
 
   /**
@@ -485,8 +485,8 @@ public class QuantifiableEntityNormalizer implements AbstractQuantifiableEntityN
       Matcher m = moneyPattern.matcher(part);
       if (m.matches()) {
         if (DEBUG2) {
-          err.println("Number matched with |" + m.group(2) + "| |" +
-              m.group(3) + '|');
+          err.println("Number matched with |" + m.group(1) + "| |" +
+              m.group(2) + '|');
         }
         String numStr = m.group(2).replace(",", "");
         double v = Double.parseDouble(numStr);

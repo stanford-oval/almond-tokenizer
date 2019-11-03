@@ -28,22 +28,28 @@ public class CoreNLPAnalyzer {
   private static final Redwood.RedwoodChannels log = Redwood.channels(CoreNLPAnalyzer.class);
 
   private static final String default_annotators = "tokenize,quote2,ssplit,pos,lemma," +
-      "ner,quote_ner,custom_regexp_ner,phone_ner,url_ner,parse,sentiment";
+      "ner,quote_ner,custom_regexp_ner,custom_numeric_ner,phone_ner,url_ner,parse,sentiment";
 
-  private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]{4}");
+  private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]+");
+  private static final Pattern YEAR_PATTERN = Pattern.compile("[0-9]{4}");
+
+  // recognize two numbers in one token, because CoreNLP's tokenizer will not split them
+  private static final Pattern BETWEEN_PATTERN = Pattern.compile("(-?[0-9]+(?:\\.[0-9]+)?)-(-?[0-9]+(?:\\.[0-9]+)?)");
+
+  // recognize a number followed by - and a word (as in "5-star hotel")
+  private static final Pattern NUMBER_WORD_PATTERN = Pattern.compile("([0-9]+(?:\\.[0-9]+)?)-([a-z]+)");
+
   private static final OpenCC openCC_t2s = new OpenCC("t2s");
   private static final OpenCC openCC_s2t = new OpenCC("s2t");
 
   private final StanfordCoreNLP pipeline;
   private final boolean isEnglish;
   private final boolean convertTraditionalChinese;
-  private final AbstractQuantifiableEntityNormalizer quantifiableEntityNormalizer;
 
   public CoreNLPAnalyzer(LocaleTag localeTag) {
     Properties props = new Properties();
     String annotators = default_annotators;
-    Class<? extends AbstractQuantifiableEntityNormalizer> normalizerClass = null;
-
+    
     isEnglish = localeTag.getLanguage().equals("en");
     convertTraditionalChinese = "hant".equals(localeTag.getScript());
 
@@ -56,13 +62,13 @@ public class CoreNLPAnalyzer {
       // disable all the builtin numeric classifiers, we have our own
       props.put("ner.applyNumericClassifiers", "false");
       props.put("ner.useSUTime", "false");
-      normalizerClass = QuantifiableEntityNormalizer.class;
+      props.put("custom_regexp_ner.locale", "en");
       break;
 
     case "it":
       loadResource("StanfordCoreNLP-italian.properties", props);
       annotators = "ita_toksent,quote2,pos,ita_morpho,ita_lemma,ner,quote_ner,custom_regexp_ner,phone_ner,url_ner,parse,sentiment";
-      normalizerClass = ItalianQuantifiableEntityNormalizer.class;
+      props.put("custom_regexp_ner.locale", "it");
       break;
 
     case "de":
@@ -102,21 +108,13 @@ public class CoreNLPAnalyzer {
     props.put("customAnnotatorClass.phone_ner", PhoneNumberEntityAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.url_ner", URLEntityAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.custom_regexp_ner", RegexpEntityAnnotator.class.getCanonicalName());
+    props.put("customAnnotatorClass.custom_numeric_ner", NumericEntityAnnotator.class.getCanonicalName());
     props.put("custom_regexp_ner.patterns", "./data/regex_patterns");
 
     // ask for binary tree parses
     props.put("parse.binaryTrees", "true");
 
     pipeline = new StanfordCoreNLP(props);
-    
-    if (normalizerClass != null) {
-    	try {
-			quantifiableEntityNormalizer = normalizerClass.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-    } else
-    	quantifiableEntityNormalizer = null;
   }
 
   private static void loadResource(String name, Properties into) {
@@ -126,14 +124,6 @@ public class CoreNLPAnalyzer {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  // recognize two numbers in one token, because CoreNLP's tokenizer will not split them
-  private static final Pattern BETWEEN_PATTERN = Pattern.compile("(-?[0-9]+(?:\\.[0-9]+)?)-(-?[0-9]+(?:\\.[0-9]+)?)");
-
-  private void recognizeNumberSequences(List<CoreLabel> words) {
-    if (quantifiableEntityNormalizer != null)
-    	quantifiableEntityNormalizer.applySpecializedNER(words);
   }
 
   private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\p{IsWhite_Space}*");
@@ -170,9 +160,6 @@ public class CoreNLPAnalyzer {
 
     LanguageInfo languageInfo = new LanguageInfo(sentiment);
 
-    // run numeric classifiers
-    recognizeNumberSequences(annotation.get(TokensAnnotation.class));
-
     for (CoreLabel token : annotation.get(TokensAnnotation.class)) {
       String word = token.get(TextAnnotation.class);
       String wordLower = word.toLowerCase();
@@ -192,12 +179,14 @@ public class CoreNLPAnalyzer {
       if (nerTag.equals("DATE")) {
         if (nerValue == null) {
           nerTag = "O";
-        } else if (INTEGER_PATTERN.matcher(nerValue).matches()) {
+        } else if (YEAR_PATTERN.matcher(nerValue).matches()) {
           nerTag = "NUMBER";
         }
       }
 
-      if (wordLower.equals("9-11") || wordLower.equals("911") || wordLower.equals("110") || wordLower.equals("119")) {
+      if (wordLower.equals("9-11") || wordLower.equals("911") || wordLower.equals("110") || wordLower.equals("119") ||
+          (INTEGER_PATTERN.matcher(wordLower).matches() && wordLower.length() == 5)
+          && !"QUOTED_STRING".equals(nerTag)) {
         nerTag = "O";
       } else {
         Matcher twoNumbers = BETWEEN_PATTERN.matcher(wordLower);
@@ -224,6 +213,26 @@ public class CoreNLPAnalyzer {
           languageInfo.posTags.add("CD");
           languageInfo.nerTags.add("NUMBER");
           languageInfo.nerValues.add(num2);
+          continue;
+        }
+
+        Matcher numberWord = NUMBER_WORD_PATTERN.matcher(wordLower);
+        if (numberWord.matches()) {
+          // split 5-star into "5 star"
+          String num = numberWord.group(1);
+          String newWord = numberWord.group(2);
+
+          languageInfo.tokens.add(num);
+          languageInfo.lemmaTokens.add(num);
+          languageInfo.posTags.add("CD");
+          languageInfo.nerTags.add("NUMBER");
+          languageInfo.nerValues.add(num);
+
+          languageInfo.tokens.add(newWord);
+          languageInfo.lemmaTokens.add(token.get(LemmaAnnotation.class));
+          languageInfo.posTags.add(token.get(PartOfSpeechAnnotation.class));
+          languageInfo.nerTags.add("O");
+          languageInfo.nerValues.add(null);
           continue;
         }
       }

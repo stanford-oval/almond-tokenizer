@@ -297,3 +297,58 @@
   tokens: show me the NUMBER_0*2 result
   entities:
     NUMBER_0: 3
+- locale: en-us
+  input: show me 5-star restaurants
+  rawTokens: show me 5 star restaurants
+  tokens: show me NUMBER_0*1 star restaurants
+  entities:
+    NUMBER_0: 5
+- locale: en-us
+  input: Show me a picture of restaurants with more than two reviews.
+  rawTokens: show me a picture of restaurants with more than two reviews .
+  tokens: show me a picture of restaurants with more than NUMBER_0*1 reviews .
+  entities:
+    NUMBER_0: 2 
+- locale: en-us
+  input: give me the telephone of the restaurant with “94305” as postal code closest to work.
+  rawTokens: give me the telephone of the restaurant with `` 94305 '' as postal code closest to work .
+  tokens: give me the telephone of the restaurant with QUOTED_STRING_0*1 as postal code closest to work .
+  entities:
+    QUOTED_STRING_0: "94305"
+- locale: en-us
+  input: fetch review having later date published than Feb 14 2017
+  rawTokens: fetch review having later date published than feb 14 2017
+  tokens: fetch review having later date published than DATE_0*3
+  entities:
+    DATE_0:
+      year: 2017
+      month: 2
+      day: 14
+      hour: 0
+      minute: 0
+      second: 0
+- locale: en-us
+  input: which are reviews having later date published than May 4th, 2016 for restaurant having bigger than 2 reviews
+  rawTokens: which are reviews having later date published than may 4 th , 2016 for restaurant having bigger than 2 reviews
+  tokens: which are reviews having later date published than DATE_0*5 for restaurant having bigger than NUMBER_0*1 reviews
+  entities:
+    DATE_0:
+      year: 2016
+      month: 5
+      day: 4
+      hour: 0
+      minute: 0
+      second: 0
+    NUMBER_0: 2
+- locale: en-us
+  input: What's the rating of the review dated sooner than May 4th, 2016?
+  rawTokens: what 's the rating of the review dated sooner than may 4 th , 2016 ?
+  tokens: what 's the rating of the review dated sooner than DATE_0*5 ?
+  entities:
+    DATE_0:
+      year: 2016
+      month: 5
+      day: 4
+      hour: 0
+      minute: 0
+      second: 0
