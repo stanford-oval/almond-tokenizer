@@ -35,12 +35,9 @@ public class Seq2SeqTokenizer {
     CURRENCY_CODES.put("\u5143", "cny");
   }
 
-  private final boolean applyHeuristics;
   private final ParserAnnotator constituencyParser;
 
-  public Seq2SeqTokenizer(boolean applyHeuristics) {
-    this.applyHeuristics = applyHeuristics;
-
+  public Seq2SeqTokenizer() {
     if (INCLUDE_CONSTITUENCY_PARSE) {
       Properties parseProperties = new Properties();
       parseProperties.put("parse.model", "edu/stanford/nlp/models/lexparser/englishPCFG.caseless.ser.gz");

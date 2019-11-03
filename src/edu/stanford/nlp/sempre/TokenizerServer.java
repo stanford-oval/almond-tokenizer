@@ -19,7 +19,7 @@ public class TokenizerServer {
   private final ObjectMapper object = new ObjectMapper();
   private final ServerSocket server;
   private final Map<LocaleTag, CoreNLPAnalyzer> analyzers = new HashMap<>();
-  private final Seq2SeqTokenizer tokenizer = new Seq2SeqTokenizer(true);
+  private final Seq2SeqTokenizer tokenizer = new Seq2SeqTokenizer();
   private final Executor threadPool = Executors.newWorkStealingPool();
 
   public static class Input {
