@@ -130,6 +130,7 @@
     TIME_0:
       hour: 7
       minute: 0
+      second: 0
 - locale: en-us
   input: wake me up at 7am in the morning
   rawTokens: wake me up at 7am in the morning
@@ -138,6 +139,34 @@
     TIME_0:
       hour: 7
       minute: 0
+      second: 0
+- locale: en-us
+  input: wake me up at 7:15 in the morning
+  rawTokens: wake me up at 7:15 in the morning
+  tokens: wake me up at TIME_0*1 in the morning
+  entities:
+    TIME_0:
+      hour: 7
+      minute: 15
+      second: 0
+- locale: en-us
+  input: wake me up at 7:15 in the evening
+  rawTokens: wake me up at 7:15 in the evening
+  tokens: wake me up at TIME_0*1 in the evening
+  entities:
+    TIME_0:
+      hour: 19
+      minute: 15
+      second: 0
+- locale: en-us
+  input: wake me up at 7:15:22 in the morning
+  rawTokens: wake me up at 7:15:22 in the morning
+  tokens: wake me up at TIME_0*1 in the morning
+  entities:
+    TIME_0:
+      hour: 7
+      minute: 15
+      second: 22
 - locale: en-us
   input: when nba team la lakers plays
   rawTokens: when nba team la lakers plays

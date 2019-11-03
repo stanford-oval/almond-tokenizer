@@ -3,6 +3,136 @@
   rawTokens: mostrami una foto di gatti
   tokens: mostrami una foto di gatti
   entities: {}
+- locale: it-it
+  input: il giorno 22/07/2015 e della data 11/12/2018
+  rawTokens: il giorno 22/07/2015 e della data 11/12/2018
+  tokens: il giorno DATE_0*1 e della data DATE_1*1
+  entities:
+    DATE_0:
+      year: 2015
+      month: 7
+      day: 22
+      hour: 0
+      minute: 0
+      second: 0
+    DATE_1:
+      year: 2018
+      month: 12
+      day: 11
+      hour: 0
+      minute: 0
+      second: 0
+- locale: it-it
+  input: il giorno 22/07/2015 alle 22:15
+  rawTokens: "il giorno 22/07/2015 alle 22 : 15"
+  tokens: il giorno DATE_0*5
+  entities:
+    DATE_0:
+      year: 2015
+      month: 7
+      day: 22
+      hour: 22
+      minute: 15
+      second: 0
+- locale: it-it
+  input: il giorno 22/07/2015 alle ore 22:15
+  rawTokens: "il giorno 22/07/2015 alle ore 22 : 15"
+  tokens: il giorno DATE_0*6
+  entities:
+    DATE_0:
+      year: 2015
+      month: 7
+      day: 22
+      hour: 22
+      minute: 15
+      second: 0
+- locale: it-it
+  input: il giorno 22/07/2015 alle ore 8:30 di sera
+  rawTokens: "il giorno 22/07/2015 alle ore 8 : 30 di sera"
+  tokens: il giorno DATE_0*6 di sera
+  entities:
+    DATE_0:
+      year: 2015
+      month: 7
+      day: 22
+      hour: 20
+      minute: 30
+      second: 0
+- locale: it-it
+  input: il giorno 22/07/2015 alle 4 del pomeriggio
+  rawTokens: "il giorno 22/07/2015 alle 4 del pomeriggio"
+  tokens: il giorno DATE_0*3 del pomeriggio
+  entities:
+    DATE_0:
+      year: 2015
+      month: 7
+      day: 22
+      hour: 16
+      minute: 0
+      second: 0
+- locale: it-it
+  input: avvisami alle 3:15
+  rawTokens: "avvisami alle 3 : 15"
+  tokens: avvisami alle TIME_0*3
+  entities:
+    TIME_0:
+      hour: 3
+      minute: 15
+      second: 0
+- locale: it-it
+  input: avvisami alle 3:15:50
+  rawTokens: "avvisami alle 3 : 15 : 50"
+  tokens: avvisami alle TIME_0*5
+  entities:
+    TIME_0:
+      hour: 3
+      minute: 15
+      second: 50
+- locale: it-it
+  input: avvisami alle 3:20 di pomeriggio
+  rawTokens: "avvisami alle 3 : 20 di pomeriggio"
+  tokens: avvisami alle TIME_0*3 di pomeriggio
+  entities:
+    TIME_0:
+      hour: 15
+      minute: 20
+      second: 0
+- locale: it-it
+  input: avvisami alle 3 di mattina
+  rawTokens: avvisami alle 3 di mattina
+  tokens: avvisami alle TIME_0*1 di mattina
+  entities:
+    TIME_0:
+      hour: 3
+      minute: 0
+      second: 0
+- locale: it-it
+  input: avvisami alle 3 di pomeriggio
+  rawTokens: avvisami alle 3 di pomeriggio
+  tokens: avvisami alle TIME_0*1 di pomeriggio
+  entities:
+    TIME_0:
+      hour: 15
+      minute: 0
+      second: 0
+- locale: it-it
+  input: avvisami alle 6 di sera
+  rawTokens: avvisami alle 6 di sera
+  tokens: avvisami alle TIME_0*1 di sera
+  entities:
+    TIME_0:
+      hour: 18
+      minute: 0
+      second: 0
+- locale: it-it
+  input: avvisami alle 3 di notte
+  rawTokens: avvisami alle 3 di notte
+  tokens: avvisami alle TIME_0*1 di notte
+  entities:
+    TIME_0:
+      hour: 3
+      minute: 0
+      second: 0
 - locale: it-IT
   input: mostrami 3 foto di gatti
   rawTokens: mostrami 3 foto di gatti

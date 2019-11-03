@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
-import edu.stanford.nlp.ie.pascal.ISODateInstance;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.sempre.AbstractQuantifiableEntityNormalizer;
@@ -264,14 +263,6 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
   }
 
   /**
-   * Provided for backwards compatibility; see normalizedDateString(s,
-   * openRangeMarker)
-   */
-  private static String normalizedDateString(String s) {
-    return normalizedDateString(s, ISODateInstance.NO_RANGE);
-  }
-
-  /**
    * Returns a string that represents either a single date or a range of
    * dates. Representation pattern is roughly ISO8601, with some extensions
    * for greater expressivity; see {@link ISODateInstance} for details.
@@ -287,11 +278,11 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
    *          starts at s. See {@link ISODateInstance}.
    * @return A yyyymmdd format normalized date
    */
-  private static String normalizedDateString(String s, String openRangeMarker) {
+  private static String normalizedDateString(String s) {
     if (s.endsWith(" , "))
       s = s.substring(0, s.length() - 3);
 
-    ISODateInstance d = new ISODateInstance(s, openRangeMarker);
+    ISODateInstance d = new ISODateInstance(s);
     if (DEBUG2)
       err.println("normalizeDate: " + s + " to " + d.getDateString());
     return (d.getDateString());
@@ -333,6 +324,12 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
       // group 1 is hours, group 2 is minutes and maybe seconds
       StringBuilder sb = new StringBuilder();
       int hour = Integer.valueOf(m.group(1));
+      if (ampm != null) {
+        if (ampm.equals("pm") && hour < 12)
+          hour += 12;
+        else if (ampm.equals("am") && hour == 12)
+          hour = 0;
+      }
       sb.append("T" + (hour < 10 ? "0" : "") + Integer.toString(hour));
       if (m.group(2) == null || "".equals(m.group(2))) {
         sb.append(":00");
@@ -565,12 +562,7 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
     if (DEBUG) {
       System.err.println("Quantifiable.processEntity: " + l);
     }
-    String s;
-    if (entityType.equals("TIME")) {
-      s = timeEntityToString(l);
-    } else {
-      s = singleEntityToString(l);
-    }
+    String s = singleEntityToString(l);
 
     if (DEBUG)
       System.err.println("Quantifiable: working on " + s);
@@ -695,8 +687,8 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
   }
 
   // al mattino, alla mattina, della mattina, etc.
-  private static String amTwoWords = "(al|del)(la)? mattin[oa]";
-  private static String pmTwoWords = "(della|alla) sera|(del|al) pomeriggio";
+  private static String amTwoWords = "((al|del)(la)?|di) (mattin[oa]|notte)";
+  private static String pmTwoWords = "(della|alla|di) sera|(del|al|di) pomeriggio";
 
   /**
    * Takes the strings of the three previous words to a quantity and detects a
@@ -751,7 +743,7 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
    *          true if quantities should be concatenated into one label, false
    *          otherwise
    */
-  private static <E extends CoreMap> void addNormalizedQuantitiesToEntities(List<E> list) {
+  private static <E extends CoreLabel> void addNormalizedQuantitiesToEntities(List<E> list) {
     // Goes through tokens and tries to fix up NER annotations
     fixupNerBeforeNormalization(list);
 
@@ -833,7 +825,7 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
     }
   }
 
-  private static <E extends CoreMap> void fixupNerBeforeNormalization(List<E> list) {
+  private static <E extends CoreLabel> void fixupNerBeforeNormalization(List<E> list) {
     // Goes through tokens and tries to fix up NER annotations
     String prevNerTag = BACKGROUND_SYMBOL;
     for (int i = 0, sz = list.size(); i < sz; i++) {
@@ -851,26 +843,36 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
       if ((i + 1) < sz &&
           (",".equals(curWord) || curWord.matches("al|alle"))
           && "DATE".equals(prevNerTag)
-          && "TIME".equals(list.get(i + 1).get(CoreAnnotations.NamedEntityTagAnnotation.class))) {
-        wi.set(CoreAnnotations.NamedEntityTagAnnotation.class, "DATE");
+          && "TIME".equals(list.get(i + 1).ner())) {
+        wi.setNER("DATE");
+      }
+      
+      // "DATE alle ore TIME" -> "DATE"
+      // (lit. "DATE at time TIME")
+      if ((i + 2) < sz &&
+          (curWord.matches("alle") && list.get(i+1).word().equals("ore"))
+          && "DATE".equals(prevNerTag)
+          && "TIME".equals(list.get(i + 2).ner())) {
+        wi.setNER("DATE");
+        list.get(i+1).setNER("DATE");
       }
 
       //repairs mistagged multipliers after a numeric quantity
       if (!curWord.equals("") && (moneyMultipliers.containsKey(curWord) ||
           (getOneSubstitutionMatch(curWord, moneyMultipliers.keySet()) != null)) &&
           prevNerTag != null && (prevNerTag.equals("MONEY") || prevNerTag.equals("NUMBER"))) {
-        wi.set(CoreAnnotations.NamedEntityTagAnnotation.class, prevNerTag);
+        wi.setNER(prevNerTag);
       }
 
       // Marks time units as DURATION if they are preceded by a NUMBER tag.  e.g. "two years" or "5 minutes"
       if (timeUnitWords.containsKey(curWord) &&
           (currNerTag == null || !"DURATION".equals(currNerTag)) &&
           ("NUMBER".equals(prevNerTag))) {
-        wi.set(CoreAnnotations.NamedEntityTagAnnotation.class, "DURATION");
+        wi.setNER("DURATION");
         for (int j = i - 1; j >= 0; j--) {
           E prev = list.get(j);
           if ("NUMBER".equals(prev.get(CoreAnnotations.NamedEntityTagAnnotation.class))) {
-            prev.set(CoreAnnotations.NamedEntityTagAnnotation.class, "DURATION");
+            prev.setNER("DURATION");
           } else {
             break;
           }

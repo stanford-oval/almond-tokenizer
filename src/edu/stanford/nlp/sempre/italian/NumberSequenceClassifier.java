@@ -48,7 +48,7 @@ import edu.stanford.nlp.util.PaddedList;
  * @author Christopher Manning
  * @author Mihai (integrated with NumberNormalizer, SUTime)
  */
-public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLabel> {
+class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLabel> {
 
   public NumberSequenceClassifier() {
     super(new Properties());
@@ -74,9 +74,9 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
 
   private static final Pattern DATE_PATTERN2 = Pattern.compile("[12][0-9]{3}[-/](?:0?[1-9]|1[0-2])[-/][0-3][0-9]");
 
-  private static final Pattern TIME_PATTERN = Pattern.compile("[0-2]?[0-9]\\.[0-5][0-9]");
+  private static final Pattern TIME_PATTERN = Pattern.compile("[0-2]?[0-9]:[0-5][0-9]");
 
-  private static final Pattern TIME_PATTERN2 = Pattern.compile("[0-2][0-9]\\.[0-5][0-9]\\.[0-5][0-9]");
+  private static final Pattern TIME_PATTERN2 = Pattern.compile("[0-2][0-9]:[0-5][0-9]:[0-5][0-9]");
 
   public static final Pattern CURRENCY_WORD_PATTERN = Pattern.compile("dollar[oi]|cent|euro|penny|pence|yen|yuan|won",
       Pattern.CASE_INSENSITIVE);
@@ -103,7 +103,10 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
 
   private static final Pattern ORDINAL_SUFFIX_PATTERN = Pattern.compile("[ºª°]", Pattern.CASE_INSENSITIVE);
 
-  private static final Pattern PART_OF_DAY_PATTERN = Pattern.compile("mezzogiorno|mezzodì|mezzanotte",
+  private static final Pattern DAY_POINT_PATTERN = Pattern.compile("mezzogiorno|mezzodì|mezzanotte",
+      Pattern.CASE_INSENSITIVE);
+  
+  private static final Pattern PART_OF_DAY_PATTERN = Pattern.compile("mattin[oa]|pomeriggio|sera|notte",
       Pattern.CASE_INSENSITIVE);
 
   private static final Pattern OF_PATTERN = Pattern.compile("di|del|della", Pattern.CASE_INSENSITIVE);
@@ -145,6 +148,10 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
       CoreLabel prev = pl.get(i - 1);
       CoreLabel next = pl.get(i + 1);
       CoreLabel next2 = pl.get(i + 2);
+
+      if (me.get(CoreAnnotations.AnswerAnnotation.class) != null)
+        continue;
+      
       // if (DEBUG) { System.err.println("Tagging:" + me.word()); }
       me.set(CoreAnnotations.AnswerAnnotation.class, flags.backgroundSymbol);
       
@@ -173,6 +180,24 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
         if (DEBUG) {
           System.err.println("Tagging N:" + me.word());
         }
+        
+        // number : number [: number]?
+        // (they are tokenized into separate tokens, cause the tokenizer sucks...)
+        if (NUMBER_PATTERN.matcher(myWord).matches() && ":".equals(nextWord) &&
+            next2Tag.equals("N")) {
+          me.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
+          next.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
+          next2.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
+          
+          CoreLabel next3 = pl.get(i + 3);
+          CoreLabel next4 = pl.get(i + 4);
+          if (":".equals(next3.word()) &&
+              "N".equals(next4.tag())) {
+            next3.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
+            next4.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
+          }
+          continue;
+        }
 
         if (DAY_PATTERN.matcher(myWord).matches() && MONTH_PATTERN.matcher(nextWord).matches()) {
           // deterministically make DATE for British-style number before month
@@ -182,6 +207,8 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
         } else if (MONTH_PATTERN.matcher(nextWord).matches()
             || (OF_PATTERN.matcher(nextWord).matches() && MONTH_PATTERN.matcher(next2Word).matches())) {
           me.set(CoreAnnotations.AnswerAnnotation.class, "DATE");
+        } else if (OF_PATTERN.matcher(nextWord).matches() && PART_OF_DAY_PATTERN.matcher(next2Word).matches()) {
+          me.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
         } else if (YEAR_PATTERN.matcher(myWord).matches()
             && prev.getString(CoreAnnotations.AnswerAnnotation.class).equals("DATE")
             && (MONTH_PATTERN.matcher(prevWord).matches()
@@ -201,8 +228,6 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
           && YEAR_PATTERN.matcher(nextWord).matches()) {
         me.set(CoreAnnotations.AnswerAnnotation.class, "DATE");
       } else if (MONTH_PATTERN.matcher(myWord).matches()) {
-        // sometimes the POS tag of a month is NNP and sometimes it's NN (and sometimes
-        // it's a VBD, because the POS tagger really sucks), take both to be sure
         if (prev.getString(CoreAnnotations.AnswerAnnotation.class).equals("DATE") || nextTag.equals("N")
             || nextTag.equals("S") || nextTag.equals("A")) {
           me.set(CoreAnnotations.AnswerAnnotation.class, "DATE");
@@ -237,7 +262,7 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
             }
           }
         }
-        if (PART_OF_DAY_PATTERN.matcher(myWord).matches()) {
+        if (DAY_POINT_PATTERN.matcher(myWord).matches()) {
           me.set(CoreAnnotations.AnswerAnnotation.class, "TIME");
         }
         if (ORDINAL_SUFFIX_PATTERN.matcher(myWord).matches()) {

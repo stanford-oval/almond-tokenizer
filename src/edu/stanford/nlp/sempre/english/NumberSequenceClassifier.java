@@ -85,7 +85,7 @@ public class NumberSequenceClassifier extends AbstractSequenceClassifier<CoreLab
 
   private static final Pattern TIME_PATTERN = Pattern.compile("[0-2]?[0-9]:[0-5][0-9]");
 
-  private static final Pattern TIME_PATTERN2 = Pattern.compile("[0-2][0-9]:[0-5][0-9]:[0-5][0-9]");
+  private static final Pattern TIME_PATTERN2 = Pattern.compile("[0-2]?[0-9]:[0-5][0-9]:[0-5][0-9]");
 
   private static final Pattern TIME_PATTERN3 = Pattern.compile("[0-2]?[0-9](:[0-5][0-9])?[ap]\\.?m\\.?",
       Pattern.CASE_INSENSITIVE);

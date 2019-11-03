@@ -181,7 +181,7 @@ public class Seq2SeqTokenizer {
     DateValue date = DateValue.parseDateValue(nerValue);
     if (date == null)
       return null;
-    return new TimeValue(date.hour, date.minute);
+    return new TimeValue(date.hour, date.minute, date.second);
   }
 
   private Pair<String, Object> nerValueToThingTalkValue(Example ex, String nerType, String nerValue,
