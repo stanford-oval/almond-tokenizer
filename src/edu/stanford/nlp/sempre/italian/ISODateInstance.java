@@ -1,18 +1,10 @@
 package edu.stanford.nlp.sempre.italian;
 
 import edu.stanford.nlp.ie.QuantifiableEntityNormalizer;
-import edu.stanford.nlp.ling.Word;
-import edu.stanford.nlp.process.PTBTokenizer;
-import edu.stanford.nlp.util.Generics;
-import edu.stanford.nlp.util.Pair;
-import edu.stanford.nlp.util.StringUtils;
 import edu.stanford.nlp.util.logging.Redwood;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

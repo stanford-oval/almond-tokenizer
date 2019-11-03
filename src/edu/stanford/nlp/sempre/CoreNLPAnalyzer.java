@@ -1,7 +1,6 @@
 package edu.stanford.nlp.sempre;
 
 import java.io.*;
-import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,8 +9,6 @@ import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.sempre.english.QuantifiableEntityNormalizer;
-import edu.stanford.nlp.sempre.italian.ItalianQuantifiableEntityNormalizer;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.logging.Redwood;
@@ -140,10 +137,8 @@ public class CoreNLPAnalyzer {
       utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
 
     // Convert Traditional Chinese to Simplified Chinese
-    if (convertTraditionalChinese) {
-      String raw_utterance = utterance;
+    if (convertTraditionalChinese)
       utterance = openCC_t2s.convert(utterance);
-    }
 
     // Run Stanford CoreNLP
 

@@ -301,10 +301,6 @@ public class EnglishQuantifiableEntityNormalizer implements AbstractQuantifiable
     return "P" + number + multiplier;
   }
 
-  private static String normalizedTimeString(String s) {
-    return normalizedTimeString(s, null);
-  }
-
   private static String normalizedTimeString(String s, String ampm) {
     if (DEBUG2)
       err.println("normalizingTime: " + s);
@@ -721,23 +717,6 @@ public class EnglishQuantifiableEntityNormalizer implements AbstractQuantifiable
     return l.get(size - 1).get(CoreAnnotations.TextAnnotation.class);
   }
 
-  /**
-   * Takes the output of an {@link AbstractSequenceClassifier} and marks up
-   * each document by normalizing quantities. Each {@link CoreLabel} in any
-   * of the documents which is normalizable will receive a "normalizedQuantity"
-   * attribute.
-   *
-   * @param l
-   *          a {@link List} of {@link List}s of {@link CoreLabel}s
-   * @return The list with normalized entity fields filled in
-   */
-  private static List<List<CoreLabel>> normalizeClassifierOutput(List<List<CoreLabel>> l) {
-    for (List<CoreLabel> doc : l) {
-      addNormalizedQuantitiesToEntities(doc);
-    }
-    return l;
-  }
-
   private static String earlyOneWord = "early";
   private static String earlyTwoWords = "(?:dawn|eve|beginning) of";
   private static String earlyThreeWords = "early in the";
@@ -863,7 +842,6 @@ public class EnglishQuantifiableEntityNormalizer implements AbstractQuantifiable
         }
       }
 
-      E wprev = (i > 0) ? list.get(i - 1) : null;
       // if the current wi is a non-continuation and the last one was a
       // quantity, we close and process the last segment.
       if ((currNerTag == null || !currNerTag.equals(prevNerTag))

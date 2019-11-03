@@ -3,7 +3,6 @@ package edu.stanford.nlp.sempre;
 import java.util.*;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Sets;
 
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;

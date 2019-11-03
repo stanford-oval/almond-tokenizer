@@ -8,7 +8,6 @@ public class LocaleTag {
   private final String language;
   private final String script;
   private final String region;
-  private final String[] other;
   private final String[] parts;
 
   private static final Map<String, String> SCRIPTS = new HashMap<>();
@@ -53,7 +52,6 @@ public class LocaleTag {
     this.language = language;
     this.script = script;
     this.region = region;
-    this.other = other;
 
     String normalizedTag = this.language;
     int partCount = 1 + (script != null ? 1 : 0) + (region != null ? 1 : 0) + other.length;

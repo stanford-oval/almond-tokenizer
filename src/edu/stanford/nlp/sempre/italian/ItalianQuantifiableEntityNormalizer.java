@@ -59,9 +59,6 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
   private static final Pattern timePattern = Pattern
       .compile("([0-2]?[0-9])((?::?[0-5][0-9]){0,2})");
 
-  private static final Pattern moneyPattern = Pattern
-      .compile("([$\u00A3\u00A5\u20AC#]?)(-?[0-9,]+(?:\\.[0-9]*)?|\\.[0-9]+)[-a-zA-Z]*");
-  
   // note: the pattern assumes the input is already Americanized
   private static final Pattern decimalPattern = Pattern.compile("^[0-9]+(?:\\.[0-9]+)?");
 
@@ -302,10 +299,6 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
     
     String number = normalizedNumberString(numword);
     return "P" + number + multiplier;
-  }
-
-  private static String normalizedTimeString(String s) {
-    return normalizedTimeString(s, null);
   }
 
   private static String normalizedTimeString(String s, String ampm) {
@@ -648,44 +641,6 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
     return l;
   }
 
-  /**
-   * @param l
-   *          The list of tokens in a time entity
-   * @return the word in the time word list that should be normalized
-   */
-  private static <E extends CoreMap> String timeEntityToString(List<E> l) {
-    String entityType = l.get(0).get(CoreAnnotations.AnswerAnnotation.class);
-    int size = l.size();
-    for (E w : l) {
-      assert (w.get(CoreAnnotations.AnswerAnnotation.class) == null ||
-          w.get(CoreAnnotations.AnswerAnnotation.class).equals(entityType));
-      Matcher m = timePattern.matcher(w.get(CoreAnnotations.TextAnnotation.class));
-      if (m.matches())
-        return w.get(CoreAnnotations.TextAnnotation.class);
-    }
-    if (DEBUG) {
-      System.err.println("default: " + l.get(size - 1).get(CoreAnnotations.TextAnnotation.class));
-    }
-    return l.get(size - 1).get(CoreAnnotations.TextAnnotation.class);
-  }
-
-  /**
-   * Takes the output of an {@link AbstractSequenceClassifier} and marks up
-   * each document by normalizing quantities. Each {@link CoreLabel} in any
-   * of the documents which is normalizable will receive a "normalizedQuantity"
-   * attribute.
-   *
-   * @param l
-   *          a {@link List} of {@link List}s of {@link CoreLabel}s
-   * @return The list with normalized entity fields filled in
-   */
-  private static List<List<CoreLabel>> normalizeClassifierOutput(List<List<CoreLabel>> l) {
-    for (List<CoreLabel> doc : l) {
-      addNormalizedQuantitiesToEntities(doc);
-    }
-    return l;
-  }
-
   // al mattino, alla mattina, della mattina, etc.
   private static String amTwoWords = "((al|del)(la)?|di) (mattin[oa]|notte)";
   private static String pmTwoWords = "(della|alla|di) sera|(del|al|di) pomeriggio";
@@ -706,8 +661,6 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
     String next = (afterIndex < sz) ? list.get(afterIndex).get(CoreAnnotations.TextAnnotation.class).toLowerCase() : "";
     String next2 = (afterIndex + 1 < sz)
         ? list.get(afterIndex + 1).get(CoreAnnotations.TextAnnotation.class).toLowerCase() : "";
-    String next3 = (afterIndex + 2 < sz)
-        ? list.get(afterIndex + 2).get(CoreAnnotations.TextAnnotation.class).toLowerCase() : "";
 
     String longPrev = prev3 + ' ' + prev2 + ' ' + prev;
 
@@ -768,7 +721,6 @@ public class ItalianQuantifiableEntityNormalizer implements AbstractQuantifiable
         }
       }
 
-      E wprev = (i > 0) ? list.get(i - 1) : null;
       // if the current wi is a non-continuation and the last one was a
       // quantity, we close and process the last segment.
       if ((currNerTag == null || !currNerTag.equals(prevNerTag))
