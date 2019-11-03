@@ -67,7 +67,7 @@ public class TokenizerServer {
       this.rawTokens = tokenizerResult.rawTokens;
       this.tokensNoQuotes = tokenizerResult.tokensNoQuotes;
       this.pos = tokenizerResult.posTags;
-      this.constituencyParse = tokenizerResult.constituencyParse;
+      this.constituencyParse = Collections.emptyList();
       this.sentiment = tokenizerResult.sentiment;
     }
   }
