@@ -1,8 +1,9 @@
 #!/bin/sh
 
 set -e
-SEMPREDIR=`dirname $0`
-SEMPREDIR=`realpath $SEMPREDIR`
+set -x
+srcdir=`dirname $0`
+srcdir=`realpath $srcdir`
 
 pullsempre() {
   wget -c 'https://nlp.stanford.edu/software/sempre/dependencies-2.0/'$1 -O lib/`basename $1`
@@ -16,7 +17,7 @@ pullopencc() {
   wget -c 'https://github.com/yichen0831/OpenCC-Java/releases/download/'$1 -O lib/`basename $1`
 }
 
-cd $SEMPREDIR
+cd $srcdir
 mkdir -p lib
 pullsempre '/u/nlp/data/semparse/resources/guava-14.0.1.jar'
 # TestNG -- testing framework
@@ -44,3 +45,16 @@ pullparmesan 'trove4j-3.0.3-javadoc.jar'
 
 # OpenCC
 pullopencc 'v0.1/OpenCC-Java-all-0.1.jar'
+
+# Italian support - requires a fork of CoreNLP, but luckily it is mostly
+# compatible
+wget -c 'http://www.airpedia.org/tint/0.2/tint-runner-0.2-bin.tar.gz' -O lib/tint-runner-0.2-bin.tar.gz
+tmpdir=`mktemp -d`
+cd $tmpdir
+tar xvf $srcdir/lib/tint-runner-0.2-bin.tar.gz
+for f in `cat $srcdir/italian-deps.txt` ; do
+    cp tint/lib/$f $srcdir/lib
+done
+cd $srcdir
+rm -fr $tmpdir
+rm -fr lib/tint-runner-0.2-bin.tar.gz
