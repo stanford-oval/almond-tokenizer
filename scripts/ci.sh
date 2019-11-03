@@ -28,6 +28,7 @@ else
     
     ./scripts/test-tokenizer.py < $srcdir/data/test-tokenizer-en-us.yml
     ./scripts/test-tokenizer.py < $srcdir/data/test-tokenizer-zh-cn.yml
+    ./scripts/test-tokenizer.py < $srcdir/data/test-tokenizer-it.yml
 fi
 
 kill $serverpid
