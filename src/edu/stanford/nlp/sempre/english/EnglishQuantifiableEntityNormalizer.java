@@ -1,4 +1,4 @@
-package edu.stanford.nlp.sempre;
+package edu.stanford.nlp.sempre.english;
 
 import static java.lang.System.err;
 
@@ -10,6 +10,7 @@ import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ie.pascal.ISODateInstance;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.sempre.AbstractQuantifiableEntityNormalizer;
 import edu.stanford.nlp.stats.ClassicCounter;
 import edu.stanford.nlp.util.*;
 
@@ -43,7 +44,7 @@ import edu.stanford.nlp.util.*;
  * @author Christopher Manning (extended for RTE)
  * @author Anna Rafferty
  */
-public class QuantifiableEntityNormalizer {
+public class EnglishQuantifiableEntityNormalizer implements AbstractQuantifiableEntityNormalizer {
 
   private static final boolean DEBUG = false;
   private static final boolean DEBUG2 = false;  // String normlz functions
@@ -58,7 +59,6 @@ public class QuantifiableEntityNormalizer {
 
   //Collections of entity types
   private static final Set<String> quantifiable;  //Entity types that are quantifiable
-  private static final Set<String> collapseBeforeParsing;
   private static final Map<String, String> timeUnitWords;
   private static final Map<String, Double> moneyMultipliers;
   private static final Map<String, Character> currencyWords;
@@ -75,11 +75,6 @@ public class QuantifiableEntityNormalizer {
     quantifiable.add("NUMBER");
     quantifiable.add("ORDINAL");
     quantifiable.add("DURATION");
-
-    collapseBeforeParsing = Generics.newHashSet();
-    collapseBeforeParsing.add("PERSON");
-    collapseBeforeParsing.add("ORGANIZATION");
-    collapseBeforeParsing.add("LOCATION");
 
     timeUnitWords = Generics.newHashMap();
     timeUnitWords.put("second", "S");
@@ -202,8 +197,8 @@ public class QuantifiableEntityNormalizer {
     ordinalsToValues.setCount("trillionth", 1000000000000.0);
   }
 
-  private QuantifiableEntityNormalizer() {
-  } // this is all static
+  public EnglishQuantifiableEntityNormalizer() {
+  }
 
   /**
    * This method returns the closest match in set such that the match
@@ -243,7 +238,7 @@ public class QuantifiableEntityNormalizer {
    *          The List
    * @return one string containing all words in the list, whitespace separated
    */
-  public static <E extends CoreMap> String singleEntityToString(List<E> l) {
+  private static <E extends CoreMap> String singleEntityToString(List<E> l) {
     String entityType = l.get(0).get(CoreAnnotations.NamedEntityTagAnnotation.class);
     StringBuilder sb = new StringBuilder();
     for (E w : l) {
@@ -258,7 +253,7 @@ public class QuantifiableEntityNormalizer {
    * Provided for backwards compatibility; see normalizedDateString(s,
    * openRangeMarker)
    */
-  static String normalizedDateString(String s) {
+  private static String normalizedDateString(String s) {
     return normalizedDateString(s, ISODateInstance.NO_RANGE);
   }
 
@@ -278,7 +273,7 @@ public class QuantifiableEntityNormalizer {
    *          starts at s. See {@link ISODateInstance}.
    * @return A yyyymmdd format normalized date
    */
-  static String normalizedDateString(String s, String openRangeMarker) {
+  private static String normalizedDateString(String s, String openRangeMarker) {
     if (s.endsWith(" at "))
       s = s.substring(0, s.length() - 4);
     else if (s.endsWith(" , "))
@@ -290,7 +285,7 @@ public class QuantifiableEntityNormalizer {
     return (d.getDateString());
   }
 
-  static String normalizedDurationString(String s) {
+  private static String normalizedDurationString(String s) {
     s = s.trim();
     int space = s.lastIndexOf(' ');
     if (space < 0)
@@ -306,11 +301,7 @@ public class QuantifiableEntityNormalizer {
     return "P" + number + multiplier;
   }
 
-  public static String normalizedTimeString(String s) {
-    return normalizedTimeString(s, null);
-  }
-
-  public static String normalizedTimeString(String s, String ampm) {
+  private static String normalizedTimeString(String s, String ampm) {
     if (DEBUG2)
       err.println("normalizingTime: " + s);
     if (s.startsWith("morning at "))
@@ -409,7 +400,7 @@ public class QuantifiableEntityNormalizer {
     return s;
   }
 
-  static String normalizedMoneyString(String s) {
+  private static String normalizedMoneyString(String s) {
     //first, see if it looks like european style
     s = convertToAmerican(s);
     // clean up string
@@ -446,7 +437,7 @@ public class QuantifiableEntityNormalizer {
     }
   }
 
-  public static String normalizedNumberString(String s) {
+  private static String normalizedNumberString(String s) {
     if (DEBUG2) {
       err.println("normalizedNumberString: normalizing " + s);
     }
@@ -455,7 +446,7 @@ public class QuantifiableEntityNormalizer {
 
   private static final Pattern allSpaces = Pattern.compile(" *");
 
-  public static String normalizedNumberStringQuiet(String s,
+  private static String normalizedNumberStringQuiet(String s,
       double multiplier) {
 
     // clean up string
@@ -550,16 +541,16 @@ public class QuantifiableEntityNormalizer {
       return null;
   }
 
-  public static String normalizedOrdinalString(String s) {
+  private static String normalizedOrdinalString(String s) {
     if (DEBUG2) {
       err.println("normalizedOrdinalString: normalizing " + s);
     }
     return normalizedOrdinalStringQuiet(s);
   }
 
-  public static final Pattern numberPattern = Pattern.compile("([0-9.]+)");
+  private static final Pattern numberPattern = Pattern.compile("([0-9.]+)");
 
-  public static String normalizedOrdinalStringQuiet(String s) {
+  private static String normalizedOrdinalStringQuiet(String s) {
     // clean up string
     s = s.replaceAll("[ \t\n\0\f\r,]", "");
     // remove parenthesis around numbers
@@ -590,7 +581,7 @@ public class QuantifiableEntityNormalizer {
     }
   }
 
-  public static String normalizedPercentString(String s) {
+  private static String normalizedPercentString(String s) {
     if (DEBUG2) {
       err.println("normalizedPercentString: " + s);
     }
@@ -726,23 +717,6 @@ public class QuantifiableEntityNormalizer {
     return l.get(size - 1).get(CoreAnnotations.TextAnnotation.class);
   }
 
-  /**
-   * Takes the output of an {@link AbstractSequenceClassifier} and marks up
-   * each document by normalizing quantities. Each {@link CoreLabel} in any
-   * of the documents which is normalizable will receive a "normalizedQuantity"
-   * attribute.
-   *
-   * @param l
-   *          a {@link List} of {@link List}s of {@link CoreLabel}s
-   * @return The list with normalized entity fields filled in
-   */
-  public static List<List<CoreLabel>> normalizeClassifierOutput(List<List<CoreLabel>> l) {
-    for (List<CoreLabel> doc : l) {
-      addNormalizedQuantitiesToEntities(doc);
-    }
-    return l;
-  }
-
   private static String earlyOneWord = "early";
   private static String earlyTwoWords = "(?:dawn|eve|beginning) of";
   private static String earlyThreeWords = "early in the";
@@ -868,7 +842,6 @@ public class QuantifiableEntityNormalizer {
         }
       }
 
-      E wprev = (i > 0) ? list.get(i - 1) : null;
       // if the current wi is a non-continuation and the last one was a
       // quantity, we close and process the last segment.
       if ((currNerTag == null || !currNerTag.equals(prevNerTag))
@@ -925,7 +898,7 @@ public class QuantifiableEntityNormalizer {
     }
   }
 
-  public static <E extends CoreMap> void fixupNerBeforeNormalization(List<E> list) {
+  private static <E extends CoreMap> void fixupNerBeforeNormalization(List<E> list) {
     // Goes through tokens and tries to fix up NER annotations
     String prevNerTag = BACKGROUND_SYMBOL;
     for (int i = 0, sz = list.size(); i < sz; i++) {
@@ -985,7 +958,8 @@ public class QuantifiableEntityNormalizer {
    * @return The list with results of 'specialized' (rule-governed) NER filled
    *         in
    */
-  public static <E extends CoreLabel> List<E> applySpecializedNER(List<E> l) {
+  @Override
+  public <E extends CoreLabel> List<E> applySpecializedNER(List<E> l) {
     int sz = l.size();
     // copy l
     List<CoreLabel> copyL = new ArrayList<>(sz);

@@ -19,7 +19,7 @@ public class InteractiveTokenizer implements Runnable {
   @Override
   public void run() {
     CoreNLPAnalyzer analyzer = new CoreNLPAnalyzer(new LocaleTag("en"));
-    Seq2SeqTokenizer tokenizer = new Seq2SeqTokenizer(true);
+    Seq2SeqTokenizer tokenizer = new Seq2SeqTokenizer();
 
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
       while (true) {

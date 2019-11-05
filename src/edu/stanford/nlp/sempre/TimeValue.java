@@ -11,17 +11,21 @@ public class TimeValue {
   public final int hour;
   @JsonProperty
   public final int minute;
+  @JsonProperty
+  public final double second;
 
-  public TimeValue(int hour, int minute) {
+  public TimeValue(int hour, int minute, double second) {
     if (hour > 23 || hour < 0) throw new RuntimeException("Illegal hour: " + hour);
     if (minute > 59 || minute < 0) throw new RuntimeException("Illegal minute: " + minute);
+    if (second > 59 || second < 0) throw new RuntimeException("Illegal second: " + second);
     this.hour = hour;
     this.minute = minute;
+    this.second = second;
   }
 
   @Override
   public String toString() {
-    return this.hour + ":" + this.minute;
+    return this.hour + ":" + this.minute + ":" + this.second;
   }
 
   @Override
@@ -31,6 +35,7 @@ public class TimeValue {
     TimeValue timeValue = (TimeValue) o;
     if (hour != timeValue.hour) return false;
     if (minute != timeValue.minute) return false;
+    if (second != timeValue.second) return false;
     return true;
   }
 
@@ -38,6 +43,7 @@ public class TimeValue {
   public int hashCode() {
     int result = hour;
     result = 31 * result + minute;
+    result = (int)(31 * result + second);
     return result;
   }
 }

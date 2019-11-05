@@ -3,27 +3,15 @@ package edu.stanford.nlp.sempre;
 import java.util.*;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Sets;
-
-import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.ParserAnnotator;
-import edu.stanford.nlp.trees.Tree;
-import edu.stanford.nlp.trees.TreeCoreAnnotations;
-import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.Pair;
 
 public class Seq2SeqTokenizer {
-  private static final boolean INCLUDE_CONSTITUENCY_PARSE = false;
-
   public static class Result {
     public final List<String> rawTokens = new ArrayList<>();
     public final List<String> tokens = new ArrayList<>();
     public final List<String> tokensNoQuotes = new ArrayList<>();
     public final List<String> posTags = new ArrayList<>();
     public final Map<Value, List<Integer>> entities = new HashMap<>();
-    public final List<String> constituencyParse = new ArrayList<>();
     public String sentiment = "neutral";
   }
 
@@ -36,21 +24,7 @@ public class Seq2SeqTokenizer {
     CURRENCY_CODES.put("\u5143", "cny");
   }
 
-  private final boolean applyHeuristics;
-  private final ParserAnnotator constituencyParser;
-
-  public Seq2SeqTokenizer(boolean applyHeuristics) {
-    this.applyHeuristics = applyHeuristics;
-
-    if (INCLUDE_CONSTITUENCY_PARSE) {
-      Properties parseProperties = new Properties();
-      parseProperties.put("parse.model", "edu/stanford/nlp/models/lexparser/englishPCFG.caseless.ser.gz");
-      parseProperties.put("parse.binaryTrees", "true");
-      parseProperties.put("parse.buildgraphs", "false");
-      constituencyParser = new ParserAnnotator("parse", parseProperties);
-    } else {
-      constituencyParser = null;
-    }
+  public Seq2SeqTokenizer() {
   }
 
   private static void addEntity(Result result, String tag, int id, Object value) {
@@ -124,61 +98,16 @@ public class Seq2SeqTokenizer {
     Result result = new Result();
 
     computeTokens(ex, utteranceInfo, result);
-    computeConstituencyParse(result);
     result.sentiment = ex.languageInfo.sentiment;
 
     return result;
-  }
-
-  private void computeConstituencyParse(Result result) {
-    if (constituencyParser == null)
-      return;
-
-    String sentencestring = Joiner.on(' ').join(result.tokens);
-    Annotation document = new Annotation(sentencestring);
-
-    List<CoreLabel> tokens = new ArrayList<>();
-    for (int i = 0; i < result.tokens.size(); i++) {
-      String token = result.tokens.get(i);
-      CoreLabel coreToken = new CoreLabel();
-      coreToken.setWord(token);
-      coreToken.setValue(token);
-      coreToken.setIndex(i);
-      coreToken.setNER(Character.isUpperCase(token.charAt(0)) ? token : "O");
-      tokens.add(coreToken);
-    }
-
-    CoreMap sentence = new Annotation(sentencestring);
-    document.set(CoreAnnotations.TokensAnnotation.class, tokens);
-    sentence.set(CoreAnnotations.TokensAnnotation.class, tokens);
-    sentence.set(CoreAnnotations.SentenceIndexAnnotation.class, 0);
-    document.set(CoreAnnotations.SentencesAnnotation.class, Collections.singletonList(sentence));
-
-    constituencyParser.annotate(document);
-
-    Tree tree = sentence.get(TreeCoreAnnotations.BinarizedTreeAnnotation.class);
-    linearizeTree(tree, result.constituencyParse);
-  }
-
-  private static void linearizeTree(Tree tree, List<String> linear) {
-    if (tree.isLeaf()) {
-      linear.add(tree.value());
-    } else if (tree.numChildren() == 1) {
-      linearizeTree(tree.getChild(0), linear);
-    } else {
-      assert tree.numChildren() == 2;
-      linear.add("(");
-      linearizeTree(tree.getChild(0), linear);
-      linearizeTree(tree.getChild(1), linear);
-      linear.add(")");
-    }
   }
 
   private static TimeValue parseTimeValue(String nerValue) {
     DateValue date = DateValue.parseDateValue(nerValue);
     if (date == null)
       return null;
-    return new TimeValue(date.hour, date.minute);
+    return new TimeValue(date.hour, date.minute, date.second);
   }
 
   private Pair<String, Object> nerValueToThingTalkValue(Example ex, String nerType, String nerValue,

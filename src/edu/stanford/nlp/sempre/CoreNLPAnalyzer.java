@@ -1,7 +1,6 @@
 package edu.stanford.nlp.sempre;
 
 import java.io.*;
-import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +24,7 @@ import opencc.OpenCC;
 public class CoreNLPAnalyzer {
   private static final Redwood.RedwoodChannels log = Redwood.channels(CoreNLPAnalyzer.class);
 
-  private static final String annotators = "tokenize,quote2,ssplit,pos,lemma," +
+  private static final String default_annotators = "tokenize,quote2,ssplit,pos,lemma," +
       "ner,quote_ner,custom_regexp_ner,custom_numeric_ner,phone_ner,url_ner,parse,sentiment";
 
   private static final Pattern INTEGER_PATTERN = Pattern.compile("[0-9]+");
@@ -46,7 +45,8 @@ public class CoreNLPAnalyzer {
 
   public CoreNLPAnalyzer(LocaleTag localeTag) {
     Properties props = new Properties();
-
+    String annotators = default_annotators;
+    
     isEnglish = localeTag.getLanguage().equals("en");
     convertTraditionalChinese = "hant".equals(localeTag.getScript());
 
@@ -59,6 +59,12 @@ public class CoreNLPAnalyzer {
       // disable all the builtin numeric classifiers, we have our own
       props.put("ner.applyNumericClassifiers", "false");
       props.put("ner.useSUTime", "false");
+      break;
+
+    case "it":
+      loadResource("StanfordCoreNLP-italian.properties", props);
+      props.put("ita_toksent.ssplitOnlyOnNewLine", "true");
+      annotators = "ita_toksent,mergesent,quote2,pos,ita_morpho,ita_lemma,ner,quote_ner,custom_regexp_ner,custom_numeric_ner,phone_ner,url_ner,parse,sentiment";
       break;
 
     case "de":
@@ -93,6 +99,7 @@ public class CoreNLPAnalyzer {
     props.put("regexner.backgroundSymbol", "O,MISC,ORGANIZATION");
 
     // move quotes to a NER tag
+    props.put("customAnnotatorClass.mergesent", MergeSentencesAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.quote2", QuotedStringAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.quote_ner", QuotedStringEntityAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.phone_ner", PhoneNumberEntityAnnotator.class.getCanonicalName());
@@ -100,12 +107,12 @@ public class CoreNLPAnalyzer {
     props.put("customAnnotatorClass.custom_regexp_ner", RegexpEntityAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.custom_numeric_ner", NumericEntityAnnotator.class.getCanonicalName());
     props.put("custom_regexp_ner.patterns", "./data/regex_patterns");
+    props.put("custom_numeric_ner.language", localeTag.getLanguage());
 
     // ask for binary tree parses
     props.put("parse.binaryTrees", "true");
 
     pipeline = new StanfordCoreNLP(props);
-
   }
 
   private static void loadResource(String name, Properties into) {
@@ -131,10 +138,8 @@ public class CoreNLPAnalyzer {
       utterance = utterance.replaceAll("([0-9])(?!am|pm)([a-zA-Z])", "$1 $2");
 
     // Convert Traditional Chinese to Simplified Chinese
-    if (convertTraditionalChinese) {
-      String raw_utterance = utterance;
+    if (convertTraditionalChinese)
       utterance = openCC_t2s.convert(utterance);
-    }
 
     // Run Stanford CoreNLP
 

@@ -96,7 +96,7 @@ public class QuoteAnnotator implements Annotator {
   private static Redwood.RedwoodChannels log = Redwood.channels(QuoteAnnotator.class);
 
   private final boolean VERBOSE;
-  private final boolean DEBUG = false;
+  private static final boolean DEBUG = false;
 
   // whether or not to consider single single quotes as quote-marking
   public boolean USE_SINGLE = false;
