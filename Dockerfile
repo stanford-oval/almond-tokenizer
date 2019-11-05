@@ -4,7 +4,7 @@ MAINTAINER Thingpedia Admins <thingpedia-admins@lists.stanford.edu>
 
 # install required dependencies
 RUN apt-get -y update
-RUN apt-get install -y wget git ant
+RUN apt-get install -y wget git ant openjdk-11-jdk
 
 # add user almond-tokenizer
 RUN useradd -ms /bin/bash -r almond-tokenizer
