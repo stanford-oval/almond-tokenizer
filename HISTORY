@@ -1,3 +1,9 @@
+3.1.0-beta.1
+============
+
+* Added support for Italian [#24, #29]
+* Update official builds to Java 11, as Java 8 is obsolete [#30]
+
 3.0.3
 =====
 
