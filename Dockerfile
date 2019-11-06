@@ -20,7 +20,7 @@ RUN apt-get -y update && \
 
 # entry point
 ENV PORT 8888
-ENV LANGUAGES en zh-hans zh-hant
+ENV LANGUAGES en zh-hans zh-hant it
 ENV LANG C.UTF-8
 USER almond-tokenizer
 CMD ["/bin/bash", "run.sh"]
