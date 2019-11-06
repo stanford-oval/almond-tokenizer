@@ -4,7 +4,7 @@ branches:
   - "/^wip/"
 language: java
 jdk:
-  - openjdk8
+  - openjdk11
 cache:
   directories:
   - lib/
