@@ -1,3 +1,5 @@
 extraction:
   java:
     before_index: "./pull-dependencies.sh"
+    index:
+      java_version: 11
