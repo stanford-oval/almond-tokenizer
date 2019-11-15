@@ -178,3 +178,18 @@
     NUMBER_1: 7200001
     NUMBER_2: 750021
     NUMBER_3: 800250323
+- locale: it-IT
+  input: cerca ____ su bing
+  rawTokens: cerca ____ su bing
+  tokens: cerca ____ su bing
+  entities: {}
+- locale: it-IT
+  input: cerca____su bing
+  rawTokens: cerca ____ su bing
+  tokens: cerca ____ su bing
+  entities: {}
+- locale: it-IT
+  input: cerca____,____su bing
+  rawTokens: cerca ____ , ____ su bing
+  tokens: cerca ____ , ____ su bing
+  entities: {}

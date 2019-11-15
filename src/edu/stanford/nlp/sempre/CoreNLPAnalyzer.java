@@ -9,6 +9,7 @@ import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.sempre.italian.ItalianTokenizerBlankWorkaround;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.logging.Redwood;
@@ -64,7 +65,7 @@ public class CoreNLPAnalyzer {
     case "it":
       loadResource("StanfordCoreNLP-italian.properties", props);
       props.put("ita_toksent.ssplitOnlyOnNewLine", "true");
-      annotators = "ita_toksent,mergesent,quote2,pos,ita_morpho,ita_lemma,ner,quote_ner,custom_regexp_ner,custom_numeric_ner,phone_ner,url_ner,parse,sentiment";
+      annotators = "ita_toksent,ita_tok_workaround,mergesent,quote2,pos,ita_morpho,ita_lemma,ner,quote_ner,custom_regexp_ner,custom_numeric_ner,phone_ner,url_ner,parse,sentiment";
       break;
 
     case "de":
@@ -99,6 +100,7 @@ public class CoreNLPAnalyzer {
     props.put("regexner.backgroundSymbol", "O,MISC,ORGANIZATION");
 
     // move quotes to a NER tag
+    props.put("customAnnotatorClass.ita_tok_workaround", ItalianTokenizerBlankWorkaround.class.getCanonicalName());
     props.put("customAnnotatorClass.mergesent", MergeSentencesAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.quote2", QuotedStringAnnotator.class.getCanonicalName());
     props.put("customAnnotatorClass.quote_ner", QuotedStringEntityAnnotator.class.getCanonicalName());
