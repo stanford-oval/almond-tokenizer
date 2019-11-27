@@ -32,12 +32,15 @@ public class MergeSentencesAnnotator implements Annotator {
     newSentence.set(CoreAnnotations.CharacterOffsetBeginAnnotation.class, 0);
     newSentence.set(CoreAnnotations.CharacterOffsetEndAnnotation.class, originalText.length());
     newSentence.set(CoreAnnotations.SentenceIndexAnnotation.class, 0);
-    
+
     List<CoreLabel> tokens = new ArrayList<>();
     for (CoreMap sentence : document.get(CoreAnnotations.SentencesAnnotation.class))
       tokens.addAll(sentence.get(CoreAnnotations.TokensAnnotation.class));
-   
+
+    for (int i = 0; i < tokens.size(); i++)
+      tokens.get(i).set(CoreAnnotations.IndexAnnotation.class, i);
     newSentence.set(CoreAnnotations.TokensAnnotation.class, tokens);
+    document.set(CoreAnnotations.TokensAnnotation.class, tokens);
     document.set(CoreAnnotations.SentencesAnnotation.class, Collections.singletonList(newSentence));
   }
 
