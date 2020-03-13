@@ -119,9 +119,14 @@
 - locale: en-us
   input: if dropbox quota changes anytime and the used space is at least 3gb notify me
   rawTokens: if dropbox quota changes anytime and the used space is at least 3 gb notify me
+  tokens: if dropbox quota changes anytime and the used space is at least 3 gb notify me
+  entities: {}
+- locale: en-us
+  input: if dropbox quota changes anytime and the used space is at least 25gb notify me
+  rawTokens: if dropbox quota changes anytime and the used space is at least 25 gb notify me
   tokens: if dropbox quota changes anytime and the used space is at least NUMBER_0*1 gb notify me
   entities:
-    NUMBER_0: 3.0
+    NUMBER_0: 25.0
 - locale: en-us
   input: wake me up at 7am
   rawTokens: wake me up at 7am
@@ -294,21 +299,36 @@
 - locale: en-us
   input: show me the 3rd result
   rawTokens: show me the 3 rd result
-  tokens: show me the NUMBER_0*2 result
-  entities:
-    NUMBER_0: 3
+  tokens: show me the 3 rd result
+  entities: {}
 - locale: en-us
   input: show me 5-star restaurants
   rawTokens: show me 5 star restaurants
-  tokens: show me NUMBER_0*1 star restaurants
-  entities:
-    NUMBER_0: 5
+  tokens: show me 5 star restaurants
+  entities: {}
 - locale: en-us
   input: Show me a picture of restaurants with more than two reviews.
   rawTokens: show me a picture of restaurants with more than two reviews .
+  tokens: show me a picture of restaurants with more than two reviews .
+  entities: {}
+- locale: en-us
+  input: Show me a picture of restaurants with more than 1,000 reviews.
+  rawTokens: show me a picture of restaurants with more than 1,000 reviews .
   tokens: show me a picture of restaurants with more than NUMBER_0*1 reviews .
   entities:
-    NUMBER_0: 2 
+    NUMBER_0: 1000.0
+- locale: en-us
+  input: Show me a picture of restaurants with more than a thousand reviews.
+  rawTokens: show me a picture of restaurants with more than a thousand reviews .
+  tokens: show me a picture of restaurants with more than a NUMBER_0*1 reviews .
+  entities:
+    NUMBER_0: 1000.0
+- locale: en-us
+  input: Show me a picture of restaurants with more than one thousand reviews.
+  rawTokens: show me a picture of restaurants with more than one thousand reviews .
+  tokens: show me a picture of restaurants with more than NUMBER_0*2 reviews .
+  entities:
+    NUMBER_0: 1000.0
 - locale: en-us
   input: give me the telephone of the restaurant with “94305” as postal code closest to work.
   rawTokens: give me the telephone of the restaurant with `` 94305 '' as postal code closest to work .
@@ -330,7 +350,7 @@
 - locale: en-us
   input: which are reviews having later date published than May 4th, 2016 for restaurant having bigger than 2 reviews
   rawTokens: which are reviews having later date published than may 4 th , 2016 for restaurant having bigger than 2 reviews
-  tokens: which are reviews having later date published than DATE_0*5 for restaurant having bigger than NUMBER_0*1 reviews
+  tokens: which are reviews having later date published than DATE_0*5 for restaurant having bigger than 2 reviews
   entities:
     DATE_0:
       year: 2016
@@ -339,7 +359,6 @@
       hour: 0
       minute: 0
       second: 0
-    NUMBER_0: 2
 - locale: en-us
   input: What's the rating of the review dated sooner than May 4th, 2016?
   rawTokens: what 's the rating of the review dated sooner than may 4 th , 2016 ?
