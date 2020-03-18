@@ -110,6 +110,12 @@ public class Seq2SeqTokenizer {
     return new TimeValue(date.hour, date.minute, date.second);
   }
 
+  private boolean isSmallNumber(double number) {
+    // the ceiling of 12 is chosen so all hours of the day are small integers
+    // this way, we can predict times and numbers more or less indistinguishably
+    return Math.floor(number) == number && number >= -12 && number <= 12;
+  }
+
   private Pair<String, Object> nerValueToThingTalkValue(Example ex, String nerType, String nerValue,
       String entity) {
     String unit = null;
@@ -133,7 +139,7 @@ public class Seq2SeqTokenizer {
         else if (nerValue.startsWith(">") || nerValue.startsWith("<") || nerValue.startsWith("~"))
           nerValue = nerValue.substring(1);
         double v = Double.valueOf(nerValue);
-        if (v == 1 || v == 0)
+        if (isSmallNumber(v))
           return null;
 
         if ("MONEY".equals(nerType))
