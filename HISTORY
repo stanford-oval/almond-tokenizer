@@ -1,3 +1,10 @@
+3.1.0-beta.2
+============
+
+* All numbers between -12 and 12 are now considered "small", and preserved
+  in the sentence without replacing with NUMBER tokens [#33]
+* Misc bug fixes [#31, #32]
+
 3.1.0-beta.1
 ============
 
