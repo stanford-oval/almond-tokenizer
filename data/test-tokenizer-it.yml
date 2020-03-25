@@ -136,9 +136,8 @@
 - locale: it-IT
   input: mostrami 3 foto di gatti
   rawTokens: mostrami 3 foto di gatti
-  tokens: mostrami NUMBER_0*1 foto di gatti
-  entities:
-    NUMBER_0: 3
+  tokens: mostrami 3 foto di gatti
+  entities: {}
 - locale: it-IT
   input: mostrami 3.000 foto di gatti
   rawTokens: mostrami 3.000 foto di gatti
@@ -154,9 +153,8 @@
 - locale: it-IT
   input: mostrami tre foto di gatti
   rawTokens: mostrami tre foto di gatti
-  tokens: mostrami NUMBER_0*1 foto di gatti
-  entities:
-    NUMBER_0: 3
+  tokens: mostrami tre foto di gatti
+  entities: {}
 - locale: it-IT
   input: mostrami ventidue foto di gatti
   rawTokens: mostrami ventidue foto di gatti
